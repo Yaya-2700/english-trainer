@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Trainer - 英語学習アプリ</title>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --primary: #4f6df5;
+    --primary-dark: #3a54d0;
+    --accent: #10b981;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --radius: 16px;
+    --shadow: 0 2px 12px rgba(30,41,59,.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; padding-bottom: 90px;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), #7c5cf0);
+    color: #fff; padding: 20px 16px 16px; text-align: center;
+  }
+  header h1 { font-size: 1.3rem; letter-spacing: .5px; }
+  header p { font-size: .8rem; opacity: .85; margin-top: 4px; }
+  main { max-width: 560px; margin: 0 auto; padding: 16px; }
+
+  /* Tab bar */
+  nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--card); border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around; padding: 8px 0 14px;
+    z-index: 10;
+  }
+  nav button {
+    background: none; border: none; cursor: pointer;
+    font-size: .72rem; color: var(--muted);
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 4px 10px; border-radius: 10px; font-family: inherit;
+  }
+  nav button .icon { font-size: 1.35rem; }
+  nav button.active { color: var(--primary); font-weight: 700; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px;
+  }
+  h2 { font-size: 1.05rem; margin-bottom: 12px; }
+  .btn {
+    display: inline-block; border: none; cursor: pointer;
+    background: var(--primary); color: #fff; font-family: inherit;
+    padding: 12px 20px; border-radius: 12px; font-size: .95rem; font-weight: 600;
+    transition: transform .1s, background .2s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.green { background: var(--accent); }
+  .btn.red { background: var(--danger); }
+  .btn.gray { background: #cbd5e1; color: var(--text); }
+  .btn.outline { background: #fff; color: var(--primary); border: 2px solid var(--primary); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn.small { padding: 8px 14px; font-size: .82rem; }
+
+  /* Dashboard */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 16px; text-align: center;
+  }
+  .stat .num { font-size: 1.7rem; font-weight: 800; color: var(--primary); }
+  .stat .label { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+  .progress-bar { background: var(--border); border-radius: 99px; height: 10px; overflow: hidden; margin-top: 8px; }
+  .progress-bar > div { background: var(--accent); height: 100%; border-radius: 99px; transition: width .4s; }
+
+  /* Flashcard */
+  .flashcard {
+    perspective: 1000px; cursor: pointer; height: 230px; margin-bottom: 16px;
+  }
+  .flashcard-inner {
+    position: relative; width: 100%; height: 100%;
+    transition: transform .5s; transform-style: preserve-3d;
+  }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .face {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 20px; text-align: center;
+  }
+  .face.back { transform: rotateY(180deg); background: linear-gradient(135deg, #eef2ff, #f5f3ff); }
+  .face .word { font-size: 2rem; font-weight: 800; }
+  .face .meaning { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); }
+  .face .example { font-size: .85rem; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+  .face .hint { font-size: .7rem; color: #94a3b8; margin-top: 14px; }
+  .box-badge {
+    position: absolute; top: 12px; right: 14px; font-size: .68rem;
+    background: var(--border); color: var(--muted); padding: 3px 10px; border-radius: 99px;
+  }
+  .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .btn-row .btn { flex: 1; max-width: 180px; }
+
+  /* Quiz / Listening choices */
+  .choice {
+    display: block; width: 100%; text-align: left; margin-bottom: 10px;
+    background: var(--card); border: 2px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; font-size: .95rem; cursor: pointer; font-family: inherit;
+    transition: border-color .15s, background .15s;
+  }
+  .choice:hover { border-color: var(--primary); }
+  .choice.correct { border-color: var(--accent); background: #ecfdf5; }
+  .choice.wrong { border-color: var(--danger); background: #fef2f2; }
+  .choice:disabled { cursor: default; }
+  .quiz-q { font-size: 1.5rem; font-weight: 800; text-align: center; margin: 10px 0 18px; }
+  .quiz-meta { text-align: center; color: var(--muted); font-size: .8rem; margin-bottom: 6px; }
+  .feedback { text-align: center; font-weight: 700; margin: 10px 0; min-height: 1.4em; }
+  .result-big { font-size: 2.4rem; font-weight: 800; text-align: center; color: var(--primary); margin: 12px 0; }
+
+  /* Word list */
+  .word-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 4px; border-bottom: 1px solid var(--border); font-size: .9rem;
+  }
+  .word-item .en { font-weight: 700; }
+  .word-item .ja { color: var(--muted); font-size: .82rem; }
+  .mastery { font-size: .65rem; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .m0 { background: #fee2e2; color: #b91c1c; }
+  .m1 { background: #fef3c7; color: #b45309; }
+  .m2 { background: #dbeafe; color: #1d4ed8; }
+  .m3 { background: #d1fae5; color: #047857; }
+
+  input, select {
+    width: 100%; padding: 11px 12px; border: 2px solid var(--border);
+    border-radius: 10px; font-size: .92rem; font-family: inherit; margin-bottom: 10px;
+    background: #fff; color: var(--text);
+  }
+  input:focus, select:focus { outline: none; border-color: var(--primary); }
+  label { font-size: .78rem; color: var(--muted); display: block; margin-bottom: 4px; }
+
+  .speed-row { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 12px 0; font-size: .82rem; color: var(--muted); }
+  .hidden { display: none !important; }
+  .center { text-align: center; }
+  .mt { margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🇬🇧 English Trainer</h1>
+  <p>毎日コツコツ、英語力アップ</p>
+</header>
+
+<main>
+  <!-- ============ HOME ============ -->
+  <section id="tab-home">
+    <div class="stats-grid">
+      <div class="stat"><div class="num" id="st-total">0</div><div class="label">登録単語数</div></div>
+      <div class="stat"><div class="num" id="st-mastered">0</div><div class="label">習得済み</div></div>
+      <div class="stat"><div class="num" id="st-quizbest">-</div><div class="label">クイズ最高スコア</div></div>
+      <div class="stat"><div class="num" id="st-today">0</div><div class="label">今日の学習回数</div></div>
+    </div>
+    <div class="card mt">
+      <h2>📈 習得度</h2>
+      <div style="font-size:.8rem;color:var(--muted)">全単語のうち「習得済み（レベル3）」の割合</div>
+      <div class="progress-bar"><div id="mastery-bar" style="width:0%"></div></div>
+      <div id="mastery-pct" style="text-align:right;font-size:.78rem;color:var(--muted);margin-top:4px">0%</div>
+    </div>
+    <div class="card">
+      <h2>🚀 今日のおすすめ</h2>
+      <div style="font-size:.88rem;line-height:1.7" id="recommend"></div>
+      <div class="btn-row mt">
+        <button class="btn" onclick="switchTab('flash')">単語帳へ</button>
+        <button class="btn outline" onclick="switchTab('quiz')">クイズへ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FLASHCARDS ============ -->
+  <section id="tab-flash" class="hidden">
+    <div id="flash-study">
+      <div class="quiz-meta" id="flash-progress"></div>
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="flashcard-inner">
+          <div class="face front">
+            <div class="box-badge" id="fc-box"></div>
+            <div class="word" id="fc-word"></div>
+            <button class="btn small outline" style="margin-top:12px" onclick="event.stopPropagation();speakWord()">🔊 発音を聞く</button>
+            <div class="hint">タップして意味を表示</div>
+          </div>
+          <div class="face back">
+            <div class="meaning" id="fc-meaning"></div>
+            <div class="example" id="fc-example"></div>
+            <div class="hint">タップして戻る</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn red" onclick="answerCard(false)">😅 まだ</button>
+        <button class="btn green" onclick="answerCard(true)">✅ 覚えた</button>
+      </div>
+      <p class="center" style="font-size:.75rem;color:var(--muted);margin-top:12px">
+        「覚えた」でレベルが上がり、レベル3で習得済みになります
+      </p>
+    </div>
+    <div id="flash-done" class="card center hidden">
+      <h2>🎉 今日の復習おわり！</h2>
+      <p style="font-size:.85rem;color:var(--muted)">全カードを確認しました。もう一周する？</p>
+      <button class="btn mt" onclick="startFlash()">もう一周</button>
+    </div>
+
+    <div class="card mt">
+      <h2>➕ 単語を追加</h2>
+      <label>英単語</label>
+      <input id="add-word" placeholder="例: appreciate">
+      <label>意味（日本語）</label>
+      <input id="add-meaning" placeholder="例: 感謝する">
+      <label>例文（任意）</label>
+      <input id="add-example" placeholder="例: I appreciate your help.">
+      <button class="btn" onclick="addWord()">追加する</button>
+      <div id="add-msg" style="font-size:.8rem;color:var(--accent);margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h2>📖 単語リスト</h2>
+      <div id="word-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="tab-quiz" class="hidden">
+    <div id="quiz-start" class="card center">
+      <h2>📝 4択クイズ</h2>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
+        登録単語からランダムに10問出題。<br>英→日と日→英が混ざって出ます。
+      </p>
+      <button class="btn mt" onclick="startQuiz()">スタート</button>
+    </div>
+    <div id="quiz-play" class="hidden">
+      <div class="quiz-meta" id="quiz-progress"></div>
+      <div class="card">
+        <div class="quiz-meta" id="quiz-direction"></div>
+        <div class="quiz-q" id="quiz-question"></div>
+        <div id="quiz-choices"></div>
+        <div class="feedback" id="quiz-feedback"></div>
+        <div class="center"><button class="btn hidden" id="quiz-next" onclick="nextQuiz()">次へ →</button></div>
+      </div>
+    </div>
+    <div id="quiz-result" class="card center hidden">
+      <h2>結果発表</h2>
+      <div class="result-big" id="quiz-score"></div>
+      <div id="quiz-comment" style="font-size:.9rem;color:var(--muted)"></div>
+      <button class="btn mt" onclick="startQuiz()">もう一回</button>
+    </div>
+  </section>
+
+  <!-- ============ LISTENING ============ -->
+  <section id="tab-listen" class="hidden">
+    <div id="listen-start" class="card center">
+      <h2>🎧 リスニング</h2>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
+        英語の例文が読み上げられます。<br>意味として正しいものを選んでください（全5問）。
+      </p>
+      <div class="speed-row">
+        <span>読み上げ速度:</span>
+        <select id="listen-speed" style="width:auto;margin:0">
+          <option value="0.7">ゆっくり</option>
+          <option value="0.9" selected>ふつう</option>
+          <option value="1.1">はやい</option>
+        </select>
+      </div>
+      <button class="btn" onclick="startListen()">スタート</button>
+      <div id="tts-warn" style="font-size:.75rem;color:var(--danger);margin-top:10px"></div>
+    </div>
+    <div id="listen-play" class="hidden">
+      <div class="quiz-meta" id="listen-progress"></div>
+      <div class="card center">
+        <button class="btn" onclick="playListen()">🔊 もう一度聞く</button>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:10px">この英文の意味は？</p>
+        <div id="listen-choices" class="mt" style="text-align:left"></div>
+        <div class="feedback" id="listen-feedback"></div>
+        <div id="listen-sentence" style="font-size:.85rem;color:var(--muted)"></div>
+        <button class="btn hidden mt" id="listen-next" onclick="nextListen()">次へ →</button>
+      </div>
+    </div>
+    <div id="listen-result" class="card center hidden">
+      <h2>結果発表</h2>
+      <div class="result-big" id="listen-score"></div>
+      <button class="btn mt" onclick="startListen()">もう一回</button>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button id="nav-home" class="active" onclick="switchTab('home')"><span class="icon">🏠</span>ホーム</button>
+  <button id="nav-flash" onclick="switchTab('flash')"><span class="icon">🗂️</span>単語帳</button>
+  <button id="nav-quiz" onclick="switchTab('quiz')"><span class="icon">📝</span>クイズ</button>
+  <button id="nav-listen" onclick="switchTab('listen')"><span class="icon">🎧</span>リスニング</button>
+</nav>
+
+<script>
+// ==================== データ ====================
+const DEFAULT_WORDS = [
+  ["appreciate","感謝する、価値を認める","I really appreciate your help.","手伝ってくれて本当に感謝しています。"],
+  ["available","利用できる、手が空いている","Are you available tomorrow afternoon?","明日の午後は空いていますか？"],
+  ["confirm","確認する","I'd like to confirm my reservation.","予約を確認したいのですが。"],
+  ["schedule","予定、予定を組む","The meeting is scheduled for Monday.","会議は月曜日に予定されています。"],
+  ["improve","改善する、上達する","I want to improve my English.","英語を上達させたいです。"],
+  ["decide","決める","We need to decide by Friday.","金曜日までに決める必要があります。"],
+  ["suggest","提案する","Can I suggest another idea?","別のアイデアを提案してもいいですか？"],
+  ["prepare","準備する","She is preparing for the exam.","彼女は試験の準備をしています。"],
+  ["explain","説明する","Could you explain that again?","もう一度説明していただけますか？"],
+  ["arrive","到着する","The train arrives at nine.","電車は9時に到着します。"],
+  ["order","注文する、順番","I'd like to order a coffee.","コーヒーを注文したいです。"],
+  ["reserve","予約する","I reserved a table for two.","2名でテーブルを予約しました。"],
+  ["recommend","おすすめする","What do you recommend?","おすすめは何ですか？"],
+  ["borrow","借りる","Can I borrow your pen?","ペンを借りてもいいですか？"],
+  ["invite","招待する","They invited us to the party.","彼らは私たちをパーティーに招待しました。"],
+  ["expensive","高価な","This bag is too expensive.","このバッグは高すぎます。"],
+  ["convenient","便利な","This app is very convenient.","このアプリはとても便利です。"],
+  ["crowded","混雑した","The station was very crowded.","駅はとても混んでいました。"],
+  ["delicious","とてもおいしい","This soup is delicious.","このスープはとてもおいしいです。"],
+  ["comfortable","快適な","This chair is comfortable.","この椅子は座り心地がいいです。"],
+  ["experience","経験、経験する","It was a great experience.","それは素晴らしい経験でした。"],
+  ["opportunity","機会、チャンス","This is a good opportunity to learn.","これは学ぶ良い機会です。"],
+  ["appointment","約束、予約（面会）","I have a doctor's appointment today.","今日は病院の予約があります。"],
+  ["decision","決定","It was a difficult decision.","それは難しい決断でした。"],
+  ["environment","環境","We should protect the environment.","私たちは環境を守るべきです。"],
+  ["information","情報","I need more information.","もっと情報が必要です。"],
+  ["neighborhood","近所","There is a park in my neighborhood.","近所に公園があります。"],
+  ["temperature","気温、温度","The temperature dropped last night.","昨夜、気温が下がりました。"],
+  ["luggage","荷物","How much luggage do you have?","荷物はどのくらいありますか？"],
+  ["receipt","レシート、領収書","Can I have a receipt, please?","レシートをいただけますか？"],
+  ["although","〜だけれども","Although it was raining, we went out.","雨が降っていたけれど、私たちは出かけました。"],
+  ["actually","実は、実際に","Actually, I have never been there.","実は、そこへ行ったことがありません。"],
+  ["probably","たぶん、おそらく","It will probably rain tomorrow.","明日はたぶん雨でしょう。"],
+  ["especially","特に","I like fruit, especially apples.","果物が好きで、特にりんごが好きです。"],
+  ["immediately","すぐに","Please call me back immediately.","すぐに折り返し電話してください。"],
+  ["on time","時間通りに","The bus arrived on time.","バスは時間通りに到着しました。"],
+  ["in advance","前もって","Please book in advance.","前もって予約してください。"],
+  ["look forward to","〜を楽しみにする","I'm looking forward to seeing you.","お会いできるのを楽しみにしています。"],
+  ["figure out","理解する、解決する","I can't figure out this problem.","この問題が解決できません。"],
+  ["run out of","〜を使い果たす","We ran out of milk.","牛乳を切らしてしまいました。"],
+  ["put off","延期する","The meeting was put off until next week.","会議は来週まで延期されました。"],
+  ["get along with","〜と仲良くする","I get along with my coworkers.","同僚とうまくやっています。"],
+  ["deadline","締め切り","The deadline is next Friday.","締め切りは来週の金曜日です。"],
+  ["colleague","同僚","She is my colleague.","彼女は私の同僚です。"],
+  ["customer","顧客","The customer is waiting.","お客様が待っています。"],
+  ["attend","出席する","I will attend the meeting.","会議に出席します。"],
+  ["submit","提出する","Please submit the report by noon.","正午までにレポートを提出してください。"],
+  ["reply","返事する、返信","I'll reply to your email soon.","すぐにメールに返信します。"],
+  ["postpone","延期する","We had to postpone the trip.","私たちは旅行を延期しなければなりませんでした。"],
+  ["increase","増える、増やす","Prices are increasing.","物価が上がっています。"],
+  ["reduce","減らす","We need to reduce costs.","コストを減らす必要があります。"],
+  ["require","必要とする","This job requires experience.","この仕事には経験が必要です。"],
+  ["provide","提供する","The hotel provides free breakfast.","そのホテルは無料の朝食を提供しています。"],
+  ["include","含む","The price includes tax.","価格には税金が含まれています。"],
+  ["offer","申し出る、提供する","They offered me a job.","彼らは私に仕事をオファーしました。"],
+  ["due to","〜が原因で","The flight was delayed due to snow.","雪のためフライトが遅れました。"],
+  ["instead of","〜の代わりに","Let's walk instead of taking a bus.","バスに乗る代わりに歩きましょう。"],
+  ["be used to","〜に慣れている","I'm used to getting up early.","早起きには慣れています。"],
+  ["as soon as","〜するとすぐに","Call me as soon as you arrive.","着いたらすぐ電話してね。"],
+  ["make sure","確認する、必ず〜する","Make sure the door is locked.","ドアに鍵がかかっているか確認して。"]
+];
+
+// ==================== 状態管理 ====================
+const store = {
+  load() {
+    try {
+      const raw = localStorage.getItem("englishTrainerV1");
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return null;
+  },
+  save(state) {
+    try { localStorage.setItem("englishTrainerV1", JSON.stringify(state)); } catch (e) {}
+  }
+};
+
+let state = store.load() || {
+  words: DEFAULT_WORDS.map(([w, m, ex, exJa]) => ({ w, m, ex, exJa, box: 0 })),
+  quizBest: null,
+  todayCount: 0,
+  todayDate: new Date().toDateString()
+};
+if (state.todayDate !== new Date().toDateString()) {
+  state.todayDate = new Date().toDateString();
+  state.todayCount = 0;
+}
+function persist() { store.save(state); }
+function bumpToday() { state.todayCount++; persist(); }
+
+// ==================== ユーティリティ ====================
+function shuffle(a) {
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function speak(text, rate = 0.9) {
+  if (!("speechSynthesis" in window)) return false;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = rate;
+  const en = speechSynthesis.getVoices().find(v => v.lang.startsWith("en"));
+  if (en) u.voice = en;
+  speechSynthesis.speak(u);
+  return true;
+}
+if ("speechSynthesis" in window) speechSynthesis.getVoices();
+
+// ==================== タブ ====================
+function switchTab(name) {
+  ["home", "flash", "quiz", "listen"].forEach(t => {
+    document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
+    document.getElementById("nav-" + t).classList.toggle("active", t === name);
+  });
+  if (name === "home") renderHome();
+  if (name === "flash") { startFlash(); renderWordList(); }
+  window.scrollTo(0, 0);
+}
+
+// ==================== ホーム ====================
+function renderHome() {
+  const total = state.words.length;
+  const mastered = state.words.filter(w => w.box >= 3).length;
+  document.getElementById("st-total").textContent = total;
+  document.getElementById("st-mastered").textContent = mastered;
+  document.getElementById("st-quizbest").textContent = state.quizBest === null ? "-" : state.quizBest + "/10";
+  document.getElementById("st-today").textContent = state.todayCount;
+  const pct = total ? Math.round(mastered / total * 100) : 0;
+  document.getElementById("mastery-bar").style.width = pct + "%";
+  document.getElementById("mastery-pct").textContent = pct + "%";
+  const weak = state.words.filter(w => w.box === 0).length;
+  document.getElementById("recommend").innerHTML =
+    weak > 0
+      ? `まだ覚えていない単語が <b>${weak}語</b> あります。単語帳で復習してからクイズに挑戦しましょう！`
+      : `全単語に一度は取り組みました！クイズとリスニングで定着させましょう 💪`;
+}
+
+// ==================== 単語帳 ====================
+let flashQueue = [], flashIdx = 0;
+function startFlash() {
+  // レベルの低い単語を優先して出題
+  flashQueue = shuffle(state.words.map((w, i) => i))
+    .sort((a, b) => state.words[a].box - state.words[b].box)
+    .slice(0, 15);
+  flashQueue = shuffle(flashQueue);
+  flashIdx = 0;
+  document.getElementById("flash-study").classList.remove("hidden");
+  document.getElementById("flash-done").classList.add("hidden");
+  showFlash();
+}
+function showFlash() {
+  const card = document.getElementById("flashcard");
+  card.classList.remove("flipped");
+  const w = state.words[flashQueue[flashIdx]];
+  document.getElementById("fc-word").textContent = w.w;
+  document.getElementById("fc-meaning").textContent = w.m;
+  document.getElementById("fc-example").innerHTML = w.ex ? `${w.ex}<br>${w.exJa || ""}` : "";
+  document.getElementById("fc-box").textContent = "レベル " + w.box;
+  document.getElementById("flash-progress").textContent = `${flashIdx + 1} / ${flashQueue.length}`;
+}
+function flipCard() {
+  document.getElementById("flashcard").classList.toggle("flipped");
+}
+function speakWord() {
+  speak(state.words[flashQueue[flashIdx]].w);
+}
+function answerCard(known) {
+  const w = state.words[flashQueue[flashIdx]];
+  w.box = known ? Math.min(3, w.box + 1) : Math.max(0, w.box - 1);
+  bumpToday();
+  flashIdx++;
+  if (flashIdx >= flashQueue.length) {
+    document.getElementById("flash-study").classList.add("hidden");
+    document.getElementById("flash-done").classList.remove("hidden");
+    renderWordList();
+  } else {
+    showFlash();
+  }
+}
+function addWord() {
+  const w = document.getElementById("add-word").value.trim();
+  const m = document.getElementById("add-meaning").value.trim();
+  const ex = document.getElementById("add-example").value.trim();
+  const msg = document.getElementById("add-msg");
+  if (!w || !m) { msg.style.color = "var(--danger)"; msg.textContent = "英単語と意味は必須です"; return; }
+  state.words.push({ w, m, ex, exJa: "", box: 0 });
+  persist();
+  ["add-word", "add-meaning", "add-example"].forEach(id => document.getElementById(id).value = "");
+  msg.style.color = "var(--accent)";
+  msg.textContent = `「${w}」を追加しました！`;
+  renderWordList();
+}
+const MASTERY_LABEL = ["未学習", "学習中", "もう少し", "習得済み"];
+function renderWordList() {
+  const el = document.getElementById("word-list");
+  el.innerHTML = state.words.map(w =>
+    `<div class="word-item">
+       <div><span class="en">${escapeHtml(w.w)}</span><br><span class="ja">${escapeHtml(w.m)}</span></div>
+       <span class="mastery m${w.box}">${MASTERY_LABEL[w.box]}</span>
+     </div>`).join("");
+}
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// ==================== クイズ ====================
+let quizSet = [], quizIdx = 0, quizScore = 0;
+function startQuiz() {
+  quizSet = shuffle(state.words).slice(0, 10).map(w => ({
+    word: w,
+    dir: Math.random() < 0.5 ? "e2j" : "j2e"
+  }));
+  quizIdx = 0; quizScore = 0;
+  document.getElementById("quiz-start").classList.add("hidden");
+  document.getElementById("quiz-result").classList.add("hidden");
+  document.getElementById("quiz-play").classList.remove("hidden");
+  showQuiz();
+}
+function showQuiz() {
+  const q = quizSet[quizIdx];
+  const isE2J = q.dir === "e2j";
+  document.getElementById("quiz-progress").textContent = `第 ${quizIdx + 1} 問 / ${quizSet.length}`;
+  document.getElementById("quiz-direction").textContent = isE2J ? "この英単語の意味は？" : "この意味の英単語は？";
+  document.getElementById("quiz-question").textContent = isE2J ? q.word.w : q.word.m;
+  document.getElementById("quiz-feedback").textContent = "";
+  document.getElementById("quiz-next").classList.add("hidden");
+
+  const others = shuffle(state.words.filter(w => w !== q.word)).slice(0, 3);
+  const choices = shuffle([q.word, ...others]);
+  document.getElementById("quiz-choices").innerHTML = choices.map((c, i) =>
+    `<button class="choice" data-ok="${c === q.word}" onclick="pickQuiz(this)">${escapeHtml(isE2J ? c.m : c.w)}</button>`
+  ).join("");
+}
+function pickQuiz(btn) {
+  const ok = btn.dataset.ok === "true";
+  document.querySelectorAll("#quiz-choices .choice").forEach(b => {
+    b.disabled = true;
+    if (b.dataset.ok === "true") b.classList.add("correct");
+  });
+  if (!ok) btn.classList.add("wrong");
+  else quizScore++;
+  const fb = document.getElementById("quiz-feedback");
+  fb.textContent = ok ? "⭕ 正解！" : "❌ 残念…";
+  fb.style.color = ok ? "var(--accent)" : "var(--danger)";
+  bumpToday();
+  document.getElementById("quiz-next").classList.remove("hidden");
+}
+function nextQuiz() {
+  quizIdx++;
+  if (quizIdx >= quizSet.length) {
+    document.getElementById("quiz-play").classList.add("hidden");
+    document.getElementById("quiz-result").classList.remove("hidden");
+    document.getElementById("quiz-score").textContent = `${quizScore} / ${quizSet.length}`;
+    const comments = quizScore >= 9 ? "素晴らしい！ほぼ完璧です 🏆"
+      : quizScore >= 7 ? "いい調子！あと少しで満点 ✨"
+      : quizScore >= 4 ? "まずまず。単語帳で復習しよう 📖"
+      : "焦らずコツコツ。単語帳からやり直そう 💪";
+    document.getElementById("quiz-comment").textContent = comments;
+    if (state.quizBest === null || quizScore > state.quizBest) state.quizBest = quizScore;
+    persist();
+  } else {
+    showQuiz();
+  }
+}
+
+// ==================== リスニング ====================
+let listenSet = [], listenIdx = 0, listenScore = 0;
+function startListen() {
+  if (!("speechSynthesis" in window)) {
+    document.getElementById("tts-warn").textContent = "このブラウザは音声読み上げに対応していません。";
+    return;
+  }
+  listenSet = shuffle(state.words.filter(w => w.ex && w.exJa)).slice(0, 5);
+  if (listenSet.length < 4) {
+    document.getElementById("tts-warn").textContent = "例文つきの単語が足りません。";
+    return;
+  }
+  listenIdx = 0; listenScore = 0;
+  document.getElementById("listen-start").classList.add("hidden");
+  document.getElementById("listen-result").classList.add("hidden");
+  document.getElementById("listen-play").classList.remove("hidden");
+  showListen();
+}
+function showListen() {
+  const q = listenSet[listenIdx];
+  document.getElementById("listen-progress").textContent = `第 ${listenIdx + 1} 問 / ${listenSet.length}`;
+  document.getElementById("listen-feedback").textContent = "";
+  document.getElementById("listen-sentence").textContent = "";
+  document.getElementById("listen-next").classList.add("hidden");
+  const others = shuffle(listenSet.filter(w => w !== q).concat(
+    shuffle(state.words.filter(w => w.exJa && !listenSet.includes(w))).slice(0, 3)
+  )).slice(0, 3);
+  const choices = shuffle([q, ...others]);
+  document.getElementById("listen-choices").innerHTML = choices.map(c =>
+    `<button class="choice" data-ok="${c === q}" onclick="pickListen(this)">${escapeHtml(c.exJa)}</button>`
+  ).join("");
+  playListen();
+}
+function playListen() {
+  const rate = parseFloat(document.getElementById("listen-speed").value);
+  speak(listenSet[listenIdx].ex, rate);
+}
+function pickListen(btn) {
+  const ok = btn.dataset.ok === "true";
+  document.querySelectorAll("#listen-choices .choice").forEach(b => {
+    b.disabled = true;
+    if (b.dataset.ok === "true") b.classList.add("correct");
+  });
+  if (!ok) btn.classList.add("wrong");
+  else listenScore++;
+  const fb = document.getElementById("listen-feedback");
+  fb.textContent = ok ? "⭕ 正解！" : "❌ 残念…";
+  fb.style.color = ok ? "var(--accent)" : "var(--danger)";
+  document.getElementById("listen-sentence").textContent = "英文: " + listenSet[listenIdx].ex;
+  bumpToday();
+  document.getElementById("listen-next").classList.remove("hidden");
+}
+function nextListen() {
+  listenIdx++;
+  if (listenIdx >= listenSet.length) {
+    document.getElementById("listen-play").classList.add("hidden");
+    document.getElementById("listen-result").classList.remove("hidden");
+    document.getElementById("listen-score").textContent = `${listenScore} / ${listenSet.length}`;
+    persist();
+  } else {
+    showListen();
+  }
+}
+
+// 初期表示
+renderHome();
+renderWordList();
+</script>
+</body>
+</html>
