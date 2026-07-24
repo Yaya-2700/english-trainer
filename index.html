@@ -312,6 +312,34 @@
       <div class="result-big" id="listen-score"></div>
       <button class="btn mt" onclick="startListen()">もう一回</button>
     </div>
+  <section id="tab-spell" class="hidden">
+    <div id="spell-start" class="card center">
+      <h2>✏️ スペル練習</h2>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
+        意味と発音をヒントに、英単語のスペルを入力します（全10問）。<br>書いて覚えることで記憶が定着します。
+      </p>
+      <button class="btn mt" onclick="startSpell()">スタート</button>
+    </div>
+    <div id="spell-play" class="hidden">
+      <div class="quiz-meta" id="spell-progress"></div>
+      <div class="card center">
+        <div class="quiz-meta">この意味の英単語を入力</div>
+        <div class="quiz-q" id="spell-meaning" style="font-size:1.3rem"></div>
+        <button class="btn small outline" onclick="speakSpell()">🔊 発音を聞く</button>
+        <div id="spell-hint" style="font-size:1.4rem;letter-spacing:.3em;margin:14px 0;color:var(--muted)"></div>
+        <input id="spell-input" placeholder="英単語を入力" autocomplete="off" autocapitalize="off" onkeydown="if(event.key==='Enter')checkSpell()">
+        <div class="feedback" id="spell-feedback"></div>
+        <div class="center">
+          <button class="btn" id="spell-check" onclick="checkSpell()">こたえ合わせ</button>
+          <button class="btn hidden" id="spell-next" onclick="nextSpell()">次へ →</button>
+        </div>
+      </div>
+    </div>
+    <div id="spell-result" class="card center hidden">
+      <h2>結果発表</h2>
+      <div class="result-big" id="spell-score"></div>
+      <button class="btn mt" onclick="startSpell()">もう一回</button>
+    </div>
   </section>
 </main>
 
@@ -320,6 +348,7 @@
   <button id="nav-flash" onclick="switchTab('flash')"><span class="icon">🗂️</span>単語帳</button>
   <button id="nav-quiz" onclick="switchTab('quiz')"><span class="icon">📝</span>クイズ</button>
   <button id="nav-listen" onclick="switchTab('listen')"><span class="icon">🎧</span>リスニング</button>
+  <button id="nav-spell" onclick="switchTab('spell')"><span class="icon">✏️</span>スペル</button>
 </nav>
 
 <script>
@@ -606,6 +635,56 @@ const DEFAULT_WORDS = [
   ["out of the blue","突然に","She called out of the blue.","彼女が突然電話してきた。","イディオム"],
   ["get the hang of","コツをつかむ","I got the hang of it.","コツをつかんだ。","イディオム"],
   ["a rain check","またの機会に","Can I take a rain check?","またの機会にしてもいい？","イディオム"],
+  ["accept","受け入れる","She accepted the offer.","彼女は申し出を受け入れた。","動詞（基本）"],
+  ["avoid","避ける","Avoid eating too much sugar.","糖分の取りすぎを避けて。","動詞（基本）"],
+  ["compare","比較する","Let's compare the two plans.","2つの案を比べよう。","動詞（基本）"],
+  ["consider","検討する","We're considering the idea.","そのアイデアを検討中だ。","動詞（基本）"],
+  ["describe","描写する、説明する","Can you describe him?","彼の特徴を説明できますか？","動詞（基本）"],
+  ["discuss","話し合う","Let's discuss it later.","あとで話し合おう。","動詞（基本）"],
+  ["involve","巻き込む、伴う","The job involves travel.","その仕事は出張を伴う。","動詞（基本）"],
+  ["maintain","維持する","We must maintain quality.","品質を維持しなければ。","動詞（基本）"],
+  ["obtain","得る","You can obtain a permit here.","ここで許可証を取得できます。","動詞（基本）"],
+  ["prevent","防ぐ","This prevents accidents.","これは事故を防ぐ。","動詞（基本）"],
+  ["recognize","認識する、見分ける","I didn't recognize you!","気づかなかったよ！","動詞（基本）"],
+  ["remove","取り除く","Please remove your shoes.","靴を脱いでください。","動詞（基本）"],
+  ["replace","取り替える","We need to replace the battery.","電池を交換する必要がある。","動詞（基本）"],
+  ["select","選ぶ","Select one option.","1つ選んでください。","動詞（基本）"],
+  ["solve","解決する","We solved the problem.","問題を解決した。","動詞（基本）"],
+  ["decrease","減らす（⇔increase）","Costs decreased this year.","今年は費用が減った。","反対語ペア"],
+  ["reject","拒否する（⇔accept）","They rejected the proposal.","彼らは提案を却下した。","反対語ペア"],
+  ["lend","貸す（⇔borrow）","Can you lend me a hand?","手を貸してくれる？","反対語ペア"],
+  ["leave","出発する（⇔arrive）","We leave at noon.","正午に出発する。","反対語ペア"],
+  ["succeed","成功する（⇔fail）","She succeeded in the exam.","彼女は試験に成功した。","反対語ペア"],
+  ["fail","失敗する（⇔succeed）","Don't be afraid to fail.","失敗を恐れないで。","反対語ペア"],
+  ["exclude","除外する（⇔include）","Weekends are excluded.","週末は除きます。","反対語ペア"],
+  ["ancient","古代の（⇔modern）","We visited ancient ruins.","古代遺跡を訪れた。","反対語ペア"],
+  ["employee","従業員","The company has 50 employees.","その会社は従業員50人だ。","職業・仕事"],
+  ["employer","雇用主","My employer is generous.","私の雇い主は気前がいい。","職業・仕事"],
+  ["interview","面接","I have an interview tomorrow.","明日面接がある。","職業・仕事"],
+  ["resume","履歴書","Attach your resume.","履歴書を添付して。","職業・仕事"],
+  ["salary","給料","The salary is competitive.","給料は悪くない。","職業・仕事"],
+  ["shift","シフト、交替勤務","I work the night shift.","夜勤で働いています。","職業・仕事"],
+  ["overtime","残業","I worked overtime yesterday.","昨日は残業した。","職業・仕事"],
+  ["retire","退職する","He plans to retire soon.","彼はもうすぐ退職予定だ。","職業・仕事"],
+  ["hire","雇う","We hired two new staff.","新しく2人雇った。","職業・仕事"],
+  ["candidate","候補者","She is a strong candidate.","彼女は有力な候補だ。","職業・仕事"],
+  ["skill","技能","This job requires special skills.","この仕事は特別な技能が必要だ。","職業・仕事"],
+  ["experience","経験","I have five years of experience.","5年の経験があります。","職業・仕事"],
+  ["supervisor","上司","Ask your supervisor.","上司に聞いて。","職業・仕事"],
+  ["gradually","徐々に","It gradually got warmer.","徐々に暖かくなった。","感覚・様子"],
+  ["suddenly","突然","Suddenly, it started raining.","突然雨が降り出した。","感覚・様子"],
+  ["carefully","注意深く","Read the instructions carefully.","説明を注意深く読んで。","感覚・様子"],
+  ["clearly","はっきりと","Please speak clearly.","はっきり話してください。","感覚・様子"],
+  ["directly","直接","Contact me directly.","直接連絡して。","感覚・様子"],
+  ["nearly","ほとんど","We're nearly done.","もうすぐ終わる。","感覚・様子"],
+  ["hardly","ほとんど〜ない","I hardly know him.","彼のことをほとんど知らない。","感覚・様子"],
+  ["obviously","明らかに","Obviously, she was upset.","明らかに彼女は怒っていた。","感覚・様子"],
+  ["fortunately","幸運にも","Fortunately, no one was hurt.","幸い、誰もけがしなかった。","感覚・様子"],
+  ["unfortunately","残念ながら","Unfortunately, it's sold out.","あいにく売り切れです。","感覚・様子"],
+  ["apparently","どうやら","Apparently, he's leaving.","どうやら彼は辞めるらしい。","感覚・様子"],
+  ["basically","基本的に","Basically, it's free.","基本的に無料です。","感覚・様子"],
+  ["generally","一般的に","Generally, I agree.","おおむね賛成です。","感覚・様子"],
+  ["exactly","正確に","That's exactly right.","まさにその通り。","感覚・様子"],
 ];
 
 // ==================== 状態管理 ====================
@@ -678,7 +757,7 @@ if ("speechSynthesis" in window) speechSynthesis.getVoices();
 
 // ==================== タブ ====================
 function switchTab(name) {
-  ["home", "flash", "quiz", "listen"].forEach(t => {
+  ["home", "flash", "quiz", "listen", "spell"].forEach(t => {
     document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
     document.getElementById("nav-" + t).classList.toggle("active", t === name);
   });
@@ -911,6 +990,54 @@ function nextListen() {
   } else {
     showListen();
   }
+}
+
+// ==================== スペル練習 ====================
+let spellSet = [], spellIdx = 0, spellScore = 0;
+function startSpell() {
+  spellSet = shuffle(state.words).slice(0, 10);
+  spellIdx = 0; spellScore = 0;
+  document.getElementById("spell-start").classList.add("hidden");
+  document.getElementById("spell-result").classList.add("hidden");
+  document.getElementById("spell-play").classList.remove("hidden");
+  showSpell();
+}
+function showSpell() {
+  const w = spellSet[spellIdx];
+  document.getElementById("spell-progress").textContent = `第 ${spellIdx + 1} 問 / ${spellSet.length}`;
+  document.getElementById("spell-meaning").textContent = w.m;
+  // ヒント: 頭文字＋伏せ字（スペースは維持）
+  document.getElementById("spell-hint").textContent = w.w.split("").map((c, i) => i === 0 ? c : (c === " " ? " " : "_")).join("");
+  const inp = document.getElementById("spell-input");
+  inp.value = ""; inp.disabled = false;
+  document.getElementById("spell-feedback").textContent = "";
+  document.getElementById("spell-check").classList.remove("hidden");
+  document.getElementById("spell-next").classList.add("hidden");
+  inp.focus();
+}
+function speakSpell() { speak(spellSet[spellIdx].w); }
+function checkSpell() {
+  const w = spellSet[spellIdx];
+  const inp = document.getElementById("spell-input");
+  const ans = inp.value.trim().toLowerCase();
+  if (!ans) return;
+  const ok = ans === w.w.toLowerCase();
+  const fb = document.getElementById("spell-feedback");
+  if (ok) { spellScore++; fb.textContent = "⭕ 正解！"; fb.style.color = "var(--accent)"; }
+  else { fb.innerHTML = `❌ 正解は <b>${escapeHtml(w.w)}</b>`; fb.style.color = "var(--danger)"; }
+  inp.disabled = true;
+  bumpToday();
+  document.getElementById("spell-check").classList.add("hidden");
+  document.getElementById("spell-next").classList.remove("hidden");
+  document.getElementById("spell-next").focus();
+}
+function nextSpell() {
+  spellIdx++;
+  if (spellIdx >= spellSet.length) {
+    document.getElementById("spell-play").classList.add("hidden");
+    document.getElementById("spell-result").classList.remove("hidden");
+    document.getElementById("spell-score").textContent = `${spellScore} / ${spellSet.length}`;
+  } else { showSpell(); }
 }
 
 // 初期表示
