@@ -198,6 +198,10 @@
 
   <!-- ============ FLASHCARDS ============ -->
   <section id="tab-flash" class="hidden">
+    <div class="card" style="padding:14px 16px;margin-bottom:14px">
+      <label style="margin-bottom:6px">📂 学習するカテゴリ</label>
+      <select id="flash-cat" onchange="startFlash()"><option value="ALL">すべて</option></select>
+    </div>
     <div id="flash-study">
       <div class="quiz-meta" id="flash-progress"></div>
       <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -321,66 +325,137 @@
 <script>
 // ==================== データ ====================
 const DEFAULT_WORDS = [
-  ["appreciate","感謝する、価値を認める","I really appreciate your help.","手伝ってくれて本当に感謝しています。"],
-  ["available","利用できる、手が空いている","Are you available tomorrow afternoon?","明日の午後は空いていますか？"],
-  ["confirm","確認する","I'd like to confirm my reservation.","予約を確認したいのですが。"],
-  ["schedule","予定、予定を組む","The meeting is scheduled for Monday.","会議は月曜日に予定されています。"],
-  ["improve","改善する、上達する","I want to improve my English.","英語を上達させたいです。"],
-  ["decide","決める","We need to decide by Friday.","金曜日までに決める必要があります。"],
-  ["suggest","提案する","Can I suggest another idea?","別のアイデアを提案してもいいですか？"],
-  ["prepare","準備する","She is preparing for the exam.","彼女は試験の準備をしています。"],
-  ["explain","説明する","Could you explain that again?","もう一度説明していただけますか？"],
-  ["arrive","到着する","The train arrives at nine.","電車は9時に到着します。"],
-  ["order","注文する、順番","I'd like to order a coffee.","コーヒーを注文したいです。"],
-  ["reserve","予約する","I reserved a table for two.","2名でテーブルを予約しました。"],
-  ["recommend","おすすめする","What do you recommend?","おすすめは何ですか？"],
-  ["borrow","借りる","Can I borrow your pen?","ペンを借りてもいいですか？"],
-  ["invite","招待する","They invited us to the party.","彼らは私たちをパーティーに招待しました。"],
-  ["expensive","高価な","This bag is too expensive.","このバッグは高すぎます。"],
-  ["convenient","便利な","This app is very convenient.","このアプリはとても便利です。"],
-  ["crowded","混雑した","The station was very crowded.","駅はとても混んでいました。"],
-  ["delicious","とてもおいしい","This soup is delicious.","このスープはとてもおいしいです。"],
-  ["comfortable","快適な","This chair is comfortable.","この椅子は座り心地がいいです。"],
-  ["experience","経験、経験する","It was a great experience.","それは素晴らしい経験でした。"],
-  ["opportunity","機会、チャンス","This is a good opportunity to learn.","これは学ぶ良い機会です。"],
-  ["appointment","約束、予約（面会）","I have a doctor's appointment today.","今日は病院の予約があります。"],
-  ["decision","決定","It was a difficult decision.","それは難しい決断でした。"],
-  ["environment","環境","We should protect the environment.","私たちは環境を守るべきです。"],
-  ["information","情報","I need more information.","もっと情報が必要です。"],
-  ["neighborhood","近所","There is a park in my neighborhood.","近所に公園があります。"],
-  ["temperature","気温、温度","The temperature dropped last night.","昨夜、気温が下がりました。"],
-  ["luggage","荷物","How much luggage do you have?","荷物はどのくらいありますか？"],
-  ["receipt","レシート、領収書","Can I have a receipt, please?","レシートをいただけますか？"],
-  ["although","〜だけれども","Although it was raining, we went out.","雨が降っていたけれど、私たちは出かけました。"],
-  ["actually","実は、実際に","Actually, I have never been there.","実は、そこへ行ったことがありません。"],
-  ["probably","たぶん、おそらく","It will probably rain tomorrow.","明日はたぶん雨でしょう。"],
-  ["especially","特に","I like fruit, especially apples.","果物が好きで、特にりんごが好きです。"],
-  ["immediately","すぐに","Please call me back immediately.","すぐに折り返し電話してください。"],
-  ["on time","時間通りに","The bus arrived on time.","バスは時間通りに到着しました。"],
-  ["in advance","前もって","Please book in advance.","前もって予約してください。"],
-  ["look forward to","〜を楽しみにする","I'm looking forward to seeing you.","お会いできるのを楽しみにしています。"],
-  ["figure out","理解する、解決する","I can't figure out this problem.","この問題が解決できません。"],
-  ["run out of","〜を使い果たす","We ran out of milk.","牛乳を切らしてしまいました。"],
-  ["put off","延期する","The meeting was put off until next week.","会議は来週まで延期されました。"],
-  ["get along with","〜と仲良くする","I get along with my coworkers.","同僚とうまくやっています。"],
-  ["deadline","締め切り","The deadline is next Friday.","締め切りは来週の金曜日です。"],
-  ["colleague","同僚","She is my colleague.","彼女は私の同僚です。"],
-  ["customer","顧客","The customer is waiting.","お客様が待っています。"],
-  ["attend","出席する","I will attend the meeting.","会議に出席します。"],
-  ["submit","提出する","Please submit the report by noon.","正午までにレポートを提出してください。"],
-  ["reply","返事する、返信","I'll reply to your email soon.","すぐにメールに返信します。"],
-  ["postpone","延期する","We had to postpone the trip.","私たちは旅行を延期しなければなりませんでした。"],
-  ["increase","増える、増やす","Prices are increasing.","物価が上がっています。"],
-  ["reduce","減らす","We need to reduce costs.","コストを減らす必要があります。"],
-  ["require","必要とする","This job requires experience.","この仕事には経験が必要です。"],
-  ["provide","提供する","The hotel provides free breakfast.","そのホテルは無料の朝食を提供しています。"],
-  ["include","含む","The price includes tax.","価格には税金が含まれています。"],
-  ["offer","申し出る、提供する","They offered me a job.","彼らは私に仕事をオファーしました。"],
-  ["due to","〜が原因で","The flight was delayed due to snow.","雪のためフライトが遅れました。"],
-  ["instead of","〜の代わりに","Let's walk instead of taking a bus.","バスに乗る代わりに歩きましょう。"],
-  ["be used to","〜に慣れている","I'm used to getting up early.","早起きには慣れています。"],
-  ["as soon as","〜するとすぐに","Call me as soon as you arrive.","着いたらすぐ電話してね。"],
-  ["make sure","確認する、必ず〜する","Make sure the door is locked.","ドアに鍵がかかっているか確認して。"]
+  ["appreciate","感謝する、価値を認める","I really appreciate your help.","手伝ってくれて本当に感謝しています。","日常"],
+  ["available","利用できる、手が空いている","Are you available tomorrow afternoon?","明日の午後は空いていますか？","日常"],
+  ["decide","決める","We need to decide by Friday.","金曜日までに決める必要があります。","日常"],
+  ["improve","改善する、上達する","I want to improve my English.","英語を上達させたいです。","日常"],
+  ["explain","説明する","Could you explain that again?","もう一度説明していただけますか？","日常"],
+  ["prepare","準備する","She is preparing for the exam.","彼女は試験の準備をしています。","日常"],
+  ["suggest","提案する","Can I suggest another idea?","別のアイデアを提案してもいいですか？","日常"],
+  ["borrow","借りる","Can I borrow your pen?","ペンを借りてもいいですか？","日常"],
+  ["invite","招待する","They invited us to the party.","彼らは私たちをパーティーに招待しました。","日常"],
+  ["remember","覚えている、思い出す","I can't remember his name.","彼の名前が思い出せません。","日常"],
+  ["forget","忘れる","Don't forget your umbrella.","傘を忘れないでね。","日常"],
+  ["worry","心配する","Don't worry about it.","気にしないで。","日常"],
+  ["agree","同意する","I agree with you.","あなたに賛成です。","日常"],
+  ["realize","気づく、実感する","I didn't realize it was so late.","こんなに遅いとは気づきませんでした。","日常"],
+  ["wonder","〜かなと思う","I wonder if it will rain.","雨が降るかな。","日常"],
+  ["promise","約束する","I promise I'll be there.","必ず行くと約束します。","日常"],
+  ["expect","予期する、期待する","I didn't expect to see you here.","ここで会うとは思いませんでした。","日常"],
+  ["mention","言及する","She mentioned it yesterday.","彼女は昨日それに触れていました。","日常"],
+  ["continue","続ける","Please continue.","続けてください。","日常"],
+  ["reserve","予約する","I reserved a table for two.","2名でテーブルを予約しました。","旅行"],
+  ["confirm","確認する","I'd like to confirm my reservation.","予約を確認したいのですが。","旅行"],
+  ["arrive","到着する","The train arrives at nine.","電車は9時に到着します。","旅行"],
+  ["depart","出発する","The flight departs at noon.","便は正午に出発します。","旅行"],
+  ["luggage","荷物","How much luggage do you have?","荷物はどのくらいありますか？","旅行"],
+  ["passport","パスポート","May I see your passport?","パスポートを拝見できますか？","旅行"],
+  ["delay","遅れ、遅らせる","The flight was delayed.","フライトが遅れました。","旅行"],
+  ["gate","搭乗口","The boarding gate is number 12.","搭乗口は12番です。","旅行"],
+  ["aisle","通路（側）","I'd like an aisle seat.","通路側の席がいいです。","旅行"],
+  ["currency","通貨","Where can I exchange currency?","どこで両替できますか？","旅行"],
+  ["reservation","予約","I have a reservation under Tanaka.","田中で予約しています。","旅行"],
+  ["direction","方向、道順","Could you give me directions?","道を教えてもらえますか？","旅行"],
+  ["nearby","近くに","Is there a station nearby?","近くに駅はありますか？","旅行"],
+  ["recommend","おすすめする","What do you recommend?","おすすめは何ですか？","旅行"],
+  ["crowded","混雑した","The station was very crowded.","駅はとても混んでいました。","旅行"],
+  ["souvenir","おみやげ","I bought some souvenirs.","おみやげをいくつか買いました。","旅行"],
+  ["cancel","取り消す","I need to cancel my booking.","予約を取り消したいです。","旅行"],
+  ["refund","返金","Can I get a refund?","返金してもらえますか？","旅行"],
+  ["order","注文する、順番","I'd like to order now.","注文したいのですが。","レストラン"],
+  ["delicious","とてもおいしい","This soup is delicious.","このスープはとてもおいしいです。","レストラン"],
+  ["bill","勘定、請求書","Could we have the bill?","お会計をお願いできますか？","レストラン"],
+  ["menu","メニュー","Could I see the menu?","メニューを見せてもらえますか？","レストラン"],
+  ["spicy","辛い","Is this dish spicy?","この料理は辛いですか？","レストラン"],
+  ["vegetarian","ベジタリアンの","Do you have vegetarian options?","ベジタリアン向けはありますか？","レストラン"],
+  ["dessert","デザート","I'll skip dessert.","デザートは遠慮しておきます。","レストラン"],
+  ["tip","チップ","Should I leave a tip?","チップは置くべきですか？","レストラン"],
+  ["allergic","アレルギーがある","I'm allergic to nuts.","ナッツにアレルギーがあります。","レストラン"],
+  ["refill","おかわり（を注ぐ）","Can I get a refill?","おかわりをもらえますか？","レストラン"],
+  ["schedule","予定、予定を組む","The meeting is scheduled for Monday.","会議は月曜日に予定されています。","ビジネス"],
+  ["attend","出席する","I will attend the meeting.","会議に出席します。","ビジネス"],
+  ["submit","提出する","Please submit the report by noon.","正午までにレポートを提出してください。","ビジネス"],
+  ["deadline","締め切り","The deadline is next Friday.","締め切りは来週の金曜日です。","ビジネス"],
+  ["colleague","同僚","She is my colleague.","彼女は私の同僚です。","ビジネス"],
+  ["client","顧客、取引先","We met the client today.","今日、取引先に会いました。","ビジネス"],
+  ["meeting","会議","Let's set up a meeting.","会議を設定しましょう。","ビジネス"],
+  ["proposal","提案（書）","I'll send you the proposal.","提案書をお送りします。","ビジネス"],
+  ["budget","予算","We're over budget.","予算オーバーです。","ビジネス"],
+  ["negotiate","交渉する","We need to negotiate the price.","価格を交渉する必要があります。","ビジネス"],
+  ["approve","承認する","The plan was approved.","計画が承認されました。","ビジネス"],
+  ["assign","割り当てる","She was assigned to the project.","彼女はそのプロジェクトに任命されました。","ビジネス"],
+  ["achieve","達成する","We achieved our goal.","目標を達成しました。","ビジネス"],
+  ["efficient","効率的な","This method is more efficient.","この方法のほうが効率的です。","ビジネス"],
+  ["responsible","責任がある","Who is responsible for this?","これは誰の担当ですか？","ビジネス"],
+  ["postpone","延期する","We had to postpone the trip.","旅行を延期しなければなりませんでした。","ビジネス"],
+  ["reschedule","予定を組み直す","Can we reschedule?","予定を変更できますか？","ビジネス"],
+  ["report","報告する、報告書","Please report the results.","結果を報告してください。","ビジネス"],
+  ["require","必要とする","This job requires experience.","この仕事には経験が必要です。","TOEIC頻出"],
+  ["provide","提供する","The hotel provides free breakfast.","そのホテルは無料の朝食を提供しています。","TOEIC頻出"],
+  ["include","含む","The price includes tax.","価格には税金が含まれています。","TOEIC頻出"],
+  ["offer","申し出る、提供する","They offered me a job.","彼らは私に仕事をオファーしました。","TOEIC頻出"],
+  ["increase","増える、増やす","Prices are increasing.","物価が上がっています。","TOEIC頻出"],
+  ["reduce","減らす","We need to reduce costs.","コストを減らす必要があります。","TOEIC頻出"],
+  ["purchase","購入する","You can purchase online.","オンラインで購入できます。","TOEIC頻出"],
+  ["apply","応募する、適用する","I applied for the position.","その職に応募しました。","TOEIC頻出"],
+  ["estimate","見積もる、見積もり","Can you give me an estimate?","見積もりをもらえますか？","TOEIC頻出"],
+  ["expense","費用、経費","Travel expenses are covered.","出張費は支給されます。","TOEIC頻出"],
+  ["invoice","請求書","Please send the invoice.","請求書を送ってください。","TOEIC頻出"],
+  ["warranty","保証","The product has a warranty.","その製品には保証があります。","TOEIC頻出"],
+  ["shipment","出荷、発送","The shipment arrived today.","出荷品が今日届きました。","TOEIC頻出"],
+  ["inventory","在庫","We're checking the inventory.","在庫を確認しています。","TOEIC頻出"],
+  ["promotion","昇進、販促","She got a promotion.","彼女は昇進しました。","TOEIC頻出"],
+  ["contract","契約","We signed the contract.","契約を結びました。","TOEIC頻出"],
+  ["department","部署","Which department are you in?","どの部署ですか？","TOEIC頻出"],
+  ["qualified","資格のある、適任の","She is highly qualified.","彼女は非常に適任です。","TOEIC頻出"],
+  ["temporarily","一時的に","The store is temporarily closed.","店は一時的に閉まっています。","TOEIC頻出"],
+  ["comfortable","快適な","This chair is comfortable.","この椅子は座り心地がいいです。","感情・形容詞"],
+  ["convenient","便利な","This app is very convenient.","このアプリはとても便利です。","感情・形容詞"],
+  ["expensive","高価な","This bag is too expensive.","このバッグは高すぎます。","感情・形容詞"],
+  ["nervous","緊張した","I'm nervous about the interview.","面接が緊張します。","感情・形容詞"],
+  ["confident","自信がある","She is confident in English.","彼女は英語に自信があります。","感情・形容詞"],
+  ["disappointed","がっかりした","I was disappointed with the result.","結果にがっかりしました。","感情・形容詞"],
+  ["curious","好奇心のある","I'm curious about it.","それに興味があります。","感情・形容詞"],
+  ["exhausted","疲れ果てた","I'm exhausted after work.","仕事の後はくたくたです。","感情・形容詞"],
+  ["grateful","感謝している","I'm grateful for your support.","ご支援に感謝しています。","感情・形容詞"],
+  ["impressive","印象的な","Her speech was impressive.","彼女のスピーチは印象的でした。","感情・形容詞"],
+  ["obvious","明らかな","The answer is obvious.","答えは明らかです。","感情・形容詞"],
+  ["reliable","信頼できる","He is a reliable person.","彼は信頼できる人です。","感情・形容詞"],
+  ["serious","真剣な、深刻な","Are you serious?","本気ですか？","感情・形容詞"],
+  ["sensitive","敏感な、繊細な","It's a sensitive topic.","それはデリケートな話題です。","感情・形容詞"],
+  ["worth","価値がある","It's worth trying.","試す価値があります。","感情・形容詞"],
+  ["look forward to","〜を楽しみにする","I'm looking forward to seeing you.","お会いできるのを楽しみにしています。","句動詞"],
+  ["figure out","理解する、解決する","I can't figure out this problem.","この問題が解決できません。","句動詞"],
+  ["run out of","〜を使い果たす","We ran out of milk.","牛乳を切らしてしまいました。","句動詞"],
+  ["put off","延期する","The meeting was put off.","会議は延期されました。","句動詞"],
+  ["get along with","〜と仲良くする","I get along with my coworkers.","同僚とうまくやっています。","句動詞"],
+  ["give up","あきらめる","Don't give up.","あきらめないで。","句動詞"],
+  ["come up with","思いつく","She came up with a great idea.","彼女はいい案を思いついた。","句動詞"],
+  ["look after","世話をする","Can you look after my dog?","犬の世話をお願いできますか？","句動詞"],
+  ["turn down","断る、（音量を）下げる","He turned down the offer.","彼はその申し出を断った。","句動詞"],
+  ["bring up","話題に出す、育てる","She brought up a good point.","彼女はいい点を指摘した。","句動詞"],
+  ["carry out","実行する","We carried out the plan.","計画を実行しました。","句動詞"],
+  ["deal with","対処する","I'll deal with it.","私が対処します。","句動詞"],
+  ["point out","指摘する","He pointed out my mistake.","彼は私の間違いを指摘した。","句動詞"],
+  ["set up","設定する、立ち上げる","Let's set up a meeting.","会議を設定しましょう。","句動詞"],
+  ["show up","現れる","He didn't show up.","彼は現れなかった。","句動詞"],
+  ["work out","うまくいく、運動する","It will work out.","うまくいくよ。","句動詞"],
+  ["although","〜だけれども","Although it was raining, we went out.","雨だったが出かけました。","つなぎ言葉"],
+  ["however","しかしながら","However, there is a problem.","しかし、問題があります。","つなぎ言葉"],
+  ["therefore","したがって","Therefore, we decided to wait.","したがって、待つことにしました。","つなぎ言葉"],
+  ["actually","実は、実際に","Actually, I've never been there.","実は、行ったことがありません。","つなぎ言葉"],
+  ["probably","たぶん","It will probably rain.","たぶん雨が降るでしょう。","つなぎ言葉"],
+  ["especially","特に","I like fruit, especially apples.","果物、特にりんごが好きです。","つなぎ言葉"],
+  ["immediately","すぐに","Please call me immediately.","すぐに電話してください。","つなぎ言葉"],
+  ["in advance","前もって","Please book in advance.","前もって予約してください。","つなぎ言葉"],
+  ["on time","時間通りに","The bus arrived on time.","バスは時間通りに来ました。","つなぎ言葉"],
+  ["due to","〜が原因で","The delay was due to snow.","遅延は雪が原因でした。","つなぎ言葉"],
+  ["instead of","〜の代わりに","Let's walk instead of driving.","運転する代わりに歩きましょう。","つなぎ言葉"],
+  ["as soon as","〜するとすぐに","Call me as soon as you arrive.","着いたらすぐ電話して。","つなぎ言葉"],
+  ["make sure","確認する","Make sure the door is locked.","鍵を確認してね。","つなぎ言葉"],
+  ["be used to","〜に慣れている","I'm used to getting up early.","早起きには慣れています。","つなぎ言葉"],
+  ["in fact","実際に","In fact, it was easy.","実際、簡単でした。","つなぎ言葉"],
+  ["by the way","ところで","By the way, are you free tonight?","ところで、今夜空いてる？","つなぎ言葉"],
 ];
 
 // ==================== 状態管理 ====================
@@ -397,12 +472,31 @@ const store = {
   }
 };
 
+function defaultWordObjs() {
+  return DEFAULT_WORDS.map(([w, m, ex, exJa, cat]) => ({ w, m, ex, exJa, cat: cat || "その他", box: 0 }));
+}
 let state = store.load() || {
-  words: DEFAULT_WORDS.map(([w, m, ex, exJa]) => ({ w, m, ex, exJa, box: 0 })),
+  words: defaultWordObjs(),
   quizBest: null,
   todayCount: 0,
   todayDate: new Date().toDateString()
 };
+// 既存ユーザーに新しい単語をマージ（進捗は保持）
+(function mergeNewWords() {
+  const have = new Set(state.words.map(w => w.w.toLowerCase()));
+  let added = 0;
+  DEFAULT_WORDS.forEach(([w, m, ex, exJa, cat]) => {
+    if (!have.has(w.toLowerCase())) {
+      state.words.push({ w, m, ex, exJa, cat: cat || "その他", box: 0 });
+      added++;
+    }
+  });
+  // 既存の単語にカテゴリが無ければ補完
+  const catMap = {};
+  DEFAULT_WORDS.forEach(([w, , , , cat]) => catMap[w.toLowerCase()] = cat || "その他");
+  state.words.forEach(w => { if (!w.cat) w.cat = catMap[w.w.toLowerCase()] || "その他"; });
+  if (added > 0) persist();
+})();
 if (state.todayDate !== new Date().toDateString()) {
   state.todayDate = new Date().toDateString();
   state.todayCount = 0;
@@ -463,15 +557,31 @@ function renderHome() {
 
 // ==================== 単語帳 ====================
 let flashQueue = [], flashIdx = 0;
+function populateCatSelect() {
+  const sel = document.getElementById("flash-cat");
+  if (!sel) return;
+  const cur = sel.value || "ALL";
+  const cats = [...new Set(state.words.map(w => w.cat || "その他"))];
+  sel.innerHTML = '<option value="ALL">すべて（' + state.words.length + '語）</option>' +
+    cats.map(c => {
+      const n = state.words.filter(w => (w.cat || "その他") === c).length;
+      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '（' + n + '語）</option>';
+    }).join("");
+  sel.value = cats.includes(cur) || cur === "ALL" ? cur : "ALL";
+}
 function startFlash() {
+  populateCatSelect();
+  const sel = document.getElementById("flash-cat");
+  const cat = sel ? sel.value : "ALL";
+  let idxs = state.words.map((w, i) => i);
+  if (cat !== "ALL") idxs = idxs.filter(i => (state.words[i].cat || "その他") === cat);
   // レベルの低い単語を優先して出題
-  flashQueue = shuffle(state.words.map((w, i) => i))
-    .sort((a, b) => state.words[a].box - state.words[b].box)
-    .slice(0, 15);
+  flashQueue = shuffle(idxs).sort((a, b) => state.words[a].box - state.words[b].box).slice(0, 15);
   flashQueue = shuffle(flashQueue);
   flashIdx = 0;
   document.getElementById("flash-study").classList.remove("hidden");
   document.getElementById("flash-done").classList.add("hidden");
+  if (flashQueue.length === 0) { document.getElementById("flash-progress").textContent = "このカテゴリに単語がありません"; return; }
   showFlash();
 }
 function showFlash() {
@@ -481,7 +591,7 @@ function showFlash() {
   document.getElementById("fc-word").textContent = w.w;
   document.getElementById("fc-meaning").textContent = w.m;
   document.getElementById("fc-example").innerHTML = w.ex ? `${w.ex}<br>${w.exJa || ""}` : "";
-  document.getElementById("fc-box").textContent = "レベル " + w.box;
+  document.getElementById("fc-box").textContent = (w.cat ? w.cat + "・" : "") + "レベル " + w.box;
   document.getElementById("flash-progress").textContent = `${flashIdx + 1} / ${flashQueue.length}`;
 }
 function flipCard() {
@@ -509,7 +619,7 @@ function addWord() {
   const ex = document.getElementById("add-example").value.trim();
   const msg = document.getElementById("add-msg");
   if (!w || !m) { msg.style.color = "var(--danger)"; msg.textContent = "英単語と意味は必須です"; return; }
-  state.words.push({ w, m, ex, exJa: "", box: 0 });
+  state.words.push({ w, m, ex, exJa: "", cat: "自分の単語", box: 0 });
   persist();
   ["add-word", "add-meaning", "add-example"].forEach(id => document.getElementById(id).value = "");
   msg.style.color = "var(--accent)";
