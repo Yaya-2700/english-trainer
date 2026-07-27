@@ -225,6 +225,9 @@
       </select>
       <label style="margin:10px 0 6px">📂 学習するカテゴリ</label>
       <select id="flash-cat" onchange="startFlash()"><option value="ALL">すべて</option></select>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)">
+        <input type="checkbox" id="flash-weak" onchange="startFlash()" style="width:auto;margin:0"> 😥 苦手だけ復習（定着0〜1）
+      </label>
     </div>
     <div id="flash-study">
       <div class="quiz-meta" id="flash-progress"></div>
@@ -280,9 +283,22 @@
     <div id="quiz-start" class="card center">
       <h2>📝 4択クイズ</h2>
       <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
-        登録単語からランダムに10問出題。<br>英→日と日→英が混ざって出ます。
+        選んだレベルから10問出題。<br>英→日と日→英が混ざって出ます。
       </p>
+      <div style="max-width:260px;margin:14px auto 0;text-align:left">
+        <label>📊 レベル</label>
+        <select id="quiz-level">
+          <option value="ALL">すべてのレベル</option>
+          <option value="初級">初級</option>
+          <option value="中級">中級</option>
+          <option value="上級">上級</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:.85rem;color:var(--text)">
+          <input type="checkbox" id="quiz-weak" style="width:auto;margin:0"> 😥 苦手だけ（定着0〜1）
+        </label>
+      </div>
       <button class="btn mt" onclick="startQuiz()">スタート</button>
+      <div id="quiz-warn" style="font-size:.78rem;color:var(--danger);margin-top:8px"></div>
     </div>
     <div id="quiz-play" class="hidden">
       <div class="quiz-meta" id="quiz-progress"></div>
@@ -342,9 +358,22 @@
     <div id="spell-start" class="card center">
       <h2>✏️ スペル練習</h2>
       <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
-        意味と発音をヒントに、英単語のスペルを入力します（全10問）。<br>書いて覚えることで記憶が定着します。
+        意味と発音をヒントに英単語を入力（全10問）。<br>書いて覚えることで記憶が定着します。
       </p>
+      <div style="max-width:260px;margin:14px auto 0;text-align:left">
+        <label>📊 レベル</label>
+        <select id="spell-level">
+          <option value="ALL">すべてのレベル</option>
+          <option value="初級">初級</option>
+          <option value="中級">中級</option>
+          <option value="上級">上級</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:.85rem;color:var(--text)">
+          <input type="checkbox" id="spell-weak" style="width:auto;margin:0"> 😥 苦手だけ（定着0〜1）
+        </label>
+      </div>
       <button class="btn mt" onclick="startSpell()">スタート</button>
+      <div id="spell-warn" style="font-size:.78rem;color:var(--danger);margin-top:8px"></div>
     </div>
     <div id="spell-play" class="hidden">
       <div class="quiz-meta" id="spell-progress"></div>
@@ -1592,13 +1621,15 @@ function startFlash() {
   let idxs = state.words.map((w, i) => i);
   if (lv !== "ALL") idxs = idxs.filter(i => (state.words[i].level || "中級") === lv);
   if (cat !== "ALL") idxs = idxs.filter(i => (state.words[i].cat || "その他") === cat);
+  const weakEl = document.getElementById("flash-weak");
+  if (weakEl && weakEl.checked) idxs = idxs.filter(i => state.words[i].box <= 1);
   // レベルの低い単語を優先して出題
   flashQueue = shuffle(idxs).sort((a, b) => state.words[a].box - state.words[b].box).slice(0, 15);
   flashQueue = shuffle(flashQueue);
   flashIdx = 0;
   document.getElementById("flash-study").classList.remove("hidden");
   document.getElementById("flash-done").classList.add("hidden");
-  if (flashQueue.length === 0) { document.getElementById("flash-progress").textContent = "このカテゴリに単語がありません"; return; }
+  if (flashQueue.length === 0) { document.getElementById("flash-progress").textContent = "該当する単語がありません（苦手なし＝よくできています！）"; return; }
   showFlash();
 }
 function showFlash() {
@@ -1607,7 +1638,7 @@ function showFlash() {
   const w = state.words[flashQueue[flashIdx]];
   document.getElementById("fc-word").textContent = w.w;
   document.getElementById("fc-meaning").textContent = w.m;
-  document.getElementById("fc-example").innerHTML = w.ex ? `${w.ex}<br>${w.exJa || ""}` : "";
+  document.getElementById("fc-example").innerHTML = w.ex ? `${highlightWord(w.ex, w.w)}<br>${w.exJa || ""}` : "";
   document.getElementById("fc-box").textContent = (w.level ? w.level + "・" : "") + (w.cat ? w.cat + "・" : "") + "定着" + w.box;
   document.getElementById("flash-progress").textContent = `${flashIdx + 1} / ${flashQueue.length}`;
 }
@@ -1655,14 +1686,29 @@ function renderWordList() {
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+// 例文中の対象語（活用も含め語幹一致）を太字にする
+function highlightWord(sentence, word) {
+  const safe = escapeHtml(sentence);
+  const base = word.split(" ")[0].replace(/[^a-zA-Z]/g, "");
+  if (!base || base.length < 3) return safe;
+  try {
+    const re = new RegExp("\\b(" + base + "[a-z]*)\\b", "gi");
+    return safe.replace(re, '<b style="color:var(--primary-dark)">$1</b>');
+  } catch (e) { return safe; }
+}
 
 // ==================== クイズ ====================
 let quizSet = [], quizIdx = 0, quizScore = 0;
 function startQuiz() {
-  quizSet = shuffle(state.words).slice(0, 10).map(w => ({
-    word: w,
-    dir: Math.random() < 0.5 ? "e2j" : "j2e"
-  }));
+  const lvEl = document.getElementById("quiz-level");
+  const lv = lvEl ? lvEl.value : "ALL";
+  const weak = document.getElementById("quiz-weak") && document.getElementById("quiz-weak").checked;
+  let pool = state.words.filter(w => lv === "ALL" || (w.level || "中級") === lv);
+  if (weak) pool = pool.filter(w => w.box <= 1);
+  const warn = document.getElementById("quiz-warn");
+  if (pool.length < 4) { if (warn) warn.textContent = "この条件では単語が足りません（最低4語必要）。"; return; }
+  if (warn) warn.textContent = "";
+  quizSet = shuffle(pool).slice(0, 10).map(w => ({ word: w, dir: Math.random() < 0.5 ? "e2j" : "j2e" }));
   quizIdx = 0; quizScore = 0;
   document.getElementById("quiz-start").classList.add("hidden");
   document.getElementById("quiz-result").classList.add("hidden");
@@ -1783,7 +1829,15 @@ function nextListen() {
 // ==================== スペル練習 ====================
 let spellSet = [], spellIdx = 0, spellScore = 0;
 function startSpell() {
-  spellSet = shuffle(state.words).slice(0, 10);
+  const lvEl = document.getElementById("spell-level");
+  const lv = lvEl ? lvEl.value : "ALL";
+  const weak = document.getElementById("spell-weak") && document.getElementById("spell-weak").checked;
+  let pool = state.words.filter(w => lv === "ALL" || (w.level || "中級") === lv);
+  if (weak) pool = pool.filter(w => w.box <= 1);
+  const warn = document.getElementById("spell-warn");
+  if (pool.length < 1) { if (warn) warn.textContent = "この条件では単語がありません。"; return; }
+  if (warn) warn.textContent = "";
+  spellSet = shuffle(pool).slice(0, 10);
   spellIdx = 0; spellScore = 0;
   document.getElementById("spell-start").classList.add("hidden");
   document.getElementById("spell-result").classList.add("hidden");
