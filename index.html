@@ -178,6 +178,15 @@
 <main>
   <!-- ============ HOME ============ -->
   <section id="tab-home">
+    <div class="card" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
+      <div style="font-size:.8rem;opacity:.9;font-weight:600">🔥 連続学習</div>
+      <div style="font-size:2.6rem;font-weight:800;line-height:1.1;margin:2px 0"><span id="st-streak">0</span><span style="font-size:1.1rem;margin-left:4px">日</span></div>
+      <div style="font-size:.75rem;opacity:.85">自己ベスト <span id="st-beststreak">0</span> 日</div>
+      <div style="background:rgba(255,255,255,.25);border-radius:99px;height:10px;overflow:hidden;margin-top:14px">
+        <div id="goal-bar" style="width:0%;height:100%;background:#fff;border-radius:99px;transition:width .5s"></div>
+      </div>
+      <div style="font-size:.76rem;opacity:.95;margin-top:6px">今日の目標 <span id="goal-text">0 / 20</span></div>
+    </div>
     <div class="stats-grid">
       <div class="stat"><div class="num" id="st-total">0</div><div class="label">登録単語数</div></div>
       <div class="stat"><div class="num" id="st-mastered">0</div><div class="label">習得済み</div></div>
@@ -186,9 +195,14 @@
     </div>
     <div class="card mt">
       <h2>📈 習得度</h2>
-      <div style="font-size:.8rem;color:var(--muted)">全単語のうち「習得済み（レベル3）」の割合</div>
+      <div style="font-size:.8rem;color:var(--muted)">全単語のうち「習得済み（定着3）」の割合</div>
       <div class="progress-bar"><div id="mastery-bar" style="width:0%"></div></div>
       <div id="mastery-pct" style="text-align:right;font-size:.78rem;color:var(--muted);margin-top:4px">0%</div>
+      <div id="level-progress" style="margin-top:16px"></div>
+    </div>
+    <div class="card">
+      <h2>🌟 今日の1語</h2>
+      <div id="word-of-day" style="text-align:center;padding:6px 0"></div>
     </div>
     <div class="card">
       <h2>🚀 今日のおすすめ</h2>
@@ -1589,7 +1603,11 @@ let state = store.load() || {
   words: defaultWordObjs(),
   quizBest: null,
   todayCount: 0,
-  todayDate: new Date().toDateString()
+  todayDate: new Date().toDateString(),
+  streak: 0,
+  lastStudyDate: null,
+  bestStreak: 0,
+  dailyGoal: 20
 };
 // 既存ユーザーに新しい単語をマージ（進捗は保持）
 (function mergeNewWords() {
@@ -1607,12 +1625,27 @@ let state = store.load() || {
   state.words.forEach(w => { if (!w.cat) w.cat = catMap[w.w.toLowerCase()] || "その他"; if (!w.level) w.level = lvMap[w.w.toLowerCase()] || "中級"; });
   if (added > 0) persist();
 })();
+if (state.streak === undefined) state.streak = 0;
+if (state.bestStreak === undefined) state.bestStreak = 0;
+if (state.lastStudyDate === undefined) state.lastStudyDate = null;
+if (state.dailyGoal === undefined) state.dailyGoal = 20;
 if (state.todayDate !== new Date().toDateString()) {
   state.todayDate = new Date().toDateString();
   state.todayCount = 0;
 }
 function persist() { store.save(state); }
-function bumpToday() { state.todayCount++; persist(); }
+function bumpToday() {
+  state.todayCount++;
+  const today = new Date().toDateString();
+  if (state.lastStudyDate !== today) {
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    state.streak = (state.lastStudyDate === y.toDateString()) ? state.streak + 1 : 1;
+    state.lastStudyDate = today;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  }
+  persist();
+  if (typeof renderHome === "function" && !document.getElementById("tab-home").classList.contains("hidden")) renderHome();
+}
 
 // ==================== ユーティリティ ====================
 function shuffle(a) {
@@ -1658,6 +1691,43 @@ function renderHome() {
   const pct = total ? Math.round(mastered / total * 100) : 0;
   document.getElementById("mastery-bar").style.width = pct + "%";
   document.getElementById("mastery-pct").textContent = pct + "%";
+
+  // 連続学習・今日の目標
+  document.getElementById("st-streak").textContent = state.streak || 0;
+  document.getElementById("st-beststreak").textContent = state.bestStreak || 0;
+  const goal = state.dailyGoal || 20;
+  const gp = Math.min(100, Math.round(state.todayCount / goal * 100));
+  document.getElementById("goal-bar").style.width = gp + "%";
+  document.getElementById("goal-text").textContent =
+    state.todayCount + " / " + goal + (state.todayCount >= goal ? "　🎉 達成！" : "");
+
+  // レベル別進捗
+  const levels = ["初級", "中級", "上級"];
+  const colors = { "初級": "#12b981", "中級": "#5b6ef5", "上級": "#8a63f0" };
+  document.getElementById("level-progress").innerHTML = levels.map(lv => {
+    const pool = state.words.filter(w => (w.level || "中級") === lv);
+    if (!pool.length) return "";
+    const done = pool.filter(w => w.box >= 3).length;
+    const p = Math.round(done / pool.length * 100);
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);font-weight:600;margin-bottom:4px">
+        <span>${lv}</span><span>${done} / ${pool.length}（${p}%）</span></div>
+      <div style="background:var(--bg2);border-radius:99px;height:8px;overflow:hidden">
+        <div style="width:${p}%;height:100%;background:${colors[lv]};border-radius:99px;transition:width .5s"></div>
+      </div></div>`;
+  }).join("");
+
+  // 今日の1語（日付固定でランダム）
+  if (state.words.length) {
+    const seed = new Date().toDateString().split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+    const w = state.words[seed % state.words.length];
+    document.getElementById("word-of-day").innerHTML =
+      `<div style="font-size:1.7rem;font-weight:800">${escapeHtml(w.w)}</div>
+       <div style="font-size:1rem;color:var(--primary-dark);font-weight:700;margin:4px 0 8px">${escapeHtml(w.m)}</div>
+       ${w.ex ? `<div style="font-size:.85rem;color:var(--muted);line-height:1.6">${highlightWord(w.ex, w.w)}<br>${escapeHtml(w.exJa || "")}</div>` : ""}
+       <button class="btn small outline mt" onclick="speak('${w.w.replace(/'/g, "\\'")}')">🔊 発音を聞く</button>`;
+  }
+
   const weak = state.words.filter(w => w.box === 0).length;
   document.getElementById("recommend").innerHTML =
     weak > 0
