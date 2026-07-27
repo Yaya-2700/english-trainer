@@ -325,6 +325,15 @@
       <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
         英語の例文が読み上げられます。<br>意味として正しいものを選んでください（全5問）。
       </p>
+      <div style="max-width:260px;margin:8px auto 0;text-align:left">
+        <label>📊 レベル</label>
+        <select id="listen-level">
+          <option value="ALL">すべてのレベル</option>
+          <option value="初級">初級</option>
+          <option value="中級">中級</option>
+          <option value="上級">上級</option>
+        </select>
+      </div>
       <div class="speed-row">
         <span>読み上げ速度:</span>
         <select id="listen-speed" style="width:auto;margin:0">
@@ -1496,6 +1505,67 @@ const DEFAULT_WORDS = [
   ["virtually","事実上","Virtually impossible.","事実上不可能。","感覚・様子","中級"],
   ["notably","特に","Notably, sales doubled.","特に売上が倍増した。","感覚・様子","中級"],
   ["readily","すぐに、快く","Readily available.","すぐに入手できる。","感覚・様子","中級"],
+  ["abide","従う、我慢する","Abide by the decision.","決定に従う。","上級動詞","上級"],
+  ["augment","増大させる","Augment the budget.","予算を増やす。","上級動詞","上級"],
+  ["captivate","魅了する","The show captivated us.","そのショーは私たちを魅了した。","上級動詞","上級"],
+  ["circumvent","回避する","Circumvent the rules.","規則をかいくぐる。","上級動詞","上級"],
+  ["commemorate","記念する","We commemorate the event.","その出来事を記念する。","上級動詞","上級"],
+  ["delineate","描写する、明確にする","Delineate the boundaries.","境界を明確にする。","上級動詞","上級"],
+  ["discard","捨てる","Discard old files.","古いファイルを捨てる。","上級動詞","上級"],
+  ["emanate","発する","Light emanated from it.","そこから光が発した。","上級動詞","上級"],
+  ["galvanize","活気づける","Galvanize the team.","チームを奮い立たせる。","上級動詞","上級"],
+  ["harness","活用する","Harness solar power.","太陽光を活用する。","上級動詞","上級"],
+  ["instigate","引き起こす、扇動する","Instigate change.","変化を促す。","上級動詞","上級"],
+  ["mobilize","動員する","Mobilize resources.","資源を動員する。","上級動詞","上級"],
+  ["negate","否定する、無効にする","This negates the benefit.","これは利点を打ち消す。","上級動詞","上級"],
+  ["permeate","浸透する","The smell permeated the room.","においが部屋に充満した。","上級動詞","上級"],
+  ["relinquish","手放す","Relinquish control.","支配権を手放す。","上級動詞","上級"],
+  ["transcend","超越する","Transcend boundaries.","境界を超える。","上級動詞","上級"],
+  ["vindicate","正当性を証明する","The results vindicated her.","結果は彼女の正しさを示した。","上級動詞","上級"],
+  ["arduous","骨の折れる","An arduous journey.","過酷な旅。","上級形容詞","上級"],
+  ["cumbersome","扱いにくい","A cumbersome process.","面倒な手続き。","上級形容詞","上級"],
+  ["discreet","慎重な、控えめな","Be discreet about it.","そのことは慎重に。","上級形容詞","上級"],
+  ["exhaustive","徹底的な","An exhaustive list.","網羅的なリスト。","上級形容詞","上級"],
+  ["gregarious","社交的な","A gregarious person.","社交的な人。","上級形容詞","上級"],
+  ["innate","生来の","An innate talent.","生まれつきの才能。","上級形容詞","上級"],
+  ["nominal","名目上の、わずかな","A nominal fee.","わずかな手数料。","上級形容詞","上級"],
+  ["ominous","不吉な","An ominous silence.","不気味な沈黙。","上級形容詞","上級"],
+  ["paramount","最重要の","Safety is paramount.","安全が最優先だ。","上級形容詞","上級"],
+  ["quaint","趣のある","A quaint village.","趣のある村。","上級形容詞","上級"],
+  ["sporadic","散発的な","Sporadic rain.","時々の雨。","上級形容詞","上級"],
+  ["staunch","忠実な、断固たる","A staunch supporter.","熱心な支持者。","上級形容詞","上級"],
+  ["uncanny","不気味なほどの","An uncanny resemblance.","不気味なほどの類似。","上級形容詞","上級"],
+  ["ambition","野心","Boundless ambition.","果てしない野心。","上級名詞","上級"],
+  ["array","配列、勢ぞろい","A wide array of options.","幅広い選択肢。","上級名詞","上級"],
+  ["candor","率直さ","Speak with candor.","率直に話す。","上級名詞","上級"],
+  ["demeanor","態度、物腰","A calm demeanor.","落ち着いた物腰。","上級名詞","上級"],
+  ["emphasis","強調","Put emphasis on quality.","質を重視する。","上級名詞","上級"],
+  ["facet","側面","Every facet of life.","人生のあらゆる面。","上級名詞","上級"],
+  ["grievance","不満、苦情","Air a grievance.","不満を訴える。","上級名詞","上級"],
+  ["hindsight","あと知恵","In hindsight, it was wrong.","今思えば間違いだった。","上級名詞","上級"],
+  ["intricacy","複雑さ","The intricacies of law.","法律の複雑さ。","上級名詞","上級"],
+  ["juxtaposition","並置、対比","A striking juxtaposition.","際立った対比。","上級名詞","上級"],
+  ["layout","配置","The page layout.","ページ構成。","上級名詞","上級"],
+  ["morale","士気","Boost morale.","士気を高める。","上級名詞","上級"],
+  ["novelty","目新しさ","The novelty wore off.","目新しさは薄れた。","上級名詞","上級"],
+  ["ordeal","試練","A terrible ordeal.","ひどい試練。","上級名詞","上級"],
+  ["plight","苦境","The plight of refugees.","難民の苦境。","上級名詞","上級"],
+  ["rapport","信頼関係","Build rapport.","信頼関係を築く。","上級名詞","上級"],
+  ["standpoint","観点","From my standpoint.","私の観点から。","上級名詞","上級"],
+  ["turmoil","混乱","Political turmoil.","政治的混乱。","上級名詞","上級"],
+  ["errand","用事、使い","Run an errand.","用事を済ませる。","日常","初級"],
+  ["leftover","残り物","Eat the leftovers.","残り物を食べる。","日常","初級"],
+  ["nap","昼寝","Take a nap.","昼寝をする。","日常","初級"],
+  ["routine","日課","My morning routine.","朝の日課。","日常","初級"],
+  ["spare","予備の、割く","In my spare time.","空き時間に。","日常","初級"],
+  ["household","世帯、家庭の","Household items.","日用品。","日常","初級"],
+  ["grocery","食料品","Buy groceries.","食料品を買う。","日常","初級"],
+  ["startled","びっくりした","I was startled by the noise.","物音にびっくりした。","感情・反応","中級"],
+  ["furious","激怒した","He was furious.","彼は激怒した。","感情・反応","中級"],
+  ["hesitant","ためらいがちな","I'm hesitant to agree.","同意するのをためらう。","感情・反応","中級"],
+  ["resentful","恨みがましい","She felt resentful.","彼女は不満を感じた。","感情・反応","中級"],
+  ["uneasy","不安な","I feel uneasy.","落ち着かない。","感情・反応","中級"],
+  ["baffled","困惑した","I'm baffled by this.","これには困惑している。","感情・反応","中級"],
 ];
 
 // ==================== 状態管理 ====================
@@ -1769,11 +1839,15 @@ function startListen() {
     document.getElementById("tts-warn").textContent = "このブラウザは音声読み上げに対応していません。";
     return;
   }
-  listenSet = shuffle(state.words.filter(w => w.ex && w.exJa)).slice(0, 5);
-  if (listenSet.length < 4) {
-    document.getElementById("tts-warn").textContent = "例文つきの単語が足りません。";
+  const lvEl = document.getElementById("listen-level");
+  const lv = lvEl ? lvEl.value : "ALL";
+  let pool = state.words.filter(w => w.ex && w.exJa && (lv === "ALL" || (w.level || "中級") === lv));
+  if (pool.length < 4) {
+    document.getElementById("tts-warn").textContent = "このレベルでは例文つきの単語が足りません。";
     return;
   }
+  document.getElementById("tts-warn").textContent = "";
+  listenSet = shuffle(pool).slice(0, 5);
   listenIdx = 0; listenScore = 0;
   document.getElementById("listen-start").classList.add("hidden");
   document.getElementById("listen-result").classList.add("hidden");
@@ -1879,6 +1953,7 @@ function nextSpell() {
     document.getElementById("spell-play").classList.add("hidden");
     document.getElementById("spell-result").classList.remove("hidden");
     document.getElementById("spell-score").textContent = `${spellScore} / ${spellSet.length}`;
+    document.getElementById("spell-score").insertAdjacentHTML("afterend", "");
   } else { showSpell(); }
 }
 
