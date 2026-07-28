@@ -2465,7 +2465,18 @@ function showQuiz() {
   document.getElementById("quiz-feedback").textContent = "";
   document.getElementById("quiz-next").classList.add("hidden");
 
-  const others = shuffle(state.words.filter(w => w !== q.word)).slice(0, 3);
+  // 正解と同じ表示文字列になる語は誤答から除外（重複選択肢の防止）
+  const label = w => isE2J ? w.m : w.w;
+  const taken = new Set([label(q.word)]);
+  const others = [];
+  for (const w of shuffle(state.words)) {
+    if (w === q.word) continue;
+    const l = label(w);
+    if (taken.has(l)) continue;
+    taken.add(l);
+    others.push(w);
+    if (others.length === 3) break;
+  }
   const choices = shuffle([q.word, ...others]);
   document.getElementById("quiz-choices").innerHTML = choices.map((c, i) =>
     `<button class="choice" data-ok="${c === q.word}" onclick="pickQuiz(this)">
@@ -2543,9 +2554,14 @@ function showListen() {
   document.getElementById("listen-feedback").textContent = "";
   document.getElementById("listen-sentence").textContent = "";
   document.getElementById("listen-next").classList.add("hidden");
-  const others = shuffle(listenSet.filter(w => w !== q).concat(
-    shuffle(state.words.filter(w => w.exJa && !listenSet.includes(w))).slice(0, 3)
-  )).slice(0, 3);
+  const takenJa = new Set([q.exJa]);
+  const others = [];
+  for (const w of shuffle(state.words.filter(w => w.exJa && w !== q))) {
+    if (takenJa.has(w.exJa)) continue;
+    takenJa.add(w.exJa);
+    others.push(w);
+    if (others.length === 3) break;
+  }
   const choices = shuffle([q, ...others]);
   document.getElementById("listen-choices").innerHTML = choices.map(c =>
     `<button class="choice" data-ok="${c === q}" onclick="pickListen(this)">${escapeHtml(c.exJa)}</button>`
@@ -2621,10 +2637,13 @@ function checkSpell() {
   const inp = document.getElementById("spell-input");
   const ans = inp.value.trim().toLowerCase();
   if (!ans) return;
-  const ok = ans === w.w.toLowerCase();
+  // 同じ意味を持つ別の単語を入力した場合も正解扱いにする
+  const synonyms = state.words.filter(x => x.m === w.m).map(x => x.w.toLowerCase());
+  const ok = synonyms.includes(ans);
   const fb = document.getElementById("spell-feedback");
   if (ok) { spellScore++; fb.textContent = "⭕ 正解！"; fb.style.color = "var(--accent)"; }
   else { fb.innerHTML = `❌ 正解は <b>${escapeHtml(w.w)}</b>`; fb.style.color = "var(--danger)"; }
+  if (ok && ans !== w.w.toLowerCase()) fb.innerHTML = `⭕ 正解！（出題語は <b>${escapeHtml(w.w)}</b>）`;
   applyResult(w, ok);
   inp.disabled = true;
   bumpToday();
