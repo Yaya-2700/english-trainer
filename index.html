@@ -50,7 +50,7 @@
   body.dark .m1 { background: #3a2f14; color: #f0c674; }
   body.dark .m2 { background: #1f2a4d; color: #9fb2f8; }
   body.dark .m3 { background: #17332a; color: #5fd6a6; }
-  body.dark input, body.dark select { background: var(--bg2); color: var(--text); }
+  body.dark input, body.dark select, body.dark textarea { background: var(--bg2) !important; color: var(--text) !important; }
   body.dark .face.back { background: linear-gradient(150deg, #232b42, #2a2545); }
   .theme-toggle {
     position: absolute; top: 18px; right: 16px;
@@ -255,6 +255,33 @@
         <button class="btn" onclick="switchTab('flash')">単語帳へ</button>
         <button class="btn outline" onclick="switchTab('quiz')">クイズへ</button>
       </div>
+    </div>
+    <div class="card">
+      <h2>🔎 カテゴリ別の弱点分析</h2>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px">習得率が低い順に表示しています。苦手なカテゴリから攻めましょう。</div>
+      <div id="cat-stats"></div>
+      <div class="center mt"><button class="btn small gray" id="cat-more-btn" onclick="catStatsAll=!catStatsAll;renderCatStats()">すべて表示</button></div>
+    </div>
+    <div class="card">
+      <h2>🔔 学習リマインダー</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+        このページを開いている間、指定時刻にブラウザ通知でお知らせします。
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input type="time" id="remind-time" style="width:auto;margin:0" onchange="saveReminder()">
+        <button class="btn small" onclick="enableReminder()">🔔 通知をON</button>
+        <button class="btn small gray" onclick="disableReminder()">OFF</button>
+      </div>
+      <div id="remind-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
+    </div>
+    <div class="card">
+      <h2>📥 単語の一括登録（CSV）</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:8px">
+        1行につき「英単語,意味,例文,例文和訳」の形式で貼り付けてください（例文以降は省略可）。
+      </div>
+      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
+      <div class="btn-row mt"><button class="btn small" onclick="importCsv()">一括登録する</button></div>
+      <div id="csv-msg" style="font-size:.8rem;margin-top:10px"></div>
     </div>
     <div class="card">
       <h2>💾 データのバックアップ</h2>
@@ -1769,6 +1796,46 @@ const DEFAULT_WORDS = [
   ["scoop","特ダネ","Get a scoop.","特ダネをつかむ。","メディア・報道","中級"],
   ["anonymous","匿名の","An anonymous source.","匿名の情報源。","メディア・報道","中級"],
   ["allegation","申し立て、疑惑","Serious allegations.","深刻な疑惑。","メディア・報道","中級"],
+  ["abstain","控える、棄権する","Abstain from alcohol.","飲酒を控える。","上級動詞","上級"],
+  ["deduce","推論する","Deduce the answer.","答えを推論する。","上級動詞","上級"],
+  ["disregard","無視する","Disregard the warning.","警告を無視する。","上級動詞","上級"],
+  ["extract","抽出する","Extract the data.","データを抽出する。","上級動詞","上級"],
+  ["fluctuate","変動する","Prices fluctuate daily.","価格は日々変動する。","上級動詞","上級"],
+  ["intercept","傍受する、遮る","Intercept the message.","通信を傍受する。","上級動詞","上級"],
+  ["modify","修正する","Modify the design.","設計を修正する。","上級動詞","上級"],
+  ["preside","主宰する","Preside over a meeting.","会議を主宰する。","上級動詞","上級"],
+  ["refute","反駁する","Refute the claim.","主張に反論する。","上級動詞","上級"],
+  ["simulate","模擬する","Simulate real conditions.","実際の状況を再現する。","上級動詞","上級"],
+  ["suffice","足りる","A brief note will suffice.","短いメモで十分だ。","上級動詞","上級"],
+  ["tolerate","我慢する","I can't tolerate noise.","騒音は我慢できない。","上級動詞","上級"],
+  ["brisk","活発な、きびきびした","A brisk walk.","早歩き。","上級形容詞","上級"],
+  ["concurrent","同時の","Concurrent events.","同時進行の出来事。","上級形容詞","上級"],
+  ["dire","悲惨な、差し迫った","Dire consequences.","悲惨な結果。","上級形容詞","上級"],
+  ["elusive","つかみどころのない","An elusive goal.","達成しにくい目標。","上級形容詞","上級"],
+  ["finite","有限の","Finite resources.","有限な資源。","上級形容詞","上級"],
+  ["overt","公然の","Overt hostility.","あからさまな敵意。","上級形容詞","上級"],
+  ["perpetual","永続的な","Perpetual motion.","永久運動。","上級形容詞","上級"],
+  ["rigid","硬直した","Rigid rules.","厳格な規則。","上級形容詞","上級"],
+  ["sheer","純然たる、切り立った","Sheer luck.","まったくの幸運。","上級形容詞","上級"],
+  ["transient","一時的な","A transient trend.","一時的な流行。","上級形容詞","上級"],
+  ["boarding","搭乗","Boarding starts soon.","まもなく搭乗開始。","旅行","初級"],
+  ["layover","乗り継ぎ","A three-hour layover.","3時間の乗り継ぎ。","旅行","初級"],
+  ["vacancy","空室","No vacancy tonight.","今夜は満室です。","旅行","初級"],
+  ["amenity","設備、アメニティ","Hotel amenities.","ホテルの設備。","旅行","初級"],
+  ["voucher","引換券","A meal voucher.","食事券。","旅行","初級"],
+  ["check-in","チェックイン","Online check-in.","オンラインチェックイン。","旅行","初級"],
+  ["baggage","手荷物","Baggage claim.","手荷物受取所。","旅行","初級"],
+  ["visa","ビザ","Apply for a visa.","ビザを申請する。","旅行","初級"],
+  ["accommodation","宿泊施設","Book accommodation.","宿を予約する。","旅行","初級"],
+  ["excursion","小旅行","A day excursion.","日帰り旅行。","旅行","初級"],
+  ["recycling","リサイクル","Recycling programs.","リサイクル事業。","環境・エネルギー","中級"],
+  ["footprint","（環境）負荷","Reduce your footprint.","環境負荷を減らす。","環境・エネルギー","中級"],
+  ["hazard","危険","A health hazard.","健康被害の恐れ。","環境・エネルギー","中級"],
+  ["preserve","保護する","Preserve nature.","自然を守る。","環境・エネルギー","中級"],
+  ["scarcity","不足","Water scarcity.","水不足。","環境・エネルギー","中級"],
+  ["toxic","有毒な","Toxic waste.","有毒廃棄物。","環境・エネルギー","中級"],
+  ["efficiency","効率","Energy efficiency.","エネルギー効率。","環境・エネルギー","中級"],
+  ["consumption","消費","Reduce consumption.","消費を減らす。","環境・エネルギー","中級"],
 ];
 
 // ==================== 状態管理 ====================
@@ -1799,7 +1866,9 @@ let state = store.load() || {
   dailyGoal: 20,
   history: {},
   badges: [],
-  theme: "light"
+  theme: "light",
+  remindOn: false,
+  remindTime: "20:00"
 };
 // 既存ユーザーに新しい単語をマージ（進捗は保持）
 (function mergeNewWords() {
@@ -1824,6 +1893,8 @@ if (state.dailyGoal === undefined) state.dailyGoal = 20;
 if (!state.history) state.history = {};
 if (!state.badges) state.badges = [];
 if (!state.theme) state.theme = "light";
+if (state.remindOn === undefined) state.remindOn = false;
+if (!state.remindTime) state.remindTime = "20:00";
 if (state.todayDate !== new Date().toDateString()) {
   state.todayDate = new Date().toDateString();
   state.todayCount = 0;
@@ -1961,12 +2032,120 @@ function renderHome() {
 
   renderHistoryChart();
   renderBadges();
+  renderCatStats();
+  syncReminderUI();
 
   const weak = state.words.filter(w => w.box === 0).length;
   document.getElementById("recommend").innerHTML =
     weak > 0
       ? `まだ覚えていない単語が <b>${weak}語</b> あります。単語帳で復習してからクイズに挑戦しましょう！`
       : `全単語に一度は取り組みました！クイズとリスニングで定着させましょう 💪`;
+}
+
+// ==================== カテゴリ別 弱点分析 ====================
+let catStatsAll = false;
+function renderCatStats() {
+  const el = document.getElementById("cat-stats");
+  if (!el) return;
+  const map = {};
+  state.words.forEach(w => {
+    const c = w.cat || "その他";
+    if (!map[c]) map[c] = { total: 0, done: 0, lv: w.level || "中級" };
+    map[c].total++;
+    if (w.box >= 3) map[c].done++;
+  });
+  let rows = Object.keys(map).map(c => ({
+    cat: c, total: map[c].total, done: map[c].done, lv: map[c].lv,
+    pct: Math.round(map[c].done / map[c].total * 100)
+  })).sort((a, b) => a.pct - b.pct || b.total - a.total);
+  const shown = catStatsAll ? rows : rows.slice(0, 8);
+  const lvColor = { "初級": "#12b981", "中級": "#5b6ef5", "上級": "#8a63f0" };
+  el.innerHTML = shown.map(r => `
+    <div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px">
+        <span style="font-weight:700">${escapeHtml(r.cat)}
+          <span style="font-size:.66rem;color:var(--muted);font-weight:600;margin-left:4px">${escapeHtml(r.lv)}</span></span>
+        <span style="color:var(--muted);font-weight:600">${r.done}/${r.total}（${r.pct}%）</span>
+      </div>
+      <div style="background:var(--bg2);border-radius:99px;height:7px;overflow:hidden">
+        <div style="width:${r.pct}%;height:100%;background:${lvColor[r.lv] || "#5b6ef5"};border-radius:99px;transition:width .5s"></div>
+      </div>
+    </div>`).join("");
+  const btn = document.getElementById("cat-more-btn");
+  if (btn) btn.textContent = catStatsAll ? "上位のみ表示" : `すべて表示（${rows.length}カテゴリ）`;
+}
+
+// ==================== リマインダー ====================
+let reminderTimer = null;
+function syncReminderUI() {
+  const t = document.getElementById("remind-time");
+  const msg = document.getElementById("remind-msg");
+  if (!t) return;
+  t.value = state.remindTime || "20:00";
+  if (msg) msg.textContent = state.remindOn
+    ? `\u{1F514} ${state.remindTime || "20:00"} に通知します（このページを開いている間）`
+    : "通知はオフです。";
+  if (state.remindOn) scheduleReminder();
+}
+function saveReminder() {
+  state.remindTime = document.getElementById("remind-time").value || "20:00";
+  persist(); syncReminderUI();
+}
+function enableReminder() {
+  const msg = document.getElementById("remind-msg");
+  if (!("Notification" in window)) { if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "このブラウザは通知に対応していません。"; } return; }
+  Notification.requestPermission().then(p => {
+    if (p === "granted") {
+      state.remindOn = true;
+      state.remindTime = document.getElementById("remind-time").value || "20:00";
+      persist(); syncReminderUI();
+      new Notification("EigoNote", { body: "通知をオンにしました。毎日この時刻にお知らせします。" });
+    } else if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "通知が許可されませんでした。ブラウザの設定をご確認ください。"; }
+  });
+}
+function disableReminder() {
+  state.remindOn = false; persist();
+  if (reminderTimer) { clearTimeout(reminderTimer); reminderTimer = null; }
+  syncReminderUI();
+}
+function scheduleReminder() {
+  if (reminderTimer) clearTimeout(reminderTimer);
+  if (!state.remindOn) return;
+  const [h, m] = (state.remindTime || "20:00").split(":").map(Number);
+  const now = new Date();
+  const next = new Date();
+  next.setHours(h, m, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  reminderTimer = setTimeout(() => {
+    if (state.remindOn && "Notification" in window && Notification.permission === "granted") {
+      new Notification("EigoNote \u{1F4DA}", { body: "今日の英語学習の時間です！" });
+    }
+    scheduleReminder();
+  }, next - now);
+}
+
+// ==================== CSV 一括登録 ====================
+function importCsv() {
+  const ta = document.getElementById("csv-input");
+  const msg = document.getElementById("csv-msg");
+  const text = (ta.value || "").trim();
+  if (!text) { msg.style.color = "var(--danger)"; msg.textContent = "内容が空です。"; return; }
+  const have = new Set(state.words.map(w => w.w.toLowerCase()));
+  let added = 0, skipped = 0;
+  text.split(/\r?\n/).forEach(line => {
+    if (!line.trim()) return;
+    const p = line.split(",").map(s => s.trim());
+    if (p.length < 2 || !p[0] || !p[1]) { skipped++; return; }
+    if (have.has(p[0].toLowerCase())) { skipped++; return; }
+    state.words.push({ w: p[0], m: p[1], ex: p[2] || "", exJa: p[3] || "", cat: "自分の単語", level: "中級", box: 0 });
+    have.add(p[0].toLowerCase());
+    added++;
+  });
+  persist();
+  renderWordList(); renderHome();
+  ta.value = "";
+  msg.style.color = added ? "var(--accent)" : "var(--danger)";
+  msg.textContent = `${added}語を登録しました。` + (skipped ? `（${skipped}行はスキップ）` : "");
 }
 
 function renderHistoryChart() {
@@ -2364,6 +2543,8 @@ function importData(input) {
       if (!state.history) state.history = {};
       if (!state.badges) state.badges = [];
 if (!state.theme) state.theme = "light";
+if (state.remindOn === undefined) state.remindOn = false;
+if (!state.remindTime) state.remindTime = "20:00";
       if (state.dailyGoal === undefined) state.dailyGoal = 20;
       persist();
       applyTheme();
