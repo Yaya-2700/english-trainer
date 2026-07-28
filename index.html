@@ -347,9 +347,13 @@
         <button class="btn red" onclick="answerCard(false)">😅 まだ</button>
         <button class="btn green" onclick="answerCard(true)">✅ 覚えた</button>
       </div>
-      <p class="center" style="font-size:.75rem;color:var(--muted);margin-top:12px">
-        「覚えた」でレベルが上がり、レベル3で習得済みになります
+      <div class="center mt">
+        <button class="btn small gray hidden" id="flash-undo" onclick="undoCard()">↩️ 直前に戻る</button>
+      </div>
+      <p class="center" style="font-size:.72rem;color:var(--muted);margin-top:10px">
+        キーボード: <b>Space</b> めくる / <b>←</b> まだ / <b>→</b> 覚えた
       </p>
+
     </div>
     <div id="flash-done" class="card center hidden">
       <h2>🎉 今日の復習おわり！</h2>
@@ -429,6 +433,7 @@
       <h2>結果発表</h2>
       <div class="result-big" id="quiz-score"></div>
       <div id="quiz-comment" style="font-size:.9rem;color:var(--muted)"></div>
+      <div id="quiz-review" style="text-align:left;margin-top:16px"></div>
       <button class="btn mt" onclick="startQuiz()">もう一回</button>
     </div>
   </section>
@@ -1836,6 +1841,43 @@ const DEFAULT_WORDS = [
   ["toxic","有毒な","Toxic waste.","有毒廃棄物。","環境・エネルギー","中級"],
   ["efficiency","効率","Energy efficiency.","エネルギー効率。","環境・エネルギー","中級"],
   ["consumption","消費","Reduce consumption.","消費を減らす。","環境・エネルギー","中級"],
+  ["bewilder","当惑させる","The rules bewildered me.","規則に戸惑った。","上級動詞","上級"],
+  ["denounce","公然と非難する","Denounce the policy.","その政策を非難する。","上級動詞","上級"],
+  ["endure","耐える","Endure hardship.","苦難に耐える。","上級動詞","上級"],
+  ["halt","停止する","Halt production.","生産を停止する。","上級動詞","上級"],
+  ["initiate","開始する","Initiate a project.","事業を開始する。","上級動詞","上級"],
+  ["justify","正当化する","Justify the cost.","費用を正当化する。","上級動詞","上級"],
+  ["neglect","怠る","Neglect one's duty.","職務を怠る。","上級動詞","上級"],
+  ["outline","概要を述べる","Outline the plan.","計画の概要を説明する。","上級動詞","上級"],
+  ["prohibit","禁止する","Smoking is prohibited.","喫煙は禁止です。","上級動詞","上級"],
+  ["pursue","追求する","Pursue a career.","キャリアを追求する。","上級動詞","上級"],
+  ["restore","回復する","Restore trust.","信頼を回復する。","上級動詞","上級"],
+  ["specify","明記する","Specify the details.","詳細を明記して。","上級動詞","上級"],
+  ["verify","検証する","Verify the facts.","事実を確認する。","上級動詞","上級"],
+  ["accountable","責任を負う","Hold them accountable.","彼らに責任を負わせる。","上級形容詞","上級"],
+  ["comparable","比較できる","Comparable quality.","同等の品質。","上級形容詞","上級"],
+  ["conscious","意識している","Be conscious of costs.","費用を意識して。","上級形容詞","上級"],
+  ["exclusive","独占的な","An exclusive contract.","独占契約。","上級形容詞","上級"],
+  ["indicative","示唆する","Indicative of a trend.","傾向を示す。","上級形容詞","上級"],
+  ["optimal","最適な","The optimal solution.","最適な解決策。","上級形容詞","上級"],
+  ["respective","それぞれの","Their respective roles.","それぞれの役割。","上級形容詞","上級"],
+  ["simultaneous","同時の","Simultaneous translation.","同時通訳。","上級形容詞","上級"],
+  ["enroll","入学する","Enroll in a course.","講座に登録する。","学校・学び","中級"],
+  ["faculty","学部、教員陣","The faculty of law.","法学部。","学校・学び","中級"],
+  ["thesis","論文","Write a thesis.","論文を書く。","学校・学び","中級"],
+  ["seminar","ゼミ","Attend a seminar.","ゼミに出る。","学校・学び","中級"],
+  ["dissertation","学位論文","Defend a dissertation.","学位論文を口頭試問で守る。","学校・学び","中級"],
+  ["plagiarism","盗用","Avoid plagiarism.","盗用を避ける。","学校・学び","中級"],
+  ["transcript","成績証明書","Request a transcript.","成績証明書を請求する。","学校・学び","中級"],
+  ["credential","資格","Teaching credentials.","教員資格。","学校・学び","中級"],
+  ["literacy","読み書き能力","Digital literacy.","デジタルリテラシー。","学校・学び","中級"],
+  ["proficiency","熟達","Language proficiency.","言語運用能力。","学校・学び","中級"],
+  ["aptitude","適性","An aptitude for math.","数学の素質。","学校・学び","中級"],
+  ["bother","悩ませる、わざわざ〜する","Don't bother.","気にしないで。","日常","初級"],
+  ["manage","何とかやる","I managed to finish.","何とか終えられた。","日常","初級"],
+  ["prefer","好む","I prefer tea.","紅茶のほうが好き。","日常","初級"],
+  ["suppose","思う、仮定する","I suppose so.","たぶんそうだね。","日常","初級"],
+  ["belong","所属する","I belong to a club.","クラブに入っている。","日常","初級"],
 ];
 
 // ==================== 状態管理 ====================
@@ -2236,8 +2278,24 @@ function flipCard() {
 function speakWord() {
   speak(state.words[flashQueue[flashIdx]].w);
 }
+let flashUndo = null;
+function undoCard() {
+  if (!flashUndo) return;
+  const w = state.words[flashQueue[flashUndo.idx]];
+  w.box = flashUndo.prevBox;
+  flashIdx = flashUndo.idx;
+  flashUndo = null;
+  persist();
+  document.getElementById("flash-study").classList.remove("hidden");
+  document.getElementById("flash-done").classList.add("hidden");
+  document.getElementById("flash-undo").classList.add("hidden");
+  showFlash();
+}
 function answerCard(known) {
   const w = state.words[flashQueue[flashIdx]];
+  flashUndo = { idx: flashIdx, prevBox: w.box };
+  const ub = document.getElementById("flash-undo");
+  if (ub) ub.classList.remove("hidden");
   w.box = known ? Math.min(3, w.box + 1) : Math.max(0, w.box - 1);
   bumpToday();
   flashIdx++;
@@ -2312,7 +2370,7 @@ function highlightWord(sentence, word) {
 }
 
 // ==================== クイズ ====================
-let quizSet = [], quizIdx = 0, quizScore = 0;
+let quizSet = [], quizIdx = 0, quizScore = 0, quizWrong = [];
 function startQuiz() {
   const lvEl = document.getElementById("quiz-level");
   const lv = lvEl ? lvEl.value : "ALL";
@@ -2323,7 +2381,7 @@ function startQuiz() {
   if (pool.length < 4) { if (warn) warn.textContent = "この条件では単語が足りません（最低4語必要）。"; return; }
   if (warn) warn.textContent = "";
   quizSet = shuffle(pool).slice(0, 10).map(w => ({ word: w, dir: Math.random() < 0.5 ? "e2j" : "j2e" }));
-  quizIdx = 0; quizScore = 0;
+  quizIdx = 0; quizScore = 0; quizWrong = [];
   document.getElementById("quiz-start").classList.add("hidden");
   document.getElementById("quiz-result").classList.add("hidden");
   document.getElementById("quiz-play").classList.remove("hidden");
@@ -2341,7 +2399,9 @@ function showQuiz() {
   const others = shuffle(state.words.filter(w => w !== q.word)).slice(0, 3);
   const choices = shuffle([q.word, ...others]);
   document.getElementById("quiz-choices").innerHTML = choices.map((c, i) =>
-    `<button class="choice" data-ok="${c === q.word}" onclick="pickQuiz(this)">${escapeHtml(isE2J ? c.m : c.w)}</button>`
+    `<button class="choice" data-ok="${c === q.word}" onclick="pickQuiz(this)">
+      <span style="display:inline-block;min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:6px;
+      background:var(--bg2);color:var(--muted);font-size:.72rem;font-weight:700;margin-right:9px">${i + 1}</span>${escapeHtml(isE2J ? c.m : c.w)}</button>`
   ).join("");
 }
 function pickQuiz(btn) {
@@ -2350,7 +2410,7 @@ function pickQuiz(btn) {
     b.disabled = true;
     if (b.dataset.ok === "true") b.classList.add("correct");
   });
-  if (!ok) btn.classList.add("wrong");
+  if (!ok) { btn.classList.add("wrong"); quizWrong.push(quizSet[quizIdx].word); }
   else quizScore++;
   applyResult(quizSet[quizIdx].word, ok);
   const fb = document.getElementById("quiz-feedback");
@@ -2370,6 +2430,15 @@ function nextQuiz() {
       : quizScore >= 4 ? "まずまず。単語帳で復習しよう 📖"
       : "焦らずコツコツ。単語帳からやり直そう 💪";
     document.getElementById("quiz-comment").textContent = comments;
+    const rev = document.getElementById("quiz-review");
+    if (rev) rev.innerHTML = quizWrong.length ? `
+      <div style="font-size:.85rem;font-weight:700;margin-bottom:8px">\u{1F4DD} 間違えた単語（${quizWrong.length}）</div>
+      ${quizWrong.map(w => `<div class="word-item">
+        <div><span class="en">${escapeHtml(w.w)}</span><br><span class="ja">${escapeHtml(w.m)}</span></div>
+        <button class="btn small outline" onclick="speak('${w.w.replace(/'/g, "\\'")}')">\u{1F50A}</button>
+      </div>`).join("")}
+      <div class="center mt"><button class="btn small" onclick="document.getElementById('quiz-weak').checked=true;startQuiz()">苦手だけでもう一度</button></div>
+    ` : '<div style="text-align:center;color:var(--accent);font-weight:700;font-size:.9rem">\u{1F389} 全問正解！</div>';
     if (state.quizBest === null || quizScore > state.quizBest) state.quizBest = quizScore;
     persist();
   } else {
@@ -2557,6 +2626,32 @@ if (!state.remindTime) state.remindTime = "20:00";
   };
   reader.readAsText(file);
 }
+
+// ==================== キーボードショートカット ====================
+document.addEventListener("keydown", e => {
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select") return;
+  const flashOpen = !document.getElementById("tab-flash").classList.contains("hidden")
+    && !document.getElementById("flash-study").classList.contains("hidden");
+  if (flashOpen) {
+    if (e.code === "Space") { e.preventDefault(); flipCard(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); answerCard(false); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); answerCard(true); }
+    return;
+  }
+  const quizOpen = !document.getElementById("tab-quiz").classList.contains("hidden")
+    && !document.getElementById("quiz-play").classList.contains("hidden");
+  if (quizOpen) {
+    if (["1","2","3","4"].includes(e.key)) {
+      const btns = document.querySelectorAll("#quiz-choices .choice");
+      const b = btns[Number(e.key) - 1];
+      if (b && !b.disabled) b.click();
+    } else if (e.key === "Enter") {
+      const nx = document.getElementById("quiz-next");
+      if (nx && !nx.classList.contains("hidden")) nx.click();
+    }
+  }
+});
 
 // 初期表示
 applyTheme();
