@@ -257,6 +257,10 @@
       </div>
     </div>
     <div class="card">
+      <h2>📅 今週のレポート</h2>
+      <div id="weekly-report"></div>
+    </div>
+    <div class="card">
       <h2>🔎 カテゴリ別の弱点分析</h2>
       <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px">習得率が低い順に表示しています。苦手なカテゴリから攻めましょう。</div>
       <div id="cat-stats"></div>
@@ -347,9 +351,12 @@
         <button class="btn red" onclick="answerCard(false)">😅 まだ</button>
         <button class="btn green" onclick="answerCard(true)">✅ 覚えた</button>
       </div>
-      <div class="center mt">
+      <div class="center mt" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
         <button class="btn small gray hidden" id="flash-undo" onclick="undoCard()">↩️ 直前に戻る</button>
+        <button class="btn small outline" id="rec-btn" onclick="toggleRecord()">🎤 発音を録音</button>
+        <button class="btn small gray hidden" id="rec-play" onclick="playRecording()">▶️ 自分の声</button>
       </div>
+      <div id="rec-msg" style="font-size:.76rem;color:var(--muted);text-align:center;margin-top:8px"></div>
       <p class="center" style="font-size:.72rem;color:var(--muted);margin-top:10px">
         キーボード: <b>Space</b> めくる / <b>←</b> まだ / <b>→</b> 覚えた
       </p>
@@ -525,6 +532,25 @@
       <button class="btn mt" onclick="startSpell()">もう一回</button>
     </div>
   </section>
+
+  <!-- ============ 例文集 ============ -->
+  <section id="tab-phrase" class="hidden">
+    <div class="card" style="padding:14px 16px">
+      <label>📊 レベル</label>
+      <select id="ph-level" onchange="renderPhrases()">
+        <option value="ALL">すべてのレベル</option>
+        <option value="初級">初級</option>
+        <option value="中級">中級</option>
+        <option value="上級">上級</option>
+      </select>
+      <label style="margin-top:8px">📂 カテゴリ</label>
+      <select id="ph-cat" onchange="renderPhrases()"><option value="ALL">すべて</option></select>
+      <input id="ph-search" placeholder="🔍 英文・日本語で検索" oninput="renderPhrases()" style="margin-top:8px">
+      <div id="ph-count" style="font-size:.76rem;color:var(--muted);font-weight:600"></div>
+    </div>
+    <div id="phrase-list"></div>
+    <div id="ph-more" class="center" style="margin-bottom:16px"></div>
+  </section>
 </main>
 
 <nav>
@@ -533,6 +559,7 @@
   <button id="nav-quiz" onclick="switchTab('quiz')"><span class="icon">📝</span>クイズ</button>
   <button id="nav-listen" onclick="switchTab('listen')"><span class="icon">🎧</span>リスニング</button>
   <button id="nav-spell" onclick="switchTab('spell')"><span class="icon">✏️</span>スペル</button>
+  <button id="nav-phrase" onclick="switchTab('phrase')"><span class="icon">💬</span>例文集</button>
 </nav>
 
 <script>
@@ -2015,12 +2042,13 @@ if ("speechSynthesis" in window) speechSynthesis.getVoices();
 
 // ==================== タブ ====================
 function switchTab(name) {
-  ["home", "flash", "quiz", "listen", "spell"].forEach(t => {
+  ["home", "flash", "quiz", "listen", "spell", "phrase"].forEach(t => {
     document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
     document.getElementById("nav-" + t).classList.toggle("active", t === name);
   });
   if (name === "home") renderHome();
   if (name === "flash") { startFlash(); renderWordList(); }
+  if (name === "phrase") renderPhrases();
   window.scrollTo(0, 0);
 }
 
@@ -2075,6 +2103,7 @@ function renderHome() {
   renderHistoryChart();
   renderBadges();
   renderCatStats();
+  renderWeeklyReport();
   syncReminderUI();
 
   const weak = state.words.filter(w => w.box === 0).length;
@@ -2082,6 +2111,44 @@ function renderHome() {
     weak > 0
       ? `まだ覚えていない単語が <b>${weak}語</b> あります。単語帳で復習してからクイズに挑戦しましょう！`
       : `全単語に一度は取り組みました！クイズとリスニングで定着させましょう 💪`;
+}
+
+// ==================== 週間レポート ====================
+function renderWeeklyReport() {
+  const el = document.getElementById("weekly-report");
+  if (!el) return;
+  let thisWeek = 0, lastWeek = 0, activeDays = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const n = state.history[dayKey(d)] || 0;
+    thisWeek += n; if (n > 0) activeDays++;
+  }
+  for (let i = 7; i < 14; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    lastWeek += state.history[dayKey(d)] || 0;
+  }
+  const diff = thisWeek - lastWeek;
+  const diffTxt = lastWeek === 0 ? (thisWeek > 0 ? "先週より増加中" : "まだ記録がありません")
+    : (diff > 0 ? `先週より <b style="color:var(--accent)">+${diff}問</b>` :
+       diff < 0 ? `先週より <b style="color:var(--danger)">${diff}問</b>` : "先週と同じペース");
+  const mastered = state.words.filter(w => w.box >= 3).length;
+  const comment = activeDays >= 6 ? "\u{1F525} 素晴らしい習慣です！"
+    : activeDays >= 4 ? "\u{1F44D} いいペースです。この調子！"
+    : activeDays >= 1 ? "\u{1F331} まずは週4日を目指しましょう。"
+    : "\u{1F4AA} 今日から始めてみましょう！";
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="text-align:center;padding:12px 6px;background:var(--bg2);border-radius:12px">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--primary)">${thisWeek}</div>
+        <div style="font-size:.68rem;color:var(--muted);font-weight:600">今週の問題数</div></div>
+      <div style="text-align:center;padding:12px 6px;background:var(--bg2);border-radius:12px">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--primary)">${activeDays}</div>
+        <div style="font-size:.68rem;color:var(--muted);font-weight:600">学習した日数</div></div>
+      <div style="text-align:center;padding:12px 6px;background:var(--bg2);border-radius:12px">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent)">${mastered}</div>
+        <div style="font-size:.68rem;color:var(--muted);font-weight:600">習得済み語</div></div>
+    </div>
+    <div style="font-size:.85rem;line-height:1.8">${diffTxt}<br>${comment}</div>`;
 }
 
 // ==================== カテゴリ別 弱点分析 ====================
@@ -2263,6 +2330,8 @@ function startFlash() {
   showFlash();
 }
 function showFlash() {
+  const rp = document.getElementById("rec-play"); if (rp) rp.classList.add("hidden");
+  const rm = document.getElementById("rec-msg"); if (rm) rm.textContent = "";
   const card = document.getElementById("flashcard");
   card.classList.remove("flipped");
   const w = state.words[flashQueue[flashIdx]];
@@ -2625,6 +2694,88 @@ if (!state.remindTime) state.remindTime = "20:00";
     input.value = "";
   };
   reader.readAsText(file);
+}
+
+// ==================== 発音の録音比較 ====================
+let mediaRecorder = null, recChunks = [], recUrl = null, recording = false;
+function toggleRecord() {
+  const msg = document.getElementById("rec-msg");
+  if (recording) { stopRecord(); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) {
+    msg.textContent = "このブラウザは録音に対応していません。"; return;
+  }
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    mediaRecorder = new MediaRecorder(stream);
+    recChunks = [];
+    mediaRecorder.ondataavailable = e => recChunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      if (recUrl) URL.revokeObjectURL(recUrl);
+      recUrl = URL.createObjectURL(new Blob(recChunks, { type: "audio/webm" }));
+      document.getElementById("rec-play").classList.remove("hidden");
+      msg.textContent = "録音しました。お手本と聞き比べてみましょう。";
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start();
+    recording = true;
+    document.getElementById("rec-btn").textContent = "\u23F9 停止";
+    msg.textContent = "録音中… 単語を発音してください。";
+    setTimeout(() => { if (recording) stopRecord(); }, 5000);
+  }).catch(() => { msg.textContent = "マイクの使用が許可されませんでした。"; });
+}
+function stopRecord() {
+  if (mediaRecorder && recording) mediaRecorder.stop();
+  recording = false;
+  document.getElementById("rec-btn").textContent = "\u{1F3A4} 発音を録音";
+}
+function playRecording() {
+  if (recUrl) new Audio(recUrl).play();
+}
+
+// ==================== 例文集 ====================
+let phLimit = 30;
+function renderPhrases(more) {
+  const listEl = document.getElementById("phrase-list");
+  if (!listEl) return;
+  if (more) phLimit += 50; else phLimit = 30;
+  const lv = (document.getElementById("ph-level") || {}).value || "ALL";
+  const catSel = document.getElementById("ph-cat");
+  const q = ((document.getElementById("ph-search") || {}).value || "").trim().toLowerCase();
+
+  // カテゴリ選択肢を更新
+  if (catSel) {
+    const cur = catSel.value || "ALL";
+    const pool = state.words.filter(w => w.ex && (lv === "ALL" || (w.level || "中級") === lv));
+    const cats = [...new Set(pool.map(w => w.cat || "その他"))];
+    catSel.innerHTML = '<option value="ALL">すべて</option>' +
+      cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+    catSel.value = (cur === "ALL" || cats.includes(cur)) ? cur : "ALL";
+  }
+  const cat = catSel ? catSel.value : "ALL";
+  let list = state.words.filter(w => w.ex);
+  if (lv !== "ALL") list = list.filter(w => (w.level || "中級") === lv);
+  if (cat !== "ALL") list = list.filter(w => (w.cat || "その他") === cat);
+  if (q) list = list.filter(w => (w.ex || "").toLowerCase().includes(q) || (w.exJa || "").includes(q) || w.w.toLowerCase().includes(q));
+
+  const cnt = document.getElementById("ph-count");
+  if (cnt) cnt.textContent = `${list.length} 例文`;
+  const shown = list.slice(0, phLimit);
+  listEl.innerHTML = shown.length ? shown.map(w => `
+    <div class="card" style="padding:16px 18px;margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <div style="font-size:.98rem;font-weight:600;line-height:1.6">${highlightWord(w.ex, w.w)}</div>
+          <div style="font-size:.85rem;color:var(--muted);margin-top:5px">${escapeHtml(w.exJa || "")}</div>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:7px">
+            <span style="background:var(--primary-soft);color:var(--primary);padding:2px 8px;border-radius:99px;font-weight:700">${escapeHtml(w.level || "")}</span>
+            <span style="margin-left:6px">${escapeHtml(w.cat || "")}</span>
+          </div>
+        </div>
+        <button class="btn small outline" onclick="speak('${(w.ex || "").replace(/'/g, "\\'")}')">\u{1F50A}</button>
+      </div>
+    </div>`).join("") : '<div class="card center" style="color:var(--muted);font-size:.88rem">該当する例文がありません</div>';
+  const moreEl = document.getElementById("ph-more");
+  if (moreEl) moreEl.innerHTML = list.length > phLimit
+    ? `<button class="btn small gray" onclick="renderPhrases(true)">もっと見る（残り ${list.length - phLimit} 件）</button>` : "";
 }
 
 // ==================== キーボードショートカット ====================
