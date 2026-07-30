@@ -36,6 +36,18 @@ a{color:var(--primary)}
 .cta{display:inline-block;background:var(--primary);color:#fff;text-decoration:none;font-weight:700;padding:12px 24px;border-radius:12px;margin-top:8px}
 footer{border-top:1px solid var(--border);background:#fff;padding:26px 16px;text-align:center;font-size:.8rem;color:var(--muted)}
 footer a{color:var(--muted);margin:0 10px}
+/* Mobbin参考: ヒーロー / ハイライト / タイポ */
+h1{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;line-height:1.45}
+.hl{position:relative;display:inline-block;white-space:nowrap}
+.hl::after{content:"";position:absolute;left:-2px;right:-2px;bottom:2px;height:38%;background:linear-gradient(90deg,rgba(79,109,245,.22),rgba(124,92,240,.22));border-radius:4px;z-index:-1}
+.lead{font-size:1rem;color:var(--muted);line-height:1.9;margin-bottom:22px}
+.proof{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 4px}
+.proof>div{text-align:center;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 8px}
+.proof .pv{font-size:1.3rem;font-weight:800;color:var(--primary);line-height:1.2}
+.proof .pl{font-size:.68rem;color:var(--muted);font-weight:600;margin-top:2px}
+article h2{font-weight:800;letter-spacing:-.01em}
+.list-item{transition:box-shadow .2s,transform .1s;border:1px solid var(--border)}
+.list-item:active{transform:scale(.995)}
 </style>
 </head>
 <body>
@@ -49,8 +61,14 @@ footer a{color:var(--muted);margin:0 10px}
 .chip{border:1px solid var(--border);background:#fff;color:var(--muted);border-radius:999px;padding:7px 16px;font-size:.82rem;cursor:pointer;font-family:inherit}
 .chip.active{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:700}
 </style>
-<h1>英語学習コラム</h1>
-<p class="meta">初中級の英語学習者に向けて、文法・発音・リスニング・TOEIC・英会話・学習習慣のコツを全45記事で解説します。カテゴリで絞り込めます。</p>
+<h1>英語は、<span class="hl">続けた人が</span>うまくなる。</h1>
+<p class="lead">文法・発音・リスニング・TOEIC・英会話・学習習慣。<br>初中級者がつまずくポイントを、全45記事で具体的に解説します。</p>
+<div class="proof">
+  <div><div class="pv">45</div><div class="pl">学習コラム</div></div>
+  <div><div class="pv">1,340</div><div class="pl">収録単語</div></div>
+  <div><div class="pv">5</div><div class="pl">学習モード</div></div>
+</div>
+<p style="margin:20px 0 14px"><a class="cta" href="index.html">無料アプリで学習を始める →</a></p>
 <div class="chips"><button class="chip active" data-cat="ALL" onclick="filterCat(this)">すべて</button><button class="chip" data-cat="英会話" onclick="filterCat(this)">英会話</button><button class="chip" data-cat="学習法" onclick="filterCat(this)">学習法</button><button class="chip" data-cat="学習習慣" onclick="filterCat(this)">学習習慣</button><button class="chip" data-cat="発音" onclick="filterCat(this)">発音</button><button class="chip" data-cat="文法" onclick="filterCat(this)">文法</button><button class="chip" data-cat="資格試験" onclick="filterCat(this)">資格試験</button><button class="chip" data-cat="TOEIC" onclick="filterCat(this)">TOEIC</button><button class="chip" data-cat="リスニング" onclick="filterCat(this)">リスニング</button></div>
 <div id="col-list"><a class="list-item" data-cat="英会話" href="column-katakoto-datsu.html"><div class="cat">英会話</div><div class="t">「単語の羅列」を卒業して文で話すための3ステップ</div><div class="d">英語が単語の羅列になってしまう人へ。主語・動詞を意識して短い文で話すトレーニング法を解説します。</div></a>
 <a class="list-item" data-cat="英会話" href="column-wasei-eigo.html"><div class="cat">英会話</div><div class="t">通じない和製英語とその正しい英語表現40</div><div class="d">英語だと思って使うと通じない和製英語を、正しい英語表現とセットで紹介します。カタカナ語の落とし穴に注意。</div></a>

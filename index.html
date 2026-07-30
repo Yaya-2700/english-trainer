@@ -100,7 +100,7 @@
     box-shadow: var(--shadow); padding: 22px; margin-bottom: 16px;
     border: 1px solid rgba(230,233,242,.7);
   }
-  h2 { font-size: 1.08rem; font-weight: 700; margin-bottom: 14px; }
+  h2 { font-size: 1.12rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 14px; }
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     border: none; cursor: pointer;
@@ -197,6 +197,43 @@
   label { font-size: .78rem; color: var(--muted); font-weight: 600; display: block; margin-bottom: 5px; }
 
   .speed-row { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 12px 0; font-size: .82rem; color: var(--muted); }
+
+  /* ===== Mobbin参考: ヒーロー / タイポ / ハイライト ===== */
+  .hero { text-align: center; padding: 8px 4px 4px; }
+  .hero h2.hero-title {
+    font-size: 2rem; font-weight: 800; line-height: 1.35; letter-spacing: -.02em;
+    margin-bottom: 14px;
+  }
+  .hl { position: relative; display: inline-block; white-space: nowrap; }
+  .hl::after {
+    content: ""; position: absolute; left: -2px; right: -2px; bottom: 2px; height: 38%;
+    background: linear-gradient(90deg, rgba(91,110,245,.22), rgba(138,99,240,.22));
+    border-radius: 4px; z-index: -1;
+  }
+  .hl-g::after { background: linear-gradient(90deg, rgba(18,185,129,.25), rgba(52,211,153,.25)); }
+  .hero p.hero-sub { font-size: .93rem; color: var(--muted); line-height: 1.85; margin-bottom: 20px; }
+  .btn.lg { padding: 16px 30px; font-size: 1rem; border-radius: 16px; }
+  .proof {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
+  }
+  .proof .pv { font-size: 1.15rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
+  .proof .pl { font-size: .64rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  /* 機能チップ（Brilliant参考） */
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .mode-chip {
+    display: flex; align-items: center; gap: 10px; text-align: left;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 13px 14px; cursor: pointer; font-family: inherit; color: var(--text);
+    transition: border-color .15s, transform .1s, box-shadow .2s;
+  }
+  .mode-chip:hover { border-color: var(--primary); box-shadow: 0 4px 14px rgba(91,110,245,.14); }
+  .mode-chip:active { transform: scale(.98); }
+  .mode-chip .mi { font-size: 1.4rem; line-height: 1 }
+  .mode-chip .mt { font-size: .84rem; font-weight: 700 }
+  .mode-chip .md { font-size: .68rem; color: var(--muted); margin-top: 1px }
+  body.dark .hl::after { background: linear-gradient(90deg, rgba(125,140,248,.3), rgba(168,140,250,.3)); }
+  body.dark .hl-g::after { background: linear-gradient(90deg, rgba(52,211,153,.28), rgba(52,211,153,.2)); }
   .hidden { display: none !important; }
   .center { text-align: center; }
   .mt { margin-top: 14px; }
@@ -214,6 +251,31 @@
 <main>
   <!-- ============ HOME ============ -->
   <section id="tab-home">
+    <div class="card hero">
+      <h2 class="hero-title">英語は、<span class="hl">毎日の積み上げ</span>。</h2>
+      <p class="hero-sub">
+        1,340語の単語帳・クイズ・リスニング・スペル・例文集。<br>
+        登録不要・完全無料で、今すぐ始められます。
+      </p>
+      <button class="btn lg" onclick="switchTab('flash')">今日の学習を始める →</button>
+      <div class="proof">
+        <div><div class="pv" id="pf-words">1,340</div><div class="pl">収録単語</div></div>
+        <div><div class="pv">1,340</div><div class="pl">例文</div></div>
+        <div><div class="pv">5</div><div class="pl">学習モード</div></div>
+        <div><div class="pv">45</div><div class="pl">学習コラム</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🎯 学習モードを選ぶ</h2>
+      <div class="modes">
+        <button class="mode-chip" onclick="switchTab('flash')"><span class="mi">🗂️</span><span><span class="mt">単語帳</span><span class="md">めくって覚える</span></span></button>
+        <button class="mode-chip" onclick="switchTab('quiz')"><span class="mi">📝</span><span><span class="mt">4択クイズ</span><span class="md">意味を確認</span></span></button>
+        <button class="mode-chip" onclick="switchTab('listen')"><span class="mi">🎧</span><span><span class="mt">リスニング</span><span class="md">耳で鍛える</span></span></button>
+        <button class="mode-chip" onclick="switchTab('spell')"><span class="mi">✏️</span><span><span class="mt">スペル</span><span class="md">書いて定着</span></span></button>
+        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt">例文集</span><span class="md">使い方を学ぶ</span></span></button>
+        <button class="mode-chip" onclick="location.href='columns.html'"><span class="mi">📚</span><span><span class="mt">学習コラム</span><span class="md">45記事を読む</span></span></button>
+      </div>
+    </div>
     <div class="card" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
       <div style="font-size:.8rem;opacity:.9;font-weight:600">🔥 連続学習</div>
       <div style="font-size:2.6rem;font-weight:800;line-height:1.1;margin:2px 0"><span id="st-streak">0</span><span style="font-size:1.1rem;margin-left:4px">日</span></div>
@@ -252,8 +314,7 @@
       <h2>🚀 今日のおすすめ</h2>
       <div style="font-size:.88rem;line-height:1.7" id="recommend"></div>
       <div class="btn-row mt">
-        <button class="btn" onclick="switchTab('flash')">単語帳へ</button>
-        <button class="btn outline" onclick="switchTab('quiz')">クイズへ</button>
+        <button class="btn" onclick="document.getElementById('flash-weak').checked=true;switchTab('flash')">😥 苦手から復習する</button>
       </div>
     </div>
     <div class="card">
@@ -2057,6 +2118,8 @@ function renderHome() {
   const total = state.words.length;
   const mastered = state.words.filter(w => w.box >= 3).length;
   document.getElementById("st-total").textContent = total;
+  const pfw = document.getElementById("pf-words");
+  if (pfw) pfw.textContent = total.toLocaleString();
   document.getElementById("st-mastered").textContent = mastered;
   document.getElementById("st-quizbest").textContent = state.quizBest === null ? "-" : state.quizBest + "/10";
   document.getElementById("st-today").textContent = state.todayCount;
