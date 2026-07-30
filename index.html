@@ -644,6 +644,27 @@
       <button class="modal-x" onclick="closeSettings()" aria-label="閉じる">✕</button>
     </div>
     <div class="modal-body">
+      <div class="card plain" id="account-card">
+        <h2 data-i18n="account">👤 アカウント</h2>
+        <div id="acc-out">
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px" data-i18n="accDesc">Googleでログインすると、学習の進捗と設定がクラウドに保存されます。スマホ・パソコンなど複数の端末で同じデータを引き継げます。</div>
+          <button class="btn" style="width:100%" onclick="eigoSignIn()" data-i18n="accLogin">Googleでログイン</button>
+        </div>
+        <div id="acc-in" class="hidden">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <img id="acc-photo" alt="" referrerpolicy="no-referrer" style="width:42px;height:42px;border-radius:50%;background:var(--border);object-fit:cover;flex:none">
+            <div style="min-width:0;flex:1">
+              <div id="acc-name" style="font-weight:700;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+              <div id="acc-mail" style="font-size:.78rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn small" onclick="eigoSyncNow()" data-i18n="accSync">☁️ 今すぐ同期</button>
+            <button class="btn small gray" onclick="eigoSignOut()" data-i18n="accLogout">ログアウト</button>
+          </div>
+        </div>
+        <div id="acc-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
+      </div>
       <div class="card plain">
         <h2 data-i18n="display">🎨 表示設定</h2>
         <label>テーマ</label>
@@ -3024,6 +3045,9 @@ const I18N = {
     badges: "\u{1F3C5} 達成バッジ", recommend: "\u{1F680} 今日のおすすめ",
     weekly: "\u{1F4C5} 今週のレポート", catStats: "\u{1F50E} カテゴリ別の弱点分析",
     settings: "⚙️ 設定", close: "閉じる",
+    account: "\u{1F464} アカウント",
+    accDesc: "Googleでログインすると、学習の進捗と設定がクラウドに保存されます。スマホ・パソコンなど複数の端末で同じデータを引き継げます。",
+    accLogin: "Googleでログイン", accLogout: "ログアウト", accSync: "☁️ 今すぐ同期",
     display: "\u{1F3A8} 表示設定", theme: "テーマ", language: "言語 / Language",
     learnSet: "\u{1F3AF} 学習設定", goalSet: "1日の目標問題数", rateSet: "読み上げ速度（既定）", batchSet: "1回に出す単語数（単語帳）",
     listen: "\u{1F3A7} リスニング", quiz: "\u{1F4DD} 4択クイズ", start: "スタート",
@@ -3051,6 +3075,9 @@ const I18N = {
     badges: "\u{1F3C5} Badges", recommend: "\u{1F680} Recommended today",
     weekly: "\u{1F4C5} Weekly report", catStats: "\u{1F50E} Weak categories",
     settings: "⚙️ Settings", close: "Close",
+    account: "\u{1F464} Account",
+    accDesc: "Sign in with Google to back up your progress and settings to the cloud, and pick up where you left off on any device.",
+    accLogin: "Sign in with Google", accLogout: "Sign out", accSync: "\u2601\uFE0F Sync now",
     display: "\u{1F3A8} Appearance", theme: "Theme", language: "Language / 言語",
     learnSet: "\u{1F3AF} Learning", goalSet: "Daily goal (questions)", rateSet: "Speech rate (default)", batchSet: "Cards per session",
     listen: "\u{1F3A7} Listening", quiz: "\u{1F4DD} Quiz", start: "Start",
@@ -3346,6 +3373,226 @@ applyTheme();
 applyLang();
 renderHome();
 renderWordList();
+</script>
+<!-- ============ アカウント / クラウド同期（Firebase） ============ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, browserPopupRedirectResolver } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3oeWP0HOsycPx31kjKymC-p-7mLSy1Os",
+  authDomain: "eigonote.firebaseapp.com",
+  projectId: "eigonote",
+  storageBucket: "eigonote.firebasestorage.app",
+  messagingSenderId: "429813058726",
+  appId: "1:429813058726:web:dcc4b445c25314c75f3867"
+};
+
+let auth = null, db = null;
+try {
+  const app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+} catch (e) {
+  accMsg("クラウド同期を初期化できませんでした（オフラインでもアプリは使えます）");
+}
+
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+function $(id) { return document.getElementById(id); }
+function accMsg(s) { const el = $("acc-msg"); if (el) el.textContent = s || ""; }
+function L(ja, en) { return (typeof state !== "undefined" && state.lang === "en") ? en : ja; }
+
+/* ---------- 保存する内容（単語の定義本体はアプリ内にあるので進捗だけ送る） ---------- */
+function defaultKeys() {
+  const s = new Set();
+  try { DEFAULT_WORDS.forEach(a => s.add(String(a[0]).toLowerCase())); } catch (e) {}
+  return s;
+}
+function snapshot() {
+  const prog = {};
+  state.words.forEach(w => {
+    if ((w.box || 0) > 0 || w.due) prog[w.w.toLowerCase()] = { b: w.box || 0, d: w.due || null };
+  });
+  const def = defaultKeys();
+  const custom = state.words
+    .filter(w => !def.has(w.w.toLowerCase()))
+    .map(w => ({ w: w.w, m: w.m, ex: w.ex || "", exJa: w.exJa || "", cat: w.cat || "その他", level: w.level || "中級" }));
+  return {
+    v: 1,
+    updatedAt: Date.now(),
+    progress: prog,
+    custom: custom,
+    settings: {
+      theme: state.theme || "light", lang: state.lang || "ja",
+      dailyGoal: state.dailyGoal || 20, rate: state.rate || 0.9, batch: state.batch || 15,
+      remindOn: !!state.remindOn, remindTime: state.remindTime || "20:00"
+    },
+    stats: {
+      streak: state.streak || 0, bestStreak: state.bestStreak || 0,
+      lastStudyDate: state.lastStudyDate || null,
+      todayCount: state.todayCount || 0, todayDate: state.todayDate || null,
+      quizBest: (state.quizBest === null || state.quizBest === undefined) ? null : state.quizBest
+    },
+    history: state.history || {},
+    badges: state.badges || []
+  };
+}
+
+/* ---------- クラウド → ローカル（進捗は失わないようにマージ） ---------- */
+function mergeFromCloud(c, applySettings) {
+  if (!c || typeof c !== "object") return;
+  // ユーザーが自分で追加した単語
+  const have = new Set(state.words.map(w => w.w.toLowerCase()));
+  (c.custom || []).forEach(cw => {
+    const k = String(cw.w || "").toLowerCase();
+    if (!k || have.has(k)) return;
+    state.words.push({ w: cw.w, m: cw.m || "", ex: cw.ex || "", exJa: cw.exJa || "", cat: cw.cat || "その他", level: cw.level || "中級", box: 0 });
+    have.add(k);
+  });
+  // 定着度は大きい方、復習日は早い方を採用
+  const p = c.progress || {};
+  state.words.forEach(w => {
+    const r = p[w.w.toLowerCase()];
+    if (!r) return;
+    if ((r.b || 0) > (w.box || 0)) w.box = r.b;
+    if (r.d && (!w.due || r.d < w.due)) w.due = r.d;
+  });
+  // 学習履歴は日ごとに多い方
+  const h = c.history || {};
+  if (!state.history) state.history = {};
+  Object.keys(h).forEach(k => { state.history[k] = Math.max(state.history[k] || 0, h[k] || 0); });
+  // バッジは合算
+  state.badges = Array.from(new Set([].concat(state.badges || [], c.badges || [])));
+  const s = c.stats || {};
+  state.bestStreak = Math.max(state.bestStreak || 0, s.bestStreak || 0);
+  if (s.quizBest !== null && s.quizBest !== undefined) {
+    state.quizBest = Math.max(state.quizBest || 0, s.quizBest);
+  }
+  // 連続学習は「より新しい記録」を採用
+  const lt = state.lastStudyDate ? Date.parse(state.lastStudyDate) : 0;
+  const ct = s.lastStudyDate ? Date.parse(s.lastStudyDate) : 0;
+  if (ct > lt) { state.lastStudyDate = s.lastStudyDate; state.streak = s.streak || 0; }
+  else if (ct && ct === lt) { state.streak = Math.max(state.streak || 0, s.streak || 0); }
+  if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  // 今日の回数
+  if (s.todayDate && s.todayDate === new Date().toDateString()) {
+    if (state.todayDate === s.todayDate) state.todayCount = Math.max(state.todayCount || 0, s.todayCount || 0);
+    else { state.todayDate = s.todayDate; state.todayCount = s.todayCount || 0; }
+  }
+  // 設定（ログイン直後だけクラウド側を採用して引き継ぐ）
+  if (applySettings && c.settings) {
+    const st = c.settings;
+    if (st.theme) state.theme = st.theme;
+    if (st.lang) state.lang = st.lang;
+    if (st.dailyGoal) state.dailyGoal = st.dailyGoal;
+    if (st.rate) state.rate = st.rate;
+    if (st.batch) state.batch = st.batch;
+    if (st.remindTime) state.remindTime = st.remindTime;
+  }
+  persist();
+  try { applyTheme(); applyLang(); renderWordList(); } catch (e) {}
+}
+
+/* ---------- 書き込み（まとめて送る） ---------- */
+let pushTimer = null, pushing = false, dirty = false;
+async function doPush() {
+  if (!auth || !auth.currentUser || !db) return;
+  if (pushing) { dirty = true; return; }
+  pushing = true; dirty = false;
+  try {
+    await setDoc(doc(db, "users", auth.currentUser.uid), snapshot());
+    accMsg(L("同期しました（" + new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }) + "）",
+             "Synced at " + new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })));
+  } catch (e) {
+    accMsg(L("同期できませんでした（通信環境をご確認ください）", "Could not sync. Please check your connection."));
+  } finally {
+    pushing = false;
+    if (dirty) doPush();
+  }
+}
+function queuePush() {
+  if (!auth || !auth.currentUser) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(doPush, 2500);
+}
+// persist() に同期をぶら下げる
+const _persist = window.persist;
+window.persist = function () { _persist(); queuePush(); };
+// タブを閉じる／隠す直前にも送る
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") { clearTimeout(pushTimer); doPush(); } });
+
+/* ---------- UI ---------- */
+function renderAcc(user) {
+  const out = $("acc-out"), inn = $("acc-in");
+  if (!out || !inn) return;
+  if (user) {
+    out.classList.add("hidden"); inn.classList.remove("hidden");
+    const n = $("acc-name"), m = $("acc-mail"), ph = $("acc-photo");
+    if (n) n.textContent = user.displayName || L("ログイン中", "Signed in");
+    if (m) m.textContent = user.email || "";
+    if (ph) { if (user.photoURL) ph.src = user.photoURL; else ph.removeAttribute("src"); }
+  } else {
+    out.classList.remove("hidden"); inn.classList.add("hidden");
+  }
+}
+
+window.eigoSignIn = async function () {
+  if (!auth) { accMsg(L("ログイン機能を利用できません", "Sign-in is unavailable.")); return; }
+  accMsg(L("ログイン画面を開いています…", "Opening sign-in…"));
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    const code = (e && e.code) || "";
+    if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" ||
+        code === "auth/cancelled-popup-request" || code === "auth/operation-not-supported-in-this-environment") {
+      try { await signInWithRedirect(auth, provider); return; } catch (e2) {}
+    }
+    accMsg(L("ログインできませんでした（" + (code || "エラー") + "）", "Sign-in failed (" + (code || "error") + ")"));
+  }
+};
+
+window.eigoSignOut = async function () {
+  if (!auth) return;
+  clearTimeout(pushTimer);
+  try { await doPush(); } catch (e) {}
+  try { await signOut(auth); accMsg(L("ログアウトしました。学習データはこの端末に残ります。", "Signed out. Your data stays on this device.")); } catch (e) {}
+};
+
+window.eigoSyncNow = async function () {
+  if (!auth || !auth.currentUser || !db) return;
+  accMsg(L("同期中…", "Syncing…"));
+  try {
+    const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+    if (snap.exists()) mergeFromCloud(snap.data(), false);
+    await doPush();
+    try { renderHome(); syncSettingsUI(); } catch (e) {}
+  } catch (e) {
+    accMsg(L("同期できませんでした（通信環境をご確認ください）", "Could not sync. Please check your connection."));
+  }
+};
+
+if (auth) {
+  getRedirectResult(auth).catch(() => {});
+  onAuthStateChanged(auth, async user => {
+    renderAcc(user);
+    if (!user) return;
+    accMsg(L("学習データを読み込んでいます…", "Loading your data…"));
+    try {
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) mergeFromCloud(snap.data(), true);
+      await doPush();
+      try { renderHome(); syncSettingsUI(); renderAcc(user); } catch (e) {}
+      accMsg(L("クラウドと同期済みです。別の端末でも同じアカウントでログインすれば続きから学習できます。",
+               "Synced. Sign in on another device to continue where you left off."));
+    } catch (e) {
+      accMsg(L("データを読み込めませんでした（通信環境をご確認ください）", "Could not load your data. Please check your connection."));
+    }
+  });
+}
 </script>
 </body>
 </html>
