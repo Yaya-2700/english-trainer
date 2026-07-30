@@ -62,6 +62,7 @@
   .theme-toggle:hover { background: rgba(255,255,255,.3); }
   header { position: relative; }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  button, select, input, label, a { touch-action: manipulation; }
   body {
     font-family: "Hiragino Sans", "Yu Gothic", "Segoe UI", system-ui, sans-serif;
     background: var(--bg); color: var(--text);
@@ -164,8 +165,16 @@
     padding: 15px 17px; font-size: .95rem; font-weight: 500; cursor: pointer; font-family: inherit;
     transition: border-color .15s, background .15s, transform .1s;
   }
-  .choice:hover { border-color: var(--primary); background: var(--primary-soft); }
+  @media (hover: hover) and (pointer: fine) {
+    .choice:hover { border-color: var(--primary); background: var(--primary-soft); }
+  }
   .choice:active { transform: scale(.99); }
+  .choice[disabled] { pointer-events: none; }
+  .lvl-chip {
+    font-size: .62rem; color: var(--muted); margin-left: 6px; padding: 2px 7px; border-radius: 99px;
+    background: var(--bg2); border: 1px solid var(--border); font-family: inherit; cursor: pointer; vertical-align: 2px;
+  }
+  .lvl-chip:active { transform: scale(.94); }
   .choice.correct { border-color: var(--accent); background: var(--accent-soft); }
   .choice.wrong { border-color: var(--danger); background: #fdecec; }
   .choice:disabled { cursor: default; }
@@ -512,18 +521,43 @@
     <div id="quiz-start" class="card center">
       <h2>📝 4択クイズ</h2>
       <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
-        選んだレベルから10問出題。<br>英→日と日→英が混ざって出ます。
+        英→日と日→英が混ざって出ます。<br>難易度や問題数は下で変えられます。
       </p>
-      <div style="max-width:260px;margin:14px auto 0;text-align:left">
-        <label>📊 レベル</label>
-        <select id="quiz-level">
+      <div style="max-width:280px;margin:14px auto 0;text-align:left">
+        <label>🎚️ 難易度（選択肢の紛らわしさ）</label>
+        <select id="quiz-diff" onchange="saveQuizOpt()">
+          <option value="easy">やさしい（選択肢が大きく違う）</option>
+          <option value="normal" selected>ふつう（ランダム）</option>
+          <option value="hard">むずかしい（似た語が混ざる）</option>
+        </select>
+        <label style="margin-top:10px">🔢 問題数</label>
+        <select id="quiz-count" onchange="saveQuizOpt()">
+          <option value="5">5問（さくっと）</option>
+          <option value="10" selected>10問（標準）</option>
+          <option value="20">20問</option>
+          <option value="30">30問（がっつり）</option>
+        </select>
+        <label style="margin-top:10px">⏱️ 制限時間</label>
+        <select id="quiz-timer" onchange="saveQuizOpt()">
+          <option value="0" selected>なし</option>
+          <option value="20">20秒／問</option>
+          <option value="10">10秒／問</option>
+          <option value="5">5秒／問（上級者向け）</option>
+        </select>
+        <label style="margin-top:10px">📊 レベル</label>
+        <select id="quiz-level" onchange="populateQuizCat();saveQuizOpt()">
           <option value="ALL">すべてのレベル</option>
           <option value="初級">初級</option>
           <option value="中級">中級</option>
           <option value="上級">上級</option>
         </select>
+        <label style="margin-top:10px">📂 カテゴリ</label>
+        <select id="quiz-cat" onchange="saveQuizOpt()"><option value="ALL">すべて</option></select>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)">
+          <input type="checkbox" id="quiz-weak" style="width:auto;margin:0" onchange="saveQuizOpt()"> 😥 苦手だけ（定着0〜1）
+        </label>
         <label style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:.85rem;color:var(--text)">
-          <input type="checkbox" id="quiz-weak" style="width:auto;margin:0"> 😥 苦手だけ（定着0〜1）
+          <input type="checkbox" id="quiz-due" style="width:auto;margin:0" onchange="saveQuizOpt()"> 📅 今日の復習ぶんだけ
         </label>
       </div>
       <button class="btn mt" onclick="startQuiz()">スタート</button>
@@ -531,6 +565,9 @@
     </div>
     <div id="quiz-play" class="hidden">
       <div class="quiz-meta" id="quiz-progress"></div>
+      <div id="quiz-timer-bar" class="hidden" style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin:0 auto 10px;max-width:520px">
+        <div id="quiz-timer-fill" style="height:100%;width:100%;background:var(--primary)"></div>
+      </div>
       <div class="card">
         <div class="quiz-meta" id="quiz-direction"></div>
         <div class="quiz-q" id="quiz-question"></div>
@@ -717,9 +754,20 @@
     <div class="card plain">
       <h2>📥 単語の一括登録（CSV）</h2>
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:8px">
-        1行につき「英単語,意味,例文,例文和訳」の形式で貼り付けてください（例文以降は省略可）。
+        1行につき「英単語,意味,例文,例文和訳,レベル」の形式で貼り付けてください（例文以降は省略可）。<br>
+        レベル欄に「初級／中級／上級」と書くとその通りに登録されます。省略した場合は下の設定に従います。
       </div>
-      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
+      <label>📊 レベルの割り当て</label>
+      <select id="csv-level">
+        <option value="auto">自動で判定する（おすすめ）</option>
+        <option value="初級">すべて初級にする</option>
+        <option value="中級">すべて中級にする</option>
+        <option value="上級">すべて上級にする</option>
+      </select>
+      <div style="font-size:.76rem;color:var(--muted);line-height:1.6;margin:6px 0 10px">
+        自動判定は、収録済みの1,382語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。
+      </div>
+      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本&#10;ubiquitous,どこにでもある,,,上級" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
       <div class="btn-row mt"><button class="btn small" onclick="importCsv()">一括登録する</button></div>
       <div id="csv-msg" style="font-size:.8rem;margin-top:10px"></div>
     </div>
@@ -734,6 +782,14 @@
       </div>
       <input type="file" id="import-file" accept="application/json,.json" onchange="importData(this)" style="display:none">
       <div id="backup-msg" style="font-size:.8rem;margin-top:10px"></div>
+    </div>
+    <div class="card plain">
+      <h2 data-i18n="fbTitle">💬 ご意見・ご要望</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px" data-i18n="fbDesc">使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。</div>
+      <textarea id="fb-text" rows="4" maxlength="1000" placeholder="例：リスニングの速度をもっと細かく変えたい" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
+      <input type="email" id="fb-mail" maxlength="200" placeholder="返信がほしい方はメールアドレス（任意）" style="margin-top:8px">
+      <div class="btn-row mt"><button class="btn small" onclick="sendFeedback()" data-i18n="fbSend">送信する</button></div>
+      <div id="fb-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
     </div>
       <div class="center" style="padding:6px 4px 4px">
         <button class="btn lg" style="width:100%;max-width:320px" onclick="closeSettings()" data-i18n="close">閉じる</button>
@@ -2267,7 +2323,7 @@ const BADGES = [
   { id: "streak3",    icon: "\u{1F525}", name: "3日連続",      desc: "3日続けて学習した",      check: () => (state.bestStreak || 0) >= 3 },
   { id: "streak7",    icon: "\u{1F4AA}", name: "7日連続",      desc: "7日続けて学習した",      check: () => (state.bestStreak || 0) >= 7 },
   { id: "streak30",   icon: "\u{1F451}", name: "30日連続",     desc: "30日続けて学習した",     check: () => (state.bestStreak || 0) >= 30 },
-  { id: "quizPerfect",icon: "\u{1F3AF}", name: "クイズ満点",   desc: "クイズで10/10を取った",  check: () => (state.quizBest || 0) >= 10 },
+  { id: "quizPerfect",icon: "\u{1F3AF}", name: "クイズ満点",   desc: "10問以上のクイズで全問正解した",  check: () => !!state.quizPerfect || (state.quizBest || 0) >= 10 },
   { id: "goal",       icon: "\u{1F389}", name: "目標達成",     desc: "1日の目標を達成した",    check: () => state.todayCount >= (state.dailyGoal || 20) }
 ];
 function totalStudied() { return Object.values(state.history).reduce((a, b) => a + b, 0); }
@@ -2331,7 +2387,9 @@ function switchTab(name) {
     document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
     document.getElementById("nav-" + t).classList.toggle("active", t === name);
   });
+  if (name !== "quiz" && typeof clearQuizTimer === "function") clearQuizTimer();
   if (name === "home") renderHome();
+  if (name === "quiz") loadQuizOpt();
   if (name === "flash") { startFlash(); renderWordList(); }
   if (name === "phrase") renderPhrases();
   if (name === "column") renderColumnTab();
@@ -2346,7 +2404,10 @@ function renderHome() {
   const pfw = document.getElementById("pf-words");
   if (pfw) pfw.textContent = total.toLocaleString();
   document.getElementById("st-mastered").textContent = mastered;
-  document.getElementById("st-quizbest").textContent = state.quizBest === null ? "-" : state.quizBest + "/10";
+  const qb = document.getElementById("st-quizbest");
+  qb.textContent = (state.quizBestPct === undefined || state.quizBestPct === null)
+    ? (state.quizBest === null || state.quizBest === undefined ? "-" : Math.round(state.quizBest / 10 * 100) + "%")
+    : state.quizBestPct + "%";
   document.getElementById("st-today").textContent = state.todayCount;
   const pct = total ? Math.round(mastered / total * 100) : 0;
   document.getElementById("mastery-bar").style.width = pct + "%";
@@ -2529,27 +2590,80 @@ function scheduleReminder() {
 }
 
 // ==================== CSV 一括登録 ====================
+// ==================== 追加した単語のレベル判定 ====================
+const LEVELS = ["初級", "中級", "上級"];
+// 収録済み1,382語のレベル表（同じ単語なら迷わずそのレベルを使う）
+const KNOWN_LEVEL = (() => {
+  const m = {};
+  DEFAULT_WORDS.forEach(([w, , , , , lv]) => { if (w && lv) m[String(w).toLowerCase()] = lv; });
+  return m;
+})();
+// 母音のまとまりの数から音節数をざっくり数える
+function syllableCount(w) {
+  const x = w.toLowerCase().replace(/[^a-z]/g, "").replace(/e$/, "");
+  const m = x.match(/[aeiouy]+/g);
+  return m ? m.length : 1;
+}
+// 学術語・抽象語に多い語尾
+const ADV_SUFFIX = /(tion|sion|ment|ance|ence|ity|ous|ive|ate|ism|ology|itude|acy|graphy|ability|ibility)$/;
+// 中学英語レベルによく出る基本語尾・短い日常語
+function guessLevel(word) {
+  const raw = String(word || "").trim();
+  const w = raw.toLowerCase();
+  if (KNOWN_LEVEL[w]) return KNOWN_LEVEL[w];          // ① 収録済みならそのレベル
+  const letters = w.replace(/[^a-z]/g, "");
+  if (!letters) return "中級";
+  const syl = syllableCount(letters);
+  if (raw.includes(" ")) return "中級";               // 熟語は中級扱い
+  if (ADV_SUFFIX.test(letters) || syl >= 4 || letters.length >= 11) return "上級";  // ② 語尾・音節・長さ
+  if (syl <= 1 && letters.length <= 5) return "初級";
+  if (syl === 2 && letters.length <= 6) return "初級";
+  return "中級";                                       // ③ それ以外
+}
+function normalizeLevel(v) {
+  const x = String(v || "").trim();
+  return LEVELS.includes(x) ? x : null;
+}
+// 単語一覧のレベル表示をタップして直せるように
+function cycleLevel(i, ev) {
+  if (ev) { ev.stopPropagation(); ev.preventDefault(); }
+  const w = state.words[i];
+  if (!w) return;
+  w.level = LEVELS[(LEVELS.indexOf(w.level || "中級") + 1) % 3];
+  persist();
+  renderWordList("keep");
+  populateCatSelect();
+}
+
 function importCsv() {
   const ta = document.getElementById("csv-input");
   const msg = document.getElementById("csv-msg");
+  const mode = (document.getElementById("csv-level") || {}).value || "auto";
   const text = (ta.value || "").trim();
   if (!text) { msg.style.color = "var(--danger)"; msg.textContent = "内容が空です。"; return; }
   const have = new Set(state.words.map(w => w.w.toLowerCase()));
   let added = 0, skipped = 0;
+  const tally = { 初級: 0, 中級: 0, 上級: 0 };
   text.split(/\r?\n/).forEach(line => {
     if (!line.trim()) return;
     const p = line.split(",").map(s => s.trim());
     if (p.length < 2 || !p[0] || !p[1]) { skipped++; return; }
     if (have.has(p[0].toLowerCase())) { skipped++; return; }
-    state.words.push({ w: p[0], m: p[1], ex: p[2] || "", exJa: p[3] || "", cat: "自分の単語", level: "中級", box: 0 });
+    // 優先順位: CSVの5列目 > 一括指定 > 自動判定
+    const level = normalizeLevel(p[4]) || normalizeLevel(mode) || guessLevel(p[0]);
+    state.words.push({ w: p[0], m: p[1], ex: p[2] || "", exJa: p[3] || "", cat: "自分の単語", level: level, box: 0 });
+    tally[level]++;
     have.add(p[0].toLowerCase());
     added++;
   });
   persist();
-  renderWordList(); renderHome();
+  renderWordList(); renderHome(); populateCatSelect();
   ta.value = "";
   msg.style.color = added ? "var(--accent)" : "var(--danger)";
-  msg.textContent = `${added}語を登録しました。` + (skipped ? `（${skipped}行はスキップ）` : "");
+  msg.textContent = added
+    ? `${added}語を登録しました（初級${tally["初級"]}・中級${tally["中級"]}・上級${tally["上級"]}）。` +
+      (skipped ? `${skipped}行はスキップしました。` : "") + "レベルは単語一覧からタップで変更できます。"
+    : "登録できる行がありませんでした。" + (skipped ? `（${skipped}行はスキップ）` : "");
 }
 
 function renderHistoryChart() {
@@ -2697,7 +2811,7 @@ let wlLimit = 50;
 function renderWordList(more) {
   const el = document.getElementById("word-list");
   if (!el) return;
-  if (more) wlLimit += 100; else wlLimit = 50;
+  if (more === true) wlLimit += 100; else if (more !== "keep") wlLimit = 50;
   const q = (document.getElementById("wl-search") || {}).value || "";
   const sort = (document.getElementById("wl-sort") || {}).value || "default";
   const lv = (document.getElementById("wl-filter") || {}).value || "ALL";
@@ -2718,7 +2832,7 @@ function renderWordList(more) {
     const w = o.w;
     return `<div class="word-item">
        <div><span class="en">${escapeHtml(w.w)}</span>
-       <span style="font-size:.64rem;color:var(--muted);margin-left:6px">${escapeHtml(w.level || "")}</span>
+       <button class="lvl-chip" title="タップでレベルを変更" onclick="cycleLevel(${o.i}, event)">${escapeHtml(w.level || "中級")}</button>
        <br><span class="ja">${escapeHtml(w.m)}</span></div>
        <span class="mastery m${w.box}">${MASTERY_LABEL[w.box]}</span>
      </div>`;
@@ -2743,75 +2857,195 @@ function highlightWord(sentence, word) {
 
 // ==================== クイズ ====================
 let quizSet = [], quizIdx = 0, quizScore = 0, quizWrong = [];
+let quizDiff = "normal", quizLimit = 0, quizAnswered = false;
+// スマホでの「押した直後の誤反応（ゴーストクリック）」を防ぐためのロック
+let quizLockUntil = 0;
+let quizTimerId = null, quizDeadline = 0;
+
+function qVal(id, dflt) { const el = document.getElementById(id); return el ? el.value : dflt; }
+function qChk(id) { const el = document.getElementById(id); return !!(el && el.checked); }
+
+function saveQuizOpt() {
+  state.quizOpt = {
+    diff: qVal("quiz-diff", "normal"), count: Number(qVal("quiz-count", 10)),
+    tl: Number(qVal("quiz-timer", 0)), lv: qVal("quiz-level", "ALL"), cat: qVal("quiz-cat", "ALL"),
+    weak: qChk("quiz-weak"), due: qChk("quiz-due")
+  };
+  persist();
+}
+function loadQuizOpt() {
+  const o = state.quizOpt;
+  if (!o) { populateQuizCat(); return; }
+  const set = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined && v !== null) el.value = String(v); };
+  set("quiz-diff", o.diff); set("quiz-count", o.count); set("quiz-timer", o.tl); set("quiz-level", o.lv);
+  populateQuizCat();
+  set("quiz-cat", o.cat);
+  const w = document.getElementById("quiz-weak"); if (w) w.checked = !!o.weak;
+  const d = document.getElementById("quiz-due"); if (d) d.checked = !!o.due;
+}
+function populateQuizCat() {
+  const sel = document.getElementById("quiz-cat");
+  if (!sel) return;
+  const lv = qVal("quiz-level", "ALL");
+  const cur = sel.value || "ALL";
+  const pool = state.words.filter(w => lv === "ALL" || (w.level || "中級") === lv);
+  const cats = [...new Set(pool.map(w => w.cat || "その他"))].sort();
+  sel.innerHTML = '<option value="ALL">すべて（' + pool.length + '語）</option>' +
+    cats.map(c => {
+      const n = pool.filter(w => (w.cat || "その他") === c).length;
+      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '（' + n + '語）</option>';
+    }).join("");
+  sel.value = (cur === "ALL" || cats.includes(cur)) ? cur : "ALL";
+}
+
 function startQuiz() {
-  const lvEl = document.getElementById("quiz-level");
-  const lv = lvEl ? lvEl.value : "ALL";
-  const weak = document.getElementById("quiz-weak") && document.getElementById("quiz-weak").checked;
+  saveQuizOpt();
+  const lv = qVal("quiz-level", "ALL"), cat = qVal("quiz-cat", "ALL");
+  quizDiff = qVal("quiz-diff", "normal");
+  quizLimit = Number(qVal("quiz-timer", 0)) || 0;
+  const count = Number(qVal("quiz-count", 10)) || 10;
+  const weak = qChk("quiz-weak"), dueOnly = qChk("quiz-due");
+  const today = dayKey(new Date());
   let pool = state.words.filter(w => lv === "ALL" || (w.level || "中級") === lv);
-  if (weak) pool = pool.filter(w => w.box <= 1);
+  if (cat !== "ALL") pool = pool.filter(w => (w.cat || "その他") === cat);
+  if (weak) pool = pool.filter(w => (w.box || 0) <= 1);
+  if (dueOnly) pool = pool.filter(w => !w.due || w.due <= today);
   const warn = document.getElementById("quiz-warn");
-  if (pool.length < 4) { if (warn) warn.textContent = "この条件では単語が足りません（最低4語必要）。"; return; }
+  if (pool.length < 4) { if (warn) warn.textContent = "この条件では単語が足りません（最低4語必要）。条件をゆるめてください。"; return; }
   if (warn) warn.textContent = "";
-  quizSet = shuffle(pool).slice(0, 10).map(w => ({ word: w, dir: Math.random() < 0.5 ? "e2j" : "j2e" }));
+  quizSet = shuffle(pool).slice(0, Math.min(count, pool.length)).map(w => ({ word: w, dir: Math.random() < 0.5 ? "e2j" : "j2e" }));
   quizIdx = 0; quizScore = 0; quizWrong = [];
   document.getElementById("quiz-start").classList.add("hidden");
   document.getElementById("quiz-result").classList.add("hidden");
   document.getElementById("quiz-play").classList.remove("hidden");
   showQuiz();
 }
+
+// 難易度に応じて誤答（ダミー選択肢）を選ぶ
+function quizDistractors(q, isE2J) {
+  const label = w => isE2J ? w.m : w.w;
+  const ansLabel = label(q.word);
+  const taken = new Set([ansLabel]);
+  const cand = [];
+  for (const w of state.words) {
+    if (w === q.word) continue;
+    const l = label(w);
+    if (!l || taken.has(l)) continue;
+    taken.add(l); cand.push(w);
+  }
+  if (quizDiff === "normal") return shuffle(cand).slice(0, 3);
+  const len = ansLabel.length;
+  const head = ansLabel.slice(0, 2);
+  const scored = cand.map(w => {
+    const l = label(w);
+    let s = 0;
+    const sameCat = (w.cat || "") === (q.word.cat || "");
+    const sameLv = (w.level || "") === (q.word.level || "");
+    const near = Math.max(0, 20 - Math.abs(l.length - len));
+    const sameHead = l.slice(0, 2) === head;
+    if (quizDiff === "hard") {
+      if (sameCat) s += 40;
+      if (sameLv) s += 25;
+      s += near;
+      if (sameHead) s += 15;
+    } else { // easy: できるだけ似ていないものを選ぶ
+      if (!sameCat) s += 40;
+      if (!sameLv) s += 20;
+      s += Math.min(25, Math.abs(l.length - len) * 3);
+      if (sameHead) s -= 25;
+    }
+    return { w, s: s + Math.random() * 12 };
+  }).sort((a, b) => b.s - a.s);
+  return scored.slice(0, 3).map(o => o.w);
+}
+
+function clearQuizTimer() {
+  if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
+  const bar = document.getElementById("quiz-timer-bar");
+  if (bar) bar.classList.add("hidden");
+}
+function startQuizTimer() {
+  clearQuizTimer();
+  if (!quizLimit) return;
+  const bar = document.getElementById("quiz-timer-bar"), fill = document.getElementById("quiz-timer-fill");
+  if (!bar || !fill) return;
+  bar.classList.remove("hidden");
+  fill.style.width = "100%"; fill.style.background = "var(--primary)";
+  quizDeadline = Date.now() + quizLimit * 1000;
+  quizTimerId = setInterval(() => {
+    const left = quizDeadline - Date.now();
+    const ratio = Math.max(0, left / (quizLimit * 1000));
+    fill.style.width = (ratio * 100).toFixed(1) + "%";
+    fill.style.background = ratio < 0.25 ? "var(--danger)" : ratio < 0.5 ? "#f0a020" : "var(--primary)";
+    if (left <= 0) { clearQuizTimer(); timeUpQuiz(); }
+  }, 100);
+}
+function timeUpQuiz() {
+  if (quizAnswered) return;
+  revealQuiz(null, false, "⏰ 時間切れ…");
+}
+
 function showQuiz() {
   const q = quizSet[quizIdx];
   const isE2J = q.dir === "e2j";
-  document.getElementById("quiz-progress").textContent = `第 ${quizIdx + 1} 問 / ${quizSet.length}`;
-  document.getElementById("quiz-direction").textContent = isE2J ? "この英単語の意味は？" : "この意味の英単語は？";
-  document.getElementById("quiz-question").textContent = isE2J ? q.word.w : q.word.m;
-  document.getElementById("quiz-feedback").textContent = "";
-  document.getElementById("quiz-next").classList.add("hidden");
+  quizAnswered = false;
+  // 直前のタップが次の問題に貫通しないよう、少しの間クリックを受け付けない
+  quizLockUntil = Date.now() + 400;
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
 
-  // 正解と同じ表示文字列になる語は誤答から除外（重複選択肢の防止）
-  const label = w => isE2J ? w.m : w.w;
-  const taken = new Set([label(q.word)]);
-  const others = [];
-  for (const w of shuffle(state.words)) {
-    if (w === q.word) continue;
-    const l = label(w);
-    if (taken.has(l)) continue;
-    taken.add(l);
-    others.push(w);
-    if (others.length === 3) break;
-  }
-  const choices = shuffle([q.word, ...others]);
+  // 先に選択肢を作ってから問題文を出す（描画の途中経過が見えないように）
+  const choices = shuffle([q.word, ...quizDistractors(q, isE2J)]);
   document.getElementById("quiz-choices").innerHTML = choices.map((c, i) =>
     `<button class="choice" data-ok="${c === q.word}" onclick="pickQuiz(this)">
       <span style="display:inline-block;min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:6px;
       background:var(--bg2);color:var(--muted);font-size:.72rem;font-weight:700;margin-right:9px">${i + 1}</span>${escapeHtml(isE2J ? c.m : c.w)}</button>`
   ).join("");
+  document.getElementById("quiz-progress").textContent = `第 ${quizIdx + 1} 問 / ${quizSet.length}`;
+  document.getElementById("quiz-direction").textContent = isE2J ? "この英単語の意味は？" : "この意味の英単語は？";
+  document.getElementById("quiz-question").textContent = isE2J ? q.word.w : q.word.m;
+  document.getElementById("quiz-feedback").textContent = "";
+  document.getElementById("quiz-next").classList.add("hidden");
+  startQuizTimer();
 }
-function pickQuiz(btn) {
-  const ok = btn.dataset.ok === "true";
+
+// 選択肢を確定して答え合わせをする（時間切れは btn = null）
+function revealQuiz(btn, ok, msg) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  clearQuizTimer();
   document.querySelectorAll("#quiz-choices .choice").forEach(b => {
     b.disabled = true;
     if (b.dataset.ok === "true") b.classList.add("correct");
   });
-  if (!ok) { btn.classList.add("wrong"); quizWrong.push(quizSet[quizIdx].word); }
+  if (!ok) { if (btn) btn.classList.add("wrong"); quizWrong.push(quizSet[quizIdx].word); }
   else quizScore++;
   applyResult(quizSet[quizIdx].word, ok);
   const fb = document.getElementById("quiz-feedback");
-  fb.textContent = ok ? "⭕ 正解！" : "❌ 残念…";
+  fb.textContent = msg || (ok ? "⭕ 正解！" : "❌ 残念…");
   fb.style.color = ok ? "var(--accent)" : "var(--danger)";
   bumpToday();
   document.getElementById("quiz-next").classList.remove("hidden");
+  // 「次へ」も同じ理由で少しの間だけ無効にする
+  quizLockUntil = Date.now() + 300;
+}
+function pickQuiz(btn) {
+  if (Date.now() < quizLockUntil) return;   // 押した直後の誤反応を無視
+  if (quizAnswered) return;
+  revealQuiz(btn, btn.dataset.ok === "true");
 }
 function nextQuiz() {
+  if (Date.now() < quizLockUntil) return;
   quizIdx++;
   if (quizIdx >= quizSet.length) {
+    clearQuizTimer();
     document.getElementById("quiz-play").classList.add("hidden");
     document.getElementById("quiz-result").classList.remove("hidden");
     document.getElementById("quiz-score").textContent = `${quizScore} / ${quizSet.length}`;
-    const comments = quizScore >= 9 ? "素晴らしい！ほぼ完璧です 🏆"
-      : quizScore >= 7 ? "いい調子！あと少しで満点 ✨"
-      : quizScore >= 4 ? "まずまず。単語帳で復習しよう 📖"
-      : "焦らずコツコツ。単語帳からやり直そう 💪";
+    const pct = quizSet.length ? Math.round(quizScore / quizSet.length * 100) : 0;
+    const comments = pct >= 90 ? `正答率 ${pct}% — 素晴らしい！ほぼ完璧です 🏆`
+      : pct >= 70 ? `正答率 ${pct}% — いい調子！あと少しで満点 ✨`
+      : pct >= 40 ? `正答率 ${pct}% — まずまず。単語帳で復習しよう 📖`
+      : `正答率 ${pct}% — 焦らずコツコツ。単語帳からやり直そう 💪`;
     document.getElementById("quiz-comment").textContent = comments;
     const rev = document.getElementById("quiz-review");
     if (rev) rev.innerHTML = quizWrong.length ? `
@@ -2822,7 +3056,9 @@ function nextQuiz() {
       </div>`).join("")}
       <div class="center mt"><button class="btn small" onclick="document.getElementById('quiz-weak').checked=true;startQuiz()">苦手だけでもう一度</button></div>
     ` : '<div style="text-align:center;color:var(--accent);font-weight:700;font-size:.9rem">\u{1F389} 全問正解！</div>';
-    if (state.quizBest === null || quizScore > state.quizBest) state.quizBest = quizScore;
+    if ((state.quizBestPct || 0) < pct) state.quizBestPct = pct;
+    if (quizSet.length >= 10 && (state.quizBest === null || quizScore > state.quizBest)) state.quizBest = quizScore;
+    if (quizSet.length >= 10 && quizScore === quizSet.length) state.quizPerfect = true;
     persist();
   } else {
     showQuiz();
@@ -2864,6 +3100,9 @@ function startListen() {
 }
 function showListen() {
   const q = listenSet[listenIdx];
+  listenAnswered = false;
+  listenLockUntil = Date.now() + 400;
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   document.getElementById("listen-progress").textContent = `第 ${listenIdx + 1} 問 / ${listenSet.length}`;
   document.getElementById("listen-feedback").textContent = "";
   document.getElementById("listen-sentence").textContent = "";
@@ -2912,7 +3151,11 @@ function playListen(isReplay) {
   const rate = parseFloat(document.getElementById("listen-speed").value);
   speak(listenSet[listenIdx].ex, rate);
 }
+let listenLockUntil = 0, listenAnswered = false;
 function pickListen(btn) {
+  if (Date.now() < listenLockUntil) return;   // 押した直後の誤反応を無視
+  if (listenAnswered) return;
+  listenAnswered = true;
   const ok = btn.dataset.ok === "true";
   document.querySelectorAll("#listen-choices .choice").forEach(b => {
     b.disabled = true;
@@ -2927,8 +3170,10 @@ function pickListen(btn) {
   document.getElementById("listen-sentence").textContent = "英文: " + listenSet[listenIdx].ex;
   bumpToday();
   document.getElementById("listen-next").classList.remove("hidden");
+  listenLockUntil = Date.now() + 300;
 }
 function nextListen() {
+  if (Date.now() < listenLockUntil) return;
   listenIdx++;
   if (listenIdx >= listenSet.length) {
     document.getElementById("listen-play").classList.add("hidden");
@@ -3048,6 +3293,9 @@ const I18N = {
     account: "\u{1F464} アカウント",
     accDesc: "Googleでログインすると、学習の進捗と設定がクラウドに保存されます。スマホ・パソコンなど複数の端末で同じデータを引き継げます。",
     accLogin: "Googleでログイン", accLogout: "ログアウト", accSync: "☁️ 今すぐ同期",
+    fbTitle: "\u{1F4AC} ご意見・ご要望",
+    fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
+    fbSend: "送信する",
     display: "\u{1F3A8} 表示設定", theme: "テーマ", language: "言語 / Language",
     learnSet: "\u{1F3AF} 学習設定", goalSet: "1日の目標問題数", rateSet: "読み上げ速度（既定）", batchSet: "1回に出す単語数（単語帳）",
     listen: "\u{1F3A7} リスニング", quiz: "\u{1F4DD} 4択クイズ", start: "スタート",
@@ -3078,6 +3326,9 @@ const I18N = {
     account: "\u{1F464} Account",
     accDesc: "Sign in with Google to back up your progress and settings to the cloud, and pick up where you left off on any device.",
     accLogin: "Sign in with Google", accLogout: "Sign out", accSync: "\u2601\uFE0F Sync now",
+    fbTitle: "\u{1F4AC} Feedback",
+    fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
+    fbSend: "Send",
     display: "\u{1F3A8} Appearance", theme: "Theme", language: "Language / 言語",
     learnSet: "\u{1F3AF} Learning", goalSet: "Daily goal (questions)", rateSet: "Speech rate (default)", batchSet: "Cards per session",
     listen: "\u{1F3A7} Listening", quiz: "\u{1F4DD} Quiz", start: "Start",
@@ -3373,12 +3624,13 @@ applyTheme();
 applyLang();
 renderHome();
 renderWordList();
+loadQuizOpt();
 </script>
 <!-- ============ アカウント / クラウド同期（Firebase） ============ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, browserPopupRedirectResolver } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD3oeWP0HOsycPx31kjKymC-p-7mLSy1Os",
@@ -3428,13 +3680,16 @@ function snapshot() {
     settings: {
       theme: state.theme || "light", lang: state.lang || "ja",
       dailyGoal: state.dailyGoal || 20, rate: state.rate || 0.9, batch: state.batch || 15,
-      remindOn: !!state.remindOn, remindTime: state.remindTime || "20:00"
+      remindOn: !!state.remindOn, remindTime: state.remindTime || "20:00",
+      quizOpt: state.quizOpt || null
     },
     stats: {
       streak: state.streak || 0, bestStreak: state.bestStreak || 0,
       lastStudyDate: state.lastStudyDate || null,
       todayCount: state.todayCount || 0, todayDate: state.todayDate || null,
-      quizBest: (state.quizBest === null || state.quizBest === undefined) ? null : state.quizBest
+      quizBest: (state.quizBest === null || state.quizBest === undefined) ? null : state.quizBest,
+      quizBestPct: (state.quizBestPct === null || state.quizBestPct === undefined) ? null : state.quizBestPct,
+      quizPerfect: !!state.quizPerfect
     },
     history: state.history || {},
     badges: state.badges || []
@@ -3471,6 +3726,10 @@ function mergeFromCloud(c, applySettings) {
   if (s.quizBest !== null && s.quizBest !== undefined) {
     state.quizBest = Math.max(state.quizBest || 0, s.quizBest);
   }
+  if (s.quizBestPct !== null && s.quizBestPct !== undefined) {
+    state.quizBestPct = Math.max(state.quizBestPct || 0, s.quizBestPct);
+  }
+  if (s.quizPerfect) state.quizPerfect = true;
   // 連続学習は「より新しい記録」を採用
   const lt = state.lastStudyDate ? Date.parse(state.lastStudyDate) : 0;
   const ct = s.lastStudyDate ? Date.parse(s.lastStudyDate) : 0;
@@ -3491,9 +3750,10 @@ function mergeFromCloud(c, applySettings) {
     if (st.rate) state.rate = st.rate;
     if (st.batch) state.batch = st.batch;
     if (st.remindTime) state.remindTime = st.remindTime;
+    if (st.quizOpt) state.quizOpt = st.quizOpt;
   }
   persist();
-  try { applyTheme(); applyLang(); renderWordList(); } catch (e) {}
+  try { applyTheme(); applyLang(); renderWordList(); loadQuizOpt(); } catch (e) {}
 }
 
 /* ---------- 書き込み（まとめて送る） ---------- */
@@ -3571,6 +3831,43 @@ window.eigoSyncNow = async function () {
     try { renderHome(); syncSettingsUI(); } catch (e) {}
   } catch (e) {
     accMsg(L("同期できませんでした（通信環境をご確認ください）", "Could not sync. Please check your connection."));
+  }
+};
+
+/* ---------- ご意見・ご要望の送信 ---------- */
+window.sendFeedback = async function () {
+  const ta = $("fb-text"), mailEl = $("fb-mail"), msg = $("fb-msg");
+  if (!ta || !msg) return;
+  const text = (ta.value || "").trim();
+  if (!text) {
+    msg.style.color = "var(--danger)";
+    msg.textContent = L("内容を入力してください。", "Please write something first.");
+    return;
+  }
+  if (!db) {
+    msg.style.color = "var(--danger)";
+    msg.textContent = L("いま送信できません。時間をおいて試してください。", "Cannot send right now. Please try again later.");
+    return;
+  }
+  msg.style.color = "var(--muted)";
+  msg.textContent = L("送信中…", "Sending…");
+  try {
+    await addDoc(collection(db, "feedback"), {
+      text: text.slice(0, 1000),
+      email: ((mailEl && mailEl.value) || "").trim().slice(0, 200),
+      uid: (auth && auth.currentUser) ? auth.currentUser.uid : null,
+      lang: (typeof state !== "undefined" && state.lang) || "ja",
+      ua: (navigator.userAgent || "").slice(0, 300),
+      createdAt: serverTimestamp()
+    });
+    ta.value = "";
+    if (mailEl) mailEl.value = "";
+    msg.style.color = "var(--accent)";
+    msg.textContent = L("送信しました。ご意見ありがとうございます！", "Sent. Thank you for the feedback!");
+  } catch (e) {
+    msg.style.color = "var(--danger)";
+    msg.textContent = L("送信できませんでした。通信環境をご確認のうえ、もう一度お試しください。",
+                        "Could not send. Please check your connection and try again.");
   }
 };
 
