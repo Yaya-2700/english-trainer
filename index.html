@@ -243,9 +243,11 @@
     border-radius: 24px 24px 0 0; display: flex; flex-direction: column; animation: slideUp .25s ease; }
   @keyframes slideUp { from { transform: translateY(30px); opacity: .6 } to { transform: none; opacity: 1 } }
   .modal-head { display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
-  .modal-x { background: var(--bg2); border: none; width: 34px; height: 34px; border-radius: 50%;
-    cursor: pointer; font-size: .9rem; color: var(--muted); }
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: var(--bg); z-index: 2; border-radius: 24px 24px 0 0; }
+  .modal-x { background: var(--bg2); border: none; width: 40px; height: 40px; border-radius: 50%;
+    cursor: pointer; font-size: 1.05rem; color: var(--text); font-weight: 700; }
+  .modal-x:active { transform: scale(.92) }
   .modal-body { overflow-y: auto; padding: 16px 16px 28px; }
   .card.plain { box-shadow: none; border: 1px solid var(--border); }
   @media (min-width: 640px) {
@@ -286,7 +288,7 @@
       "@type": "WebApplication",
       "name": "EigoNote（エイゴノート）",
       "url": "https://eigonote.jp/",
-      "description": "1,340語の単語帳・4択クイズ・リスニング・スペル・例文集を備えた無料の英語学習アプリ。忘却曲線にもとづく復習機能つき。",
+      "description": "1,382語の単語帳・4択クイズ・リスニング・スペル・例文集を備えた無料の英語学習アプリ。忘却曲線にもとづく復習機能つき。",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "Web",
       "inLanguage": "ja",
@@ -316,37 +318,33 @@
   <button class="theme-toggle" style="right:62px" onclick="openSettings()" title="設定">⚙️</button>
   <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="ダークモード切替">🌙</button>
   <h1 onclick="switchTab('home')" style="cursor:pointer" title="ホームに戻る">🇬🇧 EigoNote</h1>
-  <p>毎日コツコツ、英語力アップ</p>
+  <p data-i18n="tagline">毎日コツコツ、英語力アップ</p>
 </header>
 
 <main>
   <!-- ============ HOME ============ -->
   <section id="tab-home">
     <div class="card hero">
-      <h2 class="hero-title">英語は、<span class="hl">毎日の積み上げ</span>。</h2>
-      <p class="hero-sub">
-        1,340語の単語帳・クイズ・リスニング・スペル・例文集。<br>
-        登録不要・完全無料で、今すぐ始められます。
-      </p>
-      <button class="btn lg" onclick="startTodayReview()">🎯 今日の学習をはじめる →</button>
+      <h2 class="hero-title" data-i18n="heroTitle" data-i18n-html><span data-i18n="heroA">英語は、</span><span class="hl" data-i18n="heroB">毎日の積み上げ</span><span data-i18n="heroC">。</span></h2>
+      <p class="hero-sub" data-i18n="heroSub" data-i18n-html>1,382語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。</p>
+      <button class="btn lg" onclick="startTodayReview()" data-i18n="cta">🎯 今日の学習をはじめる →</button>
       <div id="due-hint" style="font-size:.78rem;color:var(--muted);margin-top:12px"></div>
       <div id="tts-global-msg" class="hidden" style="font-size:.76rem;color:var(--danger);margin-top:8px;line-height:1.6"></div>
       <div class="proof">
-        <div><div class="pv" id="pf-words">1,340</div><div class="pl">収録単語</div></div>
-        <div><div class="pv">1,340</div><div class="pl">例文</div></div>
-        <div><div class="pv">5</div><div class="pl">学習モード</div></div>
-        <div><div class="pv">45</div><div class="pl">学習コラム</div></div>
+        <div><div class="pv" id="pf-words">1,382</div><div class="pl" data-i18n="pWords">収録単語</div></div>
+        <div><div class="pv">1,382</div><div class="pl" data-i18n="pEx">例文</div></div>
+        <div><div class="pv">5</div><div class="pl" data-i18n="pModes">学習モード</div></div>
+        <div><div class="pv">45</div><div class="pl" data-i18n="pCols">学習コラム</div></div>
       </div>
     </div>
     <div class="card">
-      <h2>🎯 学習モードを選ぶ</h2>
+      <h2 data-i18n="modesTitle">🎯 学習モードを選ぶ</h2>
       <div class="modes">
         <button class="mode-chip" onclick="switchTab('flash')"><span class="mi">🗂️</span><span><span class="mt">単語帳</span><span class="md">めくって覚える</span></span></button>
         <button class="mode-chip" onclick="switchTab('quiz')"><span class="mi">📝</span><span><span class="mt">4択クイズ</span><span class="md">意味を確認</span></span></button>
         <button class="mode-chip" onclick="switchTab('listen')"><span class="mi">🎧</span><span><span class="mt">リスニング</span><span class="md">耳で鍛える</span></span></button>
-        <button class="mode-chip" onclick="switchTab('spell')"><span class="mi">✏️</span><span><span class="mt">スペル</span><span class="md">書いて定着</span></span></button>
-        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt">例文集</span><span class="md">使い方を学ぶ</span></span></button>
-        <button class="mode-chip" onclick="location.href='columns.html'"><span class="mi">📚</span><span><span class="mt">学習コラム ↗</span><span class="md">45記事を読む</span></span></button>
+        <button class="mode-chip" onclick="switchTab('column')"><span class="mi">📖</span><span><span class="mt">今日のコラム</span><span class="md">読んで学ぶ</span></span></button>
+        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt">例文集</span><span class="md">1,382の例文</span></span></button>
       </div>
     </div>
     <div class="card" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
@@ -359,20 +357,20 @@
       <div style="font-size:.76rem;opacity:.95;margin-top:6px">今日の目標 <span id="goal-text">0 / 20</span></div>
     </div>
     <div class="stats-grid">
-      <div class="stat"><div class="num" id="st-total">0</div><div class="label">登録単語数</div></div>
-      <div class="stat"><div class="num" id="st-mastered">0</div><div class="label">習得済み</div></div>
-      <div class="stat"><div class="num" id="st-quizbest">-</div><div class="label">クイズ最高スコア</div></div>
-      <div class="stat"><div class="num" id="st-today">0</div><div class="label">今日の学習回数</div></div>
+      <div class="stat"><div class="num" id="st-total">0</div><div class="label" data-i18n="sTotal">登録単語数</div></div>
+      <div class="stat"><div class="num" id="st-mastered">0</div><div class="label" data-i18n="sMastered">習得済み</div></div>
+      <div class="stat"><div class="num" id="st-quizbest">-</div><div class="label" data-i18n="sQuiz">クイズ最高スコア</div></div>
+      <div class="stat"><div class="num" id="st-today">0</div><div class="label" data-i18n="sToday">今日の学習回数</div></div>
     </div>
     <div class="card mt">
-      <h2>📈 習得度</h2>
+      <h2 data-i18n="mastery">📈 習得度</h2>
       <div style="font-size:.8rem;color:var(--muted)">全単語のうち「習得済み（定着3）」の割合</div>
       <div class="progress-bar"><div id="mastery-bar" style="width:0%"></div></div>
       <div id="mastery-pct" style="text-align:right;font-size:.78rem;color:var(--muted);margin-top:4px">0%</div>
       <div id="level-progress" style="margin-top:16px"></div>
     </div>
     <div class="card">
-      <h2>📊 学習履歴（過去7日間）</h2>
+      <h2 data-i18n="history">📊 学習履歴（過去7日間）</h2>
       <div id="history-chart" style="display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:130px;margin-top:10px"></div>
     </div>
     <div class="card">
@@ -380,22 +378,22 @@
       <div id="badge-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:10px"></div>
     </div>
     <div class="card">
-      <h2>🌟 今日の1語</h2>
+      <h2 data-i18n="wordOfDay">🌟 今日の1語</h2>
       <div id="word-of-day" style="text-align:center;padding:6px 0"></div>
     </div>
     <div class="card">
-      <h2>🚀 今日のおすすめ</h2>
+      <h2 data-i18n="recommend">🚀 今日のおすすめ</h2>
       <div style="font-size:.88rem;line-height:1.7" id="recommend"></div>
       <div class="btn-row mt">
         <button class="btn" onclick="document.getElementById('flash-weak').checked=true;switchTab('flash')">😥 苦手から復習する</button>
       </div>
     </div>
     <div class="card">
-      <h2>📅 今週のレポート</h2>
+      <h2 data-i18n="weekly">📅 今週のレポート</h2>
       <div id="weekly-report"></div>
     </div>
     <div class="card">
-      <h2>🔎 カテゴリ別の弱点分析</h2>
+      <h2 data-i18n="catStats">🔎 カテゴリ別の弱点分析</h2>
       <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px">習得率が低い順に表示しています。苦手なカテゴリから攻めましょう。</div>
       <div id="cat-stats"></div>
       <div class="center mt"><button class="btn small gray" id="cat-more-btn" onclick="catStatsAll=!catStatsAll;renderCatStats()">すべて表示</button></div>
@@ -443,18 +441,18 @@
             <div class="box-badge" id="fc-box"></div>
             <div class="word" id="fc-word"></div>
             <button class="btn small outline" style="margin-top:12px" onclick="event.stopPropagation();speakWord()">🔊 発音を聞く</button>
-            <div class="hint">タップして意味を表示</div>
+            <div class="hint" data-i18n="tapToFlip">タップして意味を表示</div>
           </div>
           <div class="face back">
             <div class="meaning" id="fc-meaning"></div>
             <div class="example" id="fc-example"></div>
-            <div class="hint">タップして戻る</div>
+            <div class="hint" data-i18n="tapBack">タップして戻る</div>
           </div>
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn red" onclick="answerCard(false)">😅 まだ</button>
-        <button class="btn green" onclick="answerCard(true)">✅ 覚えた</button>
+        <button class="btn red" onclick="answerCard(false)" data-i18n="unknown">😅 まだ</button>
+        <button class="btn green" onclick="answerCard(true)" data-i18n="known">✅ 覚えた</button>
       </div>
       <div class="center mt" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
         <button class="btn small gray hidden" id="flash-undo" onclick="undoCard()">↩️ 直前に戻る</button>
@@ -566,6 +564,13 @@
           <option value="上級">上級</option>
         </select>
       </div>
+      <div style="max-width:260px;margin:8px auto 0;text-align:left">
+        <label>🔥 難易度</label>
+        <select id="listen-diff">
+          <option value="hard" selected>むずかしい（上級優先・聞き直し1回）</option>
+          <option value="normal">ふつう（全レベル・聞き直し自由）</option>
+        </select>
+      </div>
       <div class="speed-row">
         <span>読み上げ速度:</span>
         <select id="listen-speed" style="width:auto;margin:0">
@@ -580,7 +585,7 @@
     <div id="listen-play" class="hidden">
       <div class="quiz-meta" id="listen-progress"></div>
       <div class="card center">
-        <button class="btn" onclick="playListen()">🔊 もう一度聞く</button>
+        <button class="btn" id="listen-replay" onclick="playListen(true)">🔊 もう一度聞く</button>
         <p style="font-size:.8rem;color:var(--muted);margin-top:10px">この英文の意味は？</p>
         <div id="listen-choices" class="mt" style="text-align:left"></div>
         <div class="feedback" id="listen-feedback"></div>
@@ -595,50 +600,23 @@
     </div>
   </section>
 
-  <section id="tab-spell" class="hidden">
-    <div id="spell-start" class="card center">
-      <h2>✏️ スペル練習</h2>
-      <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
-        意味と発音をヒントに英単語を入力（全10問）。<br>書いて覚えることで記憶が定着します。
-      </p>
-      <div style="max-width:260px;margin:14px auto 0;text-align:left">
-        <label>📊 レベル</label>
-        <select id="spell-level">
-          <option value="ALL">すべてのレベル</option>
-          <option value="初級">初級</option>
-          <option value="中級">中級</option>
-          <option value="上級">上級</option>
-        </select>
-        <label style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:.85rem;color:var(--text)">
-          <input type="checkbox" id="spell-weak" style="width:auto;margin:0"> 😥 苦手だけ（定着0〜1）
-        </label>
-      </div>
-      <button class="btn mt" onclick="startSpell()">スタート</button>
-      <div id="spell-warn" style="font-size:.78rem;color:var(--danger);margin-top:8px"></div>
+  <!-- ============ 今日のコラム ============ -->
+  <section id="tab-column" class="hidden">
+    <div class="card" style="text-align:center">
+      <div style="font-size:.72rem;color:var(--primary);font-weight:800;letter-spacing:.06em">TODAY'S PICK</div>
+      <h2 style="margin:8px 0 4px">📖 今日のコラム</h2>
+      <div style="font-size:.8rem;color:var(--muted)">毎日1本、おすすめの記事をお届けします</div>
+      <div id="today-column" style="margin-top:16px"></div>
     </div>
-    <div id="spell-play" class="hidden">
-      <div class="quiz-meta" id="spell-progress"></div>
-      <div class="card center">
-        <div class="quiz-meta">この意味の英単語を入力</div>
-        <div class="quiz-q" id="spell-meaning" style="font-size:1.3rem"></div>
-        <button class="btn small outline" onclick="speakSpell()">🔊 発音を聞く</button>
-        <div id="spell-hint" style="font-size:1.4rem;letter-spacing:.3em;margin:14px 0;color:var(--muted)"></div>
-        <input id="spell-input" placeholder="英単語を入力" autocomplete="off" autocapitalize="off" onkeydown="if(event.key==='Enter')checkSpell()">
-        <div class="feedback" id="spell-feedback"></div>
-        <div class="center">
-          <button class="btn" id="spell-check" onclick="checkSpell()">こたえ合わせ</button>
-          <button class="btn hidden" id="spell-next" onclick="nextSpell()">次へ →</button>
-        </div>
+    <div class="card">
+      <h2>📚 すべてのコラム（45記事）</h2>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <select id="col-cat" onchange="renderColumnList()"><option value="ALL">すべてのカテゴリ</option></select>
       </div>
-    </div>
-    <div id="spell-result" class="card center hidden">
-      <h2>結果発表</h2>
-      <div class="result-big" id="spell-score"></div>
-      <button class="btn mt" onclick="startSpell()">もう一回</button>
+      <div id="column-list"></div>
     </div>
   </section>
 
-  <!-- ============ 例文集 ============ -->
   <section id="tab-phrase" class="hidden">
     <div class="card" style="padding:14px 16px">
       <label>📊 レベル</label>
@@ -662,10 +640,47 @@
 <div id="settings-modal" class="modal hidden" onclick="if(event.target===this)closeSettings()">
   <div class="modal-box">
     <div class="modal-head">
-      <h2 style="margin:0">⚙️ 設定</h2>
+      <h2 style="margin:0" data-i18n="settings">⚙️ 設定</h2>
       <button class="modal-x" onclick="closeSettings()" aria-label="閉じる">✕</button>
     </div>
     <div class="modal-body">
+      <div class="card plain">
+        <h2 data-i18n="display">🎨 表示設定</h2>
+        <label>テーマ</label>
+        <select id="set-theme" onchange="setTheme(this.value)">
+          <option value="light">☀️ ライト</option>
+          <option value="dark">🌙 ダーク</option>
+          <option value="auto">📱 端末の設定に合わせる</option>
+        </select>
+        <label style="margin-top:10px">言語 / Language</label>
+        <select id="set-lang" onchange="setLang(this.value)">
+          <option value="ja">🇯🇵 日本語</option>
+          <option value="en">🇺🇸 English</option>
+        </select>
+      </div>
+      <div class="card plain">
+        <h2 data-i18n="learnSet">🎯 学習設定</h2>
+        <label>1日の目標問題数</label>
+        <select id="set-goal" onchange="setGoal(this.value)">
+          <option value="10">10問（軽め）</option>
+          <option value="20">20問（標準）</option>
+          <option value="30">30問</option>
+          <option value="50">50問（がっつり）</option>
+        </select>
+        <label style="margin-top:10px">読み上げ速度（既定）</label>
+        <select id="set-rate" onchange="setRate(this.value)">
+          <option value="0.7">ゆっくり</option>
+          <option value="0.9">ふつう</option>
+          <option value="1.1">はやい</option>
+        </select>
+        <label style="margin-top:10px">1回に出す単語数（単語帳）</label>
+        <select id="set-batch" onchange="setBatch(this.value)">
+          <option value="10">10語</option>
+          <option value="15">15語</option>
+          <option value="25">25語</option>
+          <option value="40">40語</option>
+        </select>
+      </div>
     <div class="card plain">
       <h2>🔔 学習リマインダー</h2>
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
@@ -699,18 +714,21 @@
       <input type="file" id="import-file" accept="application/json,.json" onchange="importData(this)" style="display:none">
       <div id="backup-msg" style="font-size:.8rem;margin-top:10px"></div>
     </div>
+      <div class="center" style="padding:6px 4px 4px">
+        <button class="btn lg" style="width:100%;max-width:320px" onclick="closeSettings()" data-i18n="close">閉じる</button>
+      </div>
     </div>
   </div>
 </div>
 
 
 <nav>
-  <button id="nav-home" class="active" onclick="switchTab('home')"><span class="icon">🏠</span>ホーム</button>
-  <button id="nav-flash" onclick="switchTab('flash')"><span class="icon">🗂️</span>単語帳</button>
-  <button id="nav-quiz" onclick="switchTab('quiz')"><span class="icon">📝</span>クイズ</button>
-  <button id="nav-listen" onclick="switchTab('listen')"><span class="icon">🎧</span>リスニング</button>
-  <button id="nav-spell" onclick="switchTab('spell')"><span class="icon">✏️</span>スペル</button>
-  <button id="nav-phrase" onclick="switchTab('phrase')"><span class="icon">💬</span>例文集</button>
+  <button id="nav-home" class="active" onclick="switchTab('home')"><span class="icon">🏠</span><span data-i18n="navHome">ホーム</span></button>
+  <button id="nav-flash" onclick="switchTab('flash')"><span class="icon">🗂️</span><span data-i18n="navFlash">単語帳</span></button>
+  <button id="nav-quiz" onclick="switchTab('quiz')"><span class="icon">📝</span><span data-i18n="navQuiz">クイズ</span></button>
+  <button id="nav-listen" onclick="switchTab('listen')"><span class="icon">🎧</span><span data-i18n="navListen">リスニング</span></button>
+  <button id="nav-column" onclick="switchTab('column')"><span class="icon">📖</span><span data-i18n="navColumn">コラム</span></button>
+  <button id="nav-phrase" onclick="switchTab('phrase')"><span class="icon">💬</span><span data-i18n="navPhrase">例文集</span></button>
 </nav>
 
 <script>
@@ -2056,6 +2074,48 @@ const DEFAULT_WORDS = [
   ["prefer","好む","I prefer tea.","紅茶のほうが好き。","日常","初級"],
   ["suppose","思う、仮定する","I suppose so.","たぶんそうだね。","日常","初級"],
   ["belong","所属する","I belong to a club.","クラブに入っている。","日常","初級"],
+  ["acquire","取得する","The firm acquired a local startup.","その会社は地元の新興企業を買収した。","TOEIC頻出","中級"],
+  ["adjacent","隣接した","Our office is adjacent to the station.","当社は駅に隣接している。","TOEIC頻出","中級"],
+  ["alternative","代替の、選択肢","We need an alternative supplier.","代替の仕入先が必要だ。","TOEIC頻出","中級"],
+  ["anticipate","見込む","We anticipate strong demand.","強い需要を見込んでいる。","TOEIC頻出","中級"],
+  ["applicant","応募者","Each applicant will be interviewed.","各応募者に面接を行う。","TOEIC頻出","中級"],
+  ["appraise","査定する","An expert appraised the property.","専門家が物件を査定した。","TOEIC頻出","中級"],
+  ["assemble","組み立てる、集まる","Staff assembled in the lobby.","職員がロビーに集まった。","TOEIC頻出","中級"],
+  ["assess","評価する","We assess performance quarterly.","業績は四半期ごとに評価する。","TOEIC頻出","中級"],
+  ["authorize","承認する、権限を与える","Only managers can authorize refunds.","返金を承認できるのは管理者のみだ。","TOEIC頻出","中級"],
+  ["bid","入札（する）","Three firms placed a bid.","3社が入札した。","TOEIC頻出","中級"],
+  ["certify","証明する","The lab certified the results.","研究所が結果を証明した。","TOEIC頻出","中級"],
+  ["complimentary","無料の","Breakfast is complimentary for guests.","宿泊客の朝食は無料だ。","TOEIC頻出","中級"],
+  ["confidential","機密の","This file is strictly confidential.","この資料は厳重な機密だ。","TOEIC頻出","中級"],
+  ["consecutive","連続した","Sales rose for five consecutive months.","売上が5か月連続で伸びた。","TOEIC頻出","中級"],
+  ["contingent","次第の、不確定の","Approval is contingent on funding.","承認は資金次第だ。","TOEIC頻出","中級"],
+  ["courteous","礼儀正しい","Our staff are always courteous.","当社の職員は常に礼儀正しい。","TOEIC頻出","中級"],
+  ["deduct","差し引く","Taxes are deducted automatically.","税金は自動的に差し引かれる。","TOEIC頻出","中級"],
+  ["disclose","開示する","The company disclosed its earnings.","会社は収益を開示した。","TOEIC頻出","中級"],
+  ["distribute","配布する","Handouts were distributed to attendees.","配布資料が出席者に渡された。","TOEIC頻出","中級"],
+  ["duplicate","複製（する）","Please keep a duplicate for your records.","控えとして複製を保管してください。","TOEIC頻出","中級"],
+  ["enclose","同封する","I have enclosed the invoice.","請求書を同封しました。","TOEIC頻出","中級"],
+  ["entitle","権利を与える","Members are entitled to a discount.","会員は割引を受ける権利がある。","TOEIC頻出","中級"],
+  ["expire","期限が切れる","Your membership expires next month.","会員資格は来月失効する。","TOEIC頻出","中級"],
+  ["fiscal","会計の","The fiscal year ends in March.","会計年度は3月に終わる。","TOEIC頻出","中級"],
+  ["forthcoming","来たるべき","Details of the forthcoming event follow.","来たるイベントの詳細は以下の通り。","TOEIC頻出","中級"],
+  ["inquire","問い合わせる","Customers inquired about shipping.","顧客が配送について問い合わせた。","TOEIC頻出","中級"],
+  ["inspect","検査する","Inspectors inspect the plant monthly.","検査官は毎月工場を検査する。","TOEIC頻出","中級"],
+  ["itemize","項目別に記載する","Please itemize your expenses.","経費を項目別に記載してください。","TOEIC頻出","中級"],
+  ["mandatory","義務的な","Training is mandatory for new hires.","新入社員は研修が必須だ。","TOEIC頻出","中級"],
+  ["negotiable","交渉可能な","The salary is negotiable.","給与は交渉可能だ。","TOEIC頻出","中級"],
+  ["outstanding","未払いの、卓越した","The invoice is still outstanding.","その請求書はまだ未払いだ。","TOEIC頻出","中級"],
+  ["pending","保留中の","Your request is still pending.","ご依頼はまだ保留中だ。","TOEIC頻出","中級"],
+  ["prospective","見込みの","We met a prospective client.","見込み客と会った。","TOEIC頻出","中級"],
+  ["reimburse","払い戻す","We reimburse travel expenses.","出張費は払い戻される。","TOEIC頻出","中級"],
+  ["relocate","移転する","Headquarters relocated to Nagoya.","本社は名古屋に移転した。","TOEIC頻出","中級"],
+  ["renovate","改装する","The lobby will be renovated in May.","ロビーは5月に改装される。","TOEIC頻出","中級"],
+  ["utilize","活用する","We utilize recycled materials.","再生材を活用している。","TOEIC頻出","中級"],
+  ["via","〜経由で","Send the file via email.","ファイルはメールで送ってください。","TOEIC頻出","中級"],
+  ["waive","免除する","The bank waived the transfer fee.","銀行は振込手数料を免除した。","TOEIC頻出","中級"],
+  ["warehouse","倉庫","Goods are stored in the warehouse.","商品は倉庫に保管されている。","TOEIC頻出","中級"],
+  ["wholesale","卸売の","We offer wholesale prices.","卸売価格を提供している。","TOEIC頻出","中級"],
+  ["withdraw","撤回する、引き出す","He withdrew his application.","彼は応募を取り下げた。","TOEIC頻出","中級"],
 ];
 
 // ==================== 状態管理 ====================
@@ -2088,7 +2148,10 @@ let state = store.load() || {
   badges: [],
   theme: "light",
   remindOn: false,
-  remindTime: "20:00"
+  remindTime: "20:00",
+  lang: "ja",
+  rate: 0.9,
+  batch: 15
 };
 // 既存ユーザーに新しい単語をマージ（進捗は保持）
 (function mergeNewWords() {
@@ -2115,6 +2178,9 @@ if (!state.badges) state.badges = [];
 if (!state.theme) state.theme = "light";
 if (state.remindOn === undefined) state.remindOn = false;
 if (!state.remindTime) state.remindTime = "20:00";
+if (!state.lang) state.lang = "ja";
+if (!state.rate) state.rate = 0.9;
+if (!state.batch) state.batch = 15;
 if (state.todayDate !== new Date().toDateString()) {
   state.todayDate = new Date().toDateString();
   state.todayCount = 0;
@@ -2207,7 +2273,8 @@ function showTtsError(msg) {
   const el = document.getElementById("tts-global-msg");
   if (el) { el.textContent = msg; el.classList.remove("hidden"); }
 }
-function speak(text, rate = 0.9) {
+function speak(text, rate) {
+  if (rate === undefined) rate = (typeof state !== "undefined" && state.rate) || 0.9;
   if (!ttsSupported()) {
     showTtsError("お使いのブラウザは音声読み上げに対応していません。Chrome / Safari の最新版をお試しください。");
     return false;
@@ -2237,13 +2304,16 @@ if ("speechSynthesis" in window) speechSynthesis.getVoices();
 
 // ==================== タブ ====================
 function switchTab(name) {
-  ["home", "flash", "quiz", "listen", "spell", "phrase"].forEach(t => {
+  if (settingsOpen) closeSettings();
+  ensureScroll();
+  ["home", "flash", "quiz", "listen", "column", "phrase"].forEach(t => {
     document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
     document.getElementById("nav-" + t).classList.toggle("active", t === name);
   });
   if (name === "home") renderHome();
   if (name === "flash") { startFlash(); renderWordList(); }
   if (name === "phrase") renderPhrases();
+  if (name === "column") renderColumnTab();
   window.scrollTo(0, 0);
 }
 
@@ -2530,7 +2600,7 @@ function startFlash() {
     idxs = idxs.filter(i => !state.words[i].due || state.words[i].due <= today);
   }
   // レベルの低い単語を優先して出題
-  flashQueue = shuffle(idxs).sort((a, b) => state.words[a].box - state.words[b].box).slice(0, 15);
+  flashQueue = shuffle(idxs).sort((a, b) => state.words[a].box - state.words[b].box).slice(0, state.batch || 15);
   flashQueue = shuffle(flashQueue);
   flashIdx = 0;
   document.getElementById("flash-study").classList.remove("hidden");
@@ -2747,13 +2817,24 @@ function startListen() {
   }
   const lvEl = document.getElementById("listen-level");
   const lv = lvEl ? lvEl.value : "ALL";
+  const diff = (document.getElementById("listen-diff") || {}).value || "hard";
   let pool = state.words.filter(w => w.ex && w.exJa && (lv === "ALL" || (w.level || "中級") === lv));
   if (pool.length < 4) {
     document.getElementById("tts-warn").textContent = "このレベルでは例文つきの単語が足りません。";
     return;
   }
   document.getElementById("tts-warn").textContent = "";
+  if (diff === "hard") {
+    // 上級 → 中級 → 初級 の順に重みづけし、長い例文を優先
+    const rank = { "上級": 0, "中級": 1, "初級": 2 };
+    pool = pool.slice().sort((a, b) => {
+      const r = (rank[a.level] ?? 1) - (rank[b.level] ?? 1);
+      if (r !== 0) return r;
+      return (b.ex || "").length - (a.ex || "").length;
+    }).slice(0, Math.max(40, Math.ceil(pool.length * 0.35)));
+  }
   listenSet = shuffle(pool).slice(0, 5);
+  listenReplays = diff === "hard" ? 1 : 99;
   listenIdx = 0; listenScore = 0;
   document.getElementById("listen-start").classList.add("hidden");
   document.getElementById("listen-result").classList.add("hidden");
@@ -2766,12 +2847,26 @@ function showListen() {
   document.getElementById("listen-feedback").textContent = "";
   document.getElementById("listen-sentence").textContent = "";
   document.getElementById("listen-next").classList.add("hidden");
+  listenUsed = 0;
+  const rp = document.getElementById("listen-replay");
+  if (rp) { rp.disabled = false; rp.textContent = "\u{1F50A} もう一度聞く"; }
+  // 紛らわしい誤答を作る: 同カテゴリ／同レベル／似た文字数を優先
   const takenJa = new Set([q.exJa]);
+  const pool = state.words.filter(w => w.exJa && w.ex && w !== q && !takenJa.has(w.exJa));
+  const len = (q.exJa || "").length;
+  const scored = pool.map(w => {
+    let s = 0;
+    if ((w.cat || "") === (q.cat || "")) s += 40;                 // 同じカテゴリ
+    if ((w.level || "") === (q.level || "")) s += 20;             // 同じレベル
+    s += Math.max(0, 25 - Math.abs((w.exJa || "").length - len)); // 和訳の長さが近い
+    // 冒頭の語が同じだと消去法が効きにくい
+    if ((w.exJa || "").slice(0, 2) === (q.exJa || "").slice(0, 2)) s += 15;
+    return { w, s: s + Math.random() * 12 };
+  }).sort((a, b) => b.s - a.s);
   const others = [];
-  for (const w of shuffle(state.words.filter(w => w.exJa && w !== q))) {
+  for (const { w } of scored) {
     if (takenJa.has(w.exJa)) continue;
-    takenJa.add(w.exJa);
-    others.push(w);
+    takenJa.add(w.exJa); others.push(w);
     if (others.length === 3) break;
   }
   const choices = shuffle([q, ...others]);
@@ -2780,7 +2875,19 @@ function showListen() {
   ).join("");
   playListen();
 }
-function playListen() {
+let listenReplays = 1, listenUsed = 0;
+function playListen(isReplay) {
+  if (isReplay) {
+    if (listenUsed >= listenReplays) {
+      const fb = document.getElementById("listen-feedback");
+      fb.textContent = "この難易度では聞き直しは1回までです";
+      fb.style.color = "var(--muted)";
+      return;
+    }
+    listenUsed++;
+    const btn = document.getElementById("listen-replay");
+    if (btn && listenUsed >= listenReplays) { btn.disabled = true; btn.textContent = "聞き直し済み"; }
+  }
   const rate = parseFloat(document.getElementById("listen-speed").value);
   speak(listenSet[listenIdx].ex, rate);
 }
@@ -2874,30 +2981,139 @@ function nextSpell() {
 }
 
 // ==================== 設定モーダル ====================
+let settingsOpen = false;
 function openSettings() {
   document.getElementById("settings-modal").classList.remove("hidden");
   document.body.style.overflow = "hidden";
+  settingsOpen = true;
+  try { history.pushState({ modal: "settings" }, ""); } catch (e) {}
   syncReminderUI();
+  syncSettingsUI();
 }
-function closeSettings() {
+function closeSettings(fromPop) {
   document.getElementById("settings-modal").classList.add("hidden");
   document.body.style.overflow = "";
+  if (settingsOpen && !fromPop) { try { history.back(); } catch (e) {} }
+  settingsOpen = false;
 }
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeSettings();
-});
+// ブラウザの戻るボタンでも閉じられるように
+window.addEventListener("popstate", () => { if (settingsOpen) closeSettings(true); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && settingsOpen) closeSettings(); });
+// 万一の取り残し防止（タブ切替時に必ず解除）
+function ensureScroll() { document.body.style.overflow = ""; }
+
+// ==================== 多言語対応 ====================
+const I18N = {
+  ja: {
+    tagline: "毎日コツコツ、英語力アップ",
+    navHome: "ホーム", navFlash: "単語帳", navQuiz: "クイズ", navListen: "リスニング", navColumn: "コラム", navPhrase: "例文集",
+    heroA: "英語は、", heroB: "毎日の積み上げ", heroC: "。",
+    heroSub: "1,382語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。",
+    cta: "\u{1F3AF} 今日の学習をはじめる →",
+    pWords: "収録単語", pEx: "例文", pModes: "学習モード", pCols: "学習コラム",
+    modesTitle: "\u{1F3AF} 学習モードを選ぶ",
+    mFlash: "単語帳", mFlashD: "めくって覚える",
+    mQuiz: "4択クイズ", mQuizD: "意味を確認",
+    mListen: "リスニング", mListenD: "耳で鍛える",
+    mColumn: "今日のコラム", mColumnD: "読んで学ぶ",
+    mPhrase: "例文集", mPhraseD: "1,382の例文",
+    streak: "\u{1F525} 連続学習", days: "日", best: "自己ベスト", goalLabel: "今日の目標",
+    sTotal: "登録単語数", sMastered: "習得済み", sQuiz: "クイズ最高スコア", sToday: "今日の学習回数",
+    mastery: "\u{1F4C8} 習得度", masteryNote: "全単語のうち「習得済み（定着3）」の割合",
+    wordOfDay: "\u{1F31F} 今日の1語", history: "\u{1F4CA} 学習履歴（過去7日間）",
+    badges: "\u{1F3C5} 達成バッジ", recommend: "\u{1F680} 今日のおすすめ",
+    weekly: "\u{1F4C5} 今週のレポート", catStats: "\u{1F50E} カテゴリ別の弱点分析",
+    settings: "⚙️ 設定", close: "閉じる",
+    display: "\u{1F3A8} 表示設定", theme: "テーマ", language: "言語 / Language",
+    learnSet: "\u{1F3AF} 学習設定", goalSet: "1日の目標問題数", rateSet: "読み上げ速度（既定）", batchSet: "1回に出す単語数（単語帳）",
+    listen: "\u{1F3A7} リスニング", quiz: "\u{1F4DD} 4択クイズ", start: "スタート",
+    known: "✅ 覚えた", unknown: "\u{1F605} まだ", speakBtn: "\u{1F50A} 発音を聞く",
+    tapToFlip: "タップして意味を表示", tapBack: "タップして戻る",
+    level: "\u{1F4CA} レベル", allLevels: "すべてのレベル", category: "\u{1F4C2} 学習するカテゴリ", all: "すべて",
+  },
+  en: {
+    tagline: "Build your English, one day at a time",
+    navHome: "Home", navFlash: "Cards", navQuiz: "Quiz", navListen: "Listening", navColumn: "Articles", navPhrase: "Sentences",
+    heroA: "English is ", heroB: "built daily", heroC: ".",
+    heroSub: "1,382 words with flashcards, quizzes, listening and example sentences.<br>No sign-up. Completely free.",
+    cta: "\u{1F3AF} Start today's session →",
+    pWords: "Words", pEx: "Sentences", pModes: "Modes", pCols: "Articles",
+    modesTitle: "\u{1F3AF} Choose a mode",
+    mFlash: "Flashcards", mFlashD: "Flip to learn",
+    mQuiz: "Quiz", mQuizD: "Check meanings",
+    mListen: "Listening", mListenD: "Train your ears",
+    mColumn: "Today's article", mColumnD: "Read and learn",
+    mPhrase: "Sentences", mPhraseD: "1,382 examples",
+    streak: "\u{1F525} Streak", days: "days", best: "Best", goalLabel: "Today's goal",
+    sTotal: "Words", sMastered: "Mastered", sQuiz: "Best quiz score", sToday: "Today's reps",
+    mastery: "\u{1F4C8} Progress", masteryNote: "Share of words mastered (level 3)",
+    wordOfDay: "\u{1F31F} Word of the day", history: "\u{1F4CA} Last 7 days",
+    badges: "\u{1F3C5} Badges", recommend: "\u{1F680} Recommended today",
+    weekly: "\u{1F4C5} Weekly report", catStats: "\u{1F50E} Weak categories",
+    settings: "⚙️ Settings", close: "Close",
+    display: "\u{1F3A8} Appearance", theme: "Theme", language: "Language / 言語",
+    learnSet: "\u{1F3AF} Learning", goalSet: "Daily goal (questions)", rateSet: "Speech rate (default)", batchSet: "Cards per session",
+    listen: "\u{1F3A7} Listening", quiz: "\u{1F4DD} Quiz", start: "Start",
+    known: "✅ Got it", unknown: "\u{1F605} Not yet", speakBtn: "\u{1F50A} Listen",
+    tapToFlip: "Tap to see the meaning", tapBack: "Tap to go back",
+    level: "\u{1F4CA} Level", allLevels: "All levels", category: "\u{1F4C2} Category", all: "All",
+  }
+};
+function t(key) { return (I18N[state.lang] || I18N.ja)[key] ?? (I18N.ja[key] ?? key); }
+function setLang(v) { state.lang = v; persist(); applyLang(); }
+function applyLang() {
+  document.documentElement.lang = state.lang === "en" ? "en" : "ja";
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const k = el.getAttribute("data-i18n");
+    const v = t(k);
+    if (el.hasAttribute("data-i18n-html")) el.innerHTML = v; else el.textContent = v;
+  });
+  // 動的に描画される部分も更新
+  if (typeof renderHome === "function") renderHome();
+  if (typeof renderWordList === "function") renderWordList();
+}
+
+// ==================== 設定 ====================
+function syncSettingsUI() {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = String(v); };
+  set("set-theme", state.theme || "light");
+  set("set-lang", state.lang || "ja");
+  set("set-goal", state.dailyGoal || 20);
+  set("set-rate", state.rate || 0.9);
+  set("set-batch", state.batch || 15);
+}
+function setTheme(v) { state.theme = v; persist(); applyTheme(); }
+function setGoal(v) { state.dailyGoal = Number(v); persist(); renderHome(); }
+function setRate(v) {
+  state.rate = Number(v); persist();
+  const ls = document.getElementById("listen-speed"); if (ls) ls.value = String(v);
+}
+function setBatch(v) { state.batch = Number(v); persist(); }
 
 // ==================== テーマ ====================
+function prefersDark() {
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
 function applyTheme() {
-  const dark = state.theme === "dark";
+  const t = state.theme || "light";
+  const dark = t === "dark" || (t === "auto" && prefersDark());
   document.body.classList.toggle("dark", dark);
   const btn = document.getElementById("theme-toggle");
   if (btn) btn.textContent = dark ? "\u2600\uFE0F" : "\u{1F319}";
 }
 function toggleTheme() {
-  state.theme = state.theme === "dark" ? "light" : "dark";
+  const cur = state.theme === "auto" ? (prefersDark() ? "dark" : "light") : state.theme;
+  state.theme = cur === "dark" ? "light" : "dark";
   persist();
   applyTheme();
+  syncSettingsUI();
+}
+if (window.matchMedia) {
+  try {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      if (state.theme === "auto") applyTheme();
+    });
+  } catch (e) {}
 }
 
 // ==================== データのバックアップ / 復元 ====================
@@ -2928,6 +3144,9 @@ function importData(input) {
 if (!state.theme) state.theme = "light";
 if (state.remindOn === undefined) state.remindOn = false;
 if (!state.remindTime) state.remindTime = "20:00";
+if (!state.lang) state.lang = "ja";
+if (!state.rate) state.rate = 0.9;
+if (!state.batch) state.batch = 15;
       if (state.dailyGoal === undefined) state.dailyGoal = 20;
       persist();
       applyTheme();
@@ -2974,6 +3193,38 @@ function stopRecord() {
 }
 function playRecording() {
   if (recUrl) new Audio(recUrl).play();
+}
+
+const COLUMNS = [{"s": "column-katakoto-datsu", "t": "「単語の羅列」を卒業して文で話すための3ステップ", "d": "英語が単語の羅列になってしまう人へ。主語・動詞を意識して短い文で話すトレーニング法を解説します。", "c": "英会話"}, {"s": "column-wasei-eigo", "t": "通じない和製英語とその正しい英語表現40", "d": "英語だと思って使うと通じない和製英語を、正しい英語表現とセットで紹介します。カタカナ語の落とし穴に注意。", "c": "英会話"}, {"s": "column-jisho-hikikata", "t": "英英辞典デビュー：辞書を使いこなす学習法", "d": "英和辞典から一歩進んだ英英辞典の使い方と、辞書を英語学習に活かすコツを初心者向けに解説します。", "c": "学習法"}, {"s": "column-time-management", "t": "1日15分でも伸びる英語学習の時間割の作り方", "d": "限られた時間で英語力を伸ばすための、スキマ時間を組み合わせた現実的な学習スケジュールの立て方を紹介します。", "c": "学習習慣"}, {"s": "column-eigo-nikki", "t": "英語日記で「使える英語」に変える書き方ガイド", "d": "英語日記が英語力アップに効く理由と、三日坊主にならずに続けるための簡単な書き方のコツを紹介します。", "c": "学習法"}, {"s": "column-kigou-hatsuon", "t": "発音記号の読み方入門：辞書の音を自分のものにする", "d": "発音記号の基本的な読み方を初心者向けに解説。辞書の発音表記を理解して正しい発音を身につける方法を紹介します。", "c": "発音"}, {"s": "column-quiz-bunpo", "t": "間違えやすい英文法クイズ10問【解説つき】", "d": "日本人が間違えやすい英文法のポイントをクイズ形式で確認。各問に詳しい解説をつけて弱点を克服します。", "c": "文法"}, {"s": "column-eigo-kodomo", "t": "子どもと一緒に楽しむおうち英語のはじめ方", "d": "家庭で子どもと英語に親しむための、歌・絵本・かけ流しなど無理なく始められる方法を保護者向けに紹介します。", "c": "学習法"}, {"s": "column-eikaiwa-kinchou", "t": "英会話の「緊張して話せない」を克服する心の準備", "d": "英会話で頭が真っ白になる原因と、緊張せずに話すための考え方・準備・練習法を具体的に解説します。", "c": "英会話"}, {"s": "column-eigo-shukanka", "t": "英語学習を「歯磨きレベル」の習慣にする科学的方法", "d": "意志力に頼らず英語学習を習慣化するための、行動科学にもとづくトリガー設定と小さな習慣の作り方を解説します。", "c": "学習習慣"}, {"s": "column-eiken-guide", "t": "英検の級別レベルと合格に必要な学習量の目安", "d": "英検の各級のレベル感、必要な語彙数、合格に向けた学習の進め方を級別に整理して解説します。", "c": "資格試験"}, {"s": "column-speaking-test", "t": "スピーキングテスト（面接）で緊張せず話すための準備", "d": "英検やTOEIC S&Wなどのスピーキングテストに向けた、定型表現の準備と本番での立ち回りを解説します。", "c": "資格試験"}, {"s": "column-collocation", "t": "コロケーションで覚える「自然な英語」の作り方", "d": "英単語を単体でなく組み合わせ（コロケーション）で覚えることで、自然で通じやすい英語が身につく理由と方法を解説します。", "c": "学習法"}, {"s": "column-eigo-mokuhyou", "t": "「英語を話せるようになりたい」を具体的な目標に変える方法", "d": "漠然とした英語学習の目標を、達成可能で測定できる形に落とし込むための考え方と具体例を紹介します。", "c": "学習習慣"}, {"s": "column-mistake-ok", "t": "英語は間違えていい。ミスを恐れないマインドセット", "d": "英語学習でミスを恐れる心理の正体と、間違いを成長に変えるための考え方・実践法を解説します。", "c": "学習習慣"}, {"s": "column-reibun-gakushu", "t": "例文ごと覚える学習法：単語帳の次のステップ", "d": "単語を単体で覚えるより例文ごと記憶するほうが定着し使える理由と、例文学習の具体的な進め方を解説します。", "c": "学習法"}, {"s": "column-rokuon-hatsuon", "t": "自分の発音を録音して直す：客観視トレーニング", "d": "自分の英語を録音して聞き返す発音改善法の効果と、具体的な手順・チェックポイントを解説します。", "c": "発音"}, {"s": "column-shukan-report", "t": "学習を数値で振り返る：週次レビューのすすめ", "d": "英語学習を週単位で振り返る習慣の効果と、記録すべき指標・改善サイクルの回し方を解説します。", "c": "学習習慣"}, {"s": "column-eigo-input-output", "t": "インプットとアウトプットの黄金比を知る", "d": "英語学習における読む・聞く（インプット）と話す・書く（アウトプット）の理想的なバランスと切り替え方を解説します。", "c": "学習法"}, {"s": "column-eigo-plateau2", "t": "覚えた単語をすぐ忘れる人のための復習設計", "d": "せっかく覚えた英単語を忘れないための復習タイミングと、忘却を前提にした学習設計の作り方を解説します。", "c": "学習法"}, {"s": "column-genzai-kanryo", "t": "現在完了形が「わかったつもり」で終わる人への完全ガイド", "d": "現在完了形を経験・完了・継続で整理し過去形との違いを解説。", "c": "文法"}, {"s": "column-kanshi", "t": "a/an/theの使い分けを日本人向けに整理する冠詞入門", "d": "冠詞a/an/theの使い分けと無冠詞のケースを解説。", "c": "文法"}, {"s": "column-zenchishi", "t": "前置詞 in / on / at のイメージで攻略する時間と場所の表現", "d": "前置詞in/on/atをコアイメージで整理。", "c": "文法"}, {"s": "column-jodoushi", "t": "can / may / must / should の違いを話し手の気持ちで理解する助動詞", "d": "助動詞を義務・推量・許可の観点で解説。", "c": "文法"}, {"s": "column-kankeidaimeishi", "t": "関係代名詞 who / which / that を2文合体で理解する", "d": "関係代名詞を2文をつなぐ仕組みから解説。", "c": "文法"}, {"s": "column-hatsuon-boin", "t": "カタカナ英語を卒業する母音の発音入門", "d": "英語の母音の区別と通じる発音のコツ。", "c": "発音"}, {"s": "column-hatsuon-lr", "t": "日本人の永遠の課題 L と R の発音を克服する", "d": "LとRの発音の違いと練習法を解説。", "c": "発音"}, {"s": "column-toeic-part5", "t": "TOEIC Part5を時間内に解く文法・語彙問題の攻略法", "d": "Part5を速く解く選択肢の見方と解法。", "c": "TOEIC"}, {"s": "column-toeic-listening", "t": "TOEICリスニングでスコアを伸ばす先読みテクニック", "d": "Part3・4の先読みと各パート戦略。", "c": "TOEIC"}, {"s": "column-business-mail", "t": "そのまま使える英語ビジネスメールの型とフレーズ", "d": "英語ビジネスメールの構成と定番フレーズ。", "c": "英会話"}, {"s": "column-eiga-gakushu", "t": "洋画・海外ドラマで英語を学ぶ効果的な方法", "d": "映画・ドラマ学習の作品選びと字幕活用法。", "c": "学習法"}, {"s": "column-eijakubun", "t": "英作文が書けるようになる「日本語を崩す」思考法", "d": "難しい日本語を崩して英訳する手順。", "c": "学習法"}, {"s": "column-slump", "t": "英語学習の伸び悩み（プラトー）を抜け出す方法", "d": "停滞期の正体と突破する学習の見直し方。", "c": "学習習慣"}, {"s": "column-kihon-doushi", "t": "get / take / make など基本動詞を使いこなす英会話術", "d": "基本動詞のコアイメージで表現の幅を広げる。", "c": "英会話"}, {"s": "column-online-eikaiwa", "t": "オンライン英会話を最大限に活用する受講前後のコツ", "d": "オンライン英会話の予習・受講・復習のコツ。", "c": "学習法"}, {"s": "column-tango-kioku", "t": "英単語が覚えられない人へ。記憶に残る「間隔反復」学習法", "d": "間隔反復で英単語を効率よく覚える方法。", "c": "学習法"}, {"s": "column-shakaijin-jikan", "t": "忙しい社会人のための英語学習時間の作り方", "d": "スキマ時間の活用と習慣化のコツ。", "c": "学習習慣"}, {"s": "column-listening", "t": "リスニングが聞き取れない3つの原因と対策", "d": "音・速度・語彙からリスニング上達法を解説。", "c": "リスニング"}, {"s": "column-shadowing", "t": "シャドーイングの正しいやり方を5ステップで解説", "d": "発音とリスニングを鍛えるシャドーイング。", "c": "リスニング"}, {"s": "column-toeic-hajimete", "t": "TOEIC初受験ガイド：スコアの仕組みと直前1か月の対策", "d": "TOEICの形式・スコア目安・直前対策。", "c": "TOEIC"}, {"s": "column-bunpo-yarinaoshi", "t": "英文法やり直しは「中学英語」からで大丈夫な理由", "d": "やり直しは中学英文法から始めるのが近道。", "c": "文法"}, {"s": "column-kaiwa-phrase", "t": "そのまま使える日常英会話フレーズ30選【場面別】", "d": "場面別の定番英会話フレーズ集。", "c": "英会話"}, {"s": "column-app-katsuyo", "t": "英語学習アプリを三日坊主にしない使い方", "d": "アプリを継続の武器に変える使い分け術。", "c": "学習習慣"}, {"s": "column-tadoku", "t": "多読のすすめ：辞書を引かずに英語を読む勉強法", "d": "多読の3原則とレベル別の始め方。", "c": "学習法"}, {"s": "column-motivation", "t": "英語学習のモチベーションが続かないときの7つの処方箋", "d": "やる気に頼らず続ける具体策を7つ紹介。", "c": "学習習慣"}];
+// ==================== 今日のコラム ====================
+function renderColumnTab() {
+  // 日替わりピックアップ
+  const seed = new Date().toDateString().split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const c = COLUMNS[seed % COLUMNS.length];
+  document.getElementById("today-column").innerHTML = `
+    <a href="${c.s}.html" style="display:block;text-decoration:none;color:inherit;
+      background:linear-gradient(135deg,#5b6ef5,#8a63f0);border-radius:18px;padding:22px 20px;text-align:left">
+      <div style="font-size:.68rem;color:rgba(255,255,255,.85);font-weight:700">${escapeHtml(c.c)}</div>
+      <div style="font-size:1.1rem;font-weight:800;color:#fff;line-height:1.5;margin:6px 0 8px">${escapeHtml(c.t)}</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.9);line-height:1.7">${escapeHtml(c.d)}</div>
+      <div style="margin-top:14px;font-size:.82rem;font-weight:800;color:#fff">記事を読む →</div>
+    </a>`;
+  const sel = document.getElementById("col-cat");
+  if (sel && sel.options.length <= 1) {
+    const cats = [...new Set(COLUMNS.map(x => x.c))];
+    sel.innerHTML = '<option value="ALL">すべてのカテゴリ</option>' +
+      cats.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
+  }
+  renderColumnList();
+}
+function renderColumnList() {
+  const cat = (document.getElementById("col-cat") || {}).value || "ALL";
+  const list = COLUMNS.filter(c => cat === "ALL" || c.c === cat);
+  document.getElementById("column-list").innerHTML = list.map(c => `
+    <a href="${c.s}.html" style="display:block;text-decoration:none;color:inherit;padding:13px 4px;border-bottom:1px solid var(--border)">
+      <div style="font-size:.66rem;color:var(--primary);font-weight:700">${escapeHtml(c.c)}</div>
+      <div style="font-size:.9rem;font-weight:700;line-height:1.5;margin-top:3px">${escapeHtml(c.t)}</div>
+    </a>`).join("");
 }
 
 // ==================== 例文集 ====================
@@ -3092,6 +3343,7 @@ if ("serviceWorker" in navigator) {
 
 // 初期表示
 applyTheme();
+applyLang();
 renderHome();
 renderWordList();
 </script>
