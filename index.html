@@ -205,9 +205,10 @@
     margin-bottom: 14px;
   }
   .hl { position: relative; display: inline-block; white-space: nowrap; }
+  .hl { z-index: 0 }
   .hl::after {
-    content: ""; position: absolute; left: -2px; right: -2px; bottom: 2px; height: 38%;
-    background: linear-gradient(90deg, rgba(91,110,245,.22), rgba(138,99,240,.22));
+    content: ""; position: absolute; left: -3px; right: -3px; bottom: 1px; height: 40%;
+    background: linear-gradient(90deg, rgba(91,110,245,.3), rgba(138,99,240,.3));
     border-radius: 4px; z-index: -1;
   }
   .hl-g::after { background: linear-gradient(90deg, rgba(18,185,129,.25), rgba(52,211,153,.25)); }
@@ -230,8 +231,9 @@
   .mode-chip:hover { border-color: var(--primary); box-shadow: 0 4px 14px rgba(91,110,245,.14); }
   .mode-chip:active { transform: scale(.98); }
   .mode-chip .mi { font-size: 1.4rem; line-height: 1 }
-  .mode-chip .mt { font-size: .84rem; font-weight: 700 }
-  .mode-chip .md { font-size: .68rem; color: var(--muted); margin-top: 1px }
+  .mode-chip .mt { display: block; font-size: .84rem; font-weight: 700; line-height: 1.3 }
+  .mode-chip .md { display: block; font-size: .68rem; color: var(--muted); margin-top: 2px; line-height: 1.3 }
+  .mode-chip > span:last-child { flex: 1; min-width: 0 }
   body.dark .hl::after { background: linear-gradient(90deg, rgba(125,140,248,.3), rgba(168,140,250,.3)); }
   body.dark .hl-g::after { background: linear-gradient(90deg, rgba(52,211,153,.28), rgba(52,211,153,.2)); }
   .hidden { display: none !important; }
