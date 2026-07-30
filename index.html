@@ -236,15 +236,84 @@
   .mode-chip > span:last-child { flex: 1; min-width: 0 }
   body.dark .hl::after { background: linear-gradient(90deg, rgba(125,140,248,.3), rgba(168,140,250,.3)); }
   body.dark .hl-g::after { background: linear-gradient(90deg, rgba(52,211,153,.28), rgba(52,211,153,.2)); }
+  /* ===== 設定モーダル ===== */
+  .modal { position: fixed; inset: 0; background: rgba(20,24,36,.55); backdrop-filter: blur(4px);
+    z-index: 50; display: flex; align-items: flex-end; justify-content: center; padding: 0; }
+  .modal-box { background: var(--bg); width: 100%; max-width: 600px; max-height: 88vh;
+    border-radius: 24px 24px 0 0; display: flex; flex-direction: column; animation: slideUp .25s ease; }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: .6 } to { transform: none; opacity: 1 } }
+  .modal-head { display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
+  .modal-x { background: var(--bg2); border: none; width: 34px; height: 34px; border-radius: 50%;
+    cursor: pointer; font-size: .9rem; color: var(--muted); }
+  .modal-body { overflow-y: auto; padding: 16px 16px 28px; }
+  .card.plain { box-shadow: none; border: 1px solid var(--border); }
+  @media (min-width: 640px) {
+    .modal { align-items: center; padding: 20px }
+    .modal-box { border-radius: 24px }
+  }
+  /* スワイプ表示 */
+  .swipe-hint { display: flex; justify-content: space-between; font-size: .7rem; color: var(--muted);
+    font-weight: 600; padding: 0 6px; margin-bottom: 6px }
+  .flashcard.swiping .flashcard-inner { transition: none }
   .hidden { display: none !important; }
   .center { text-align: center; }
   .mt { margin-top: 14px; }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7228040067218129" crossorigin="anonymous"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5b6ef5">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EigoNote">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EigoNote（エイゴノート）">
+<meta property="og:title" content="EigoNote｜1,340語の無料英語学習アプリ">
+<meta property="og:description" content="単語帳・4択クイズ・リスニング・スペル・例文集の5モード。忘却曲線にもとづく復習機能つき。登録不要・完全無料。">
+<meta property="og:url" content="https://eigonote.jp/">
+<meta property="og:image" content="https://eigonote.jp/ogp.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EigoNote｜1,340語の無料英語学習アプリ">
+<meta name="twitter:description" content="単語帳・クイズ・リスニング・スペル・例文集。忘却曲線にもとづく復習で毎日コツコツ英語力アップ。">
+<meta name="twitter:image" content="https://eigonote.jp/ogp.png">
+<link rel="canonical" href="https://eigonote.jp/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "EigoNote（エイゴノート）",
+      "url": "https://eigonote.jp/",
+      "description": "1,340語の単語帳・4択クイズ・リスニング・スペル・例文集を備えた無料の英語学習アプリ。忘却曲線にもとづく復習機能つき。",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "ja",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+      "featureList": ["単語帳（間隔反復）", "4択クイズ", "リスニング", "スペル練習", "例文集", "学習履歴と弱点分析"]
+    },
+    {
+      "@type": "WebSite",
+      "name": "EigoNote（エイゴノート）",
+      "url": "https://eigonote.jp/",
+      "inLanguage": "ja"
+    },
+    {
+      "@type": "Organization",
+      "name": "EigoNote",
+      "url": "https://eigonote.jp/",
+      "logo": "https://eigonote.jp/icon-512.png"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
 <header>
+  <button class="theme-toggle" style="right:62px" onclick="openSettings()" title="設定">⚙️</button>
   <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="ダークモード切替">🌙</button>
   <h1 onclick="switchTab('home')" style="cursor:pointer" title="ホームに戻る">🇬🇧 EigoNote</h1>
   <p>毎日コツコツ、英語力アップ</p>
@@ -259,7 +328,9 @@
         1,340語の単語帳・クイズ・リスニング・スペル・例文集。<br>
         登録不要・完全無料で、今すぐ始められます。
       </p>
-      <button class="btn lg" onclick="switchTab('flash')">今日の学習を始める →</button>
+      <button class="btn lg" onclick="startTodayReview()">🎯 今日の学習をはじめる →</button>
+      <div id="due-hint" style="font-size:.78rem;color:var(--muted);margin-top:12px"></div>
+      <div id="tts-global-msg" class="hidden" style="font-size:.76rem;color:var(--danger);margin-top:8px;line-height:1.6"></div>
       <div class="proof">
         <div><div class="pv" id="pf-words">1,340</div><div class="pl">収録単語</div></div>
         <div><div class="pv">1,340</div><div class="pl">例文</div></div>
@@ -330,39 +401,6 @@
       <div class="center mt"><button class="btn small gray" id="cat-more-btn" onclick="catStatsAll=!catStatsAll;renderCatStats()">すべて表示</button></div>
     </div>
     <div class="card">
-      <h2>🔔 学習リマインダー</h2>
-      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
-        このページを開いている間、指定時刻にブラウザ通知でお知らせします。
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <input type="time" id="remind-time" style="width:auto;margin:0" onchange="saveReminder()">
-        <button class="btn small" onclick="enableReminder()">🔔 通知をON</button>
-        <button class="btn small gray" onclick="disableReminder()">OFF</button>
-      </div>
-      <div id="remind-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
-    </div>
-    <div class="card">
-      <h2>📥 単語の一括登録（CSV）</h2>
-      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:8px">
-        1行につき「英単語,意味,例文,例文和訳」の形式で貼り付けてください（例文以降は省略可）。
-      </div>
-      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
-      <div class="btn-row mt"><button class="btn small" onclick="importCsv()">一括登録する</button></div>
-      <div id="csv-msg" style="font-size:.8rem;margin-top:10px"></div>
-    </div>
-    <div class="card">
-      <h2>💾 データのバックアップ</h2>
-      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px">
-        学習の進捗はこの端末のブラウザに保存されています。機種変更や別のブラウザへ引き継ぐには、バックアップを保存してください。
-      </div>
-      <div class="btn-row">
-        <button class="btn small" onclick="exportData()">⬇️ バックアップを保存</button>
-        <button class="btn small outline" onclick="document.getElementById('import-file').click()">⬆️ 復元する</button>
-      </div>
-      <input type="file" id="import-file" accept="application/json,.json" onchange="importData(this)" style="display:none">
-      <div id="backup-msg" style="font-size:.8rem;margin-top:10px"></div>
-    </div>
-    <div class="card">
       <h2>📚 学習コラム</h2>
       <div style="font-size:.88rem;line-height:1.7">
         単語の覚え方、リスニング上達法、学習の習慣化のコツなどを記事で解説しています。<br>
@@ -390,11 +428,15 @@
       <label style="margin:10px 0 6px">📂 学習するカテゴリ</label>
       <select id="flash-cat" onchange="startFlash()"><option value="ALL">すべて</option></select>
       <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)">
+        <input type="checkbox" id="flash-due" onchange="startFlash()" style="width:auto;margin:0"> 🗓️ 今日復習すべき単語だけ
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;font-size:.85rem;color:var(--text)">
         <input type="checkbox" id="flash-weak" onchange="startFlash()" style="width:auto;margin:0"> 😥 苦手だけ復習（定着0〜1）
       </label>
     </div>
     <div id="flash-study">
       <div class="quiz-meta" id="flash-progress"></div>
+      <div class="swipe-hint"><span>← まだ</span><span>タップでめくる</span><span>覚えた →</span></div>
       <div class="flashcard" id="flashcard" onclick="flipCard()">
         <div class="flashcard-inner">
           <div class="face front">
@@ -615,6 +657,52 @@
     <div id="ph-more" class="center" style="margin-bottom:16px"></div>
   </section>
 </main>
+
+<!-- ============ 設定モーダル ============ -->
+<div id="settings-modal" class="modal hidden" onclick="if(event.target===this)closeSettings()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 style="margin:0">⚙️ 設定</h2>
+      <button class="modal-x" onclick="closeSettings()" aria-label="閉じる">✕</button>
+    </div>
+    <div class="modal-body">
+    <div class="card plain">
+      <h2>🔔 学習リマインダー</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+        このページを開いている間、指定時刻にブラウザ通知でお知らせします。
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input type="time" id="remind-time" style="width:auto;margin:0" onchange="saveReminder()">
+        <button class="btn small" onclick="enableReminder()">🔔 通知をON</button>
+        <button class="btn small gray" onclick="disableReminder()">OFF</button>
+      </div>
+      <div id="remind-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
+    </div>
+    <div class="card plain">
+      <h2>📥 単語の一括登録（CSV）</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:8px">
+        1行につき「英単語,意味,例文,例文和訳」の形式で貼り付けてください（例文以降は省略可）。
+      </div>
+      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
+      <div class="btn-row mt"><button class="btn small" onclick="importCsv()">一括登録する</button></div>
+      <div id="csv-msg" style="font-size:.8rem;margin-top:10px"></div>
+    </div>
+    <div class="card plain">
+      <h2>💾 データのバックアップ</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px">
+        学習の進捗はこの端末のブラウザに保存されています。機種変更や別のブラウザへ引き継ぐには、バックアップを保存してください。
+      </div>
+      <div class="btn-row">
+        <button class="btn small" onclick="exportData()">⬇️ バックアップを保存</button>
+        <button class="btn small outline" onclick="document.getElementById('import-file').click()">⬆️ 復元する</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json,.json" onchange="importData(this)" style="display:none">
+      <div id="backup-msg" style="font-size:.8rem;margin-top:10px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
 
 <nav>
   <button id="nav-home" class="active" onclick="switchTab('home')"><span class="icon">🏠</span>ホーム</button>
@@ -2050,11 +2138,33 @@ function bumpToday() {
   if (typeof renderHome === "function" && !document.getElementById("tab-home").classList.contains("hidden")) renderHome();
 }
 
-// 正誤に応じて定着度を更新（クイズ・スペル・リスニング共通）
+// ==================== 間隔反復（SRS） ====================
+// 定着度に応じた次回復習間隔（日）
+const SRS_INTERVALS = [1, 3, 7, 21];
+function scheduleNext(word) {
+  const days = SRS_INTERVALS[Math.min(word.box || 0, SRS_INTERVALS.length - 1)];
+  const d = new Date(); d.setDate(d.getDate() + days);
+  word.due = dayKey(d);
+}
+// 今日復習すべき単語（期限切れ or 未学習）
+function dueWords() {
+  const today = dayKey(new Date());
+  return state.words.filter(w => !w.due || w.due <= today);
+}
+function startTodayReview() {
+  const lv = document.getElementById("flash-level"); if (lv) lv.value = "ALL";
+  const ct = document.getElementById("flash-cat"); if (ct) ct.value = "ALL";
+  const wk = document.getElementById("flash-weak"); if (wk) wk.checked = false;
+  const dueOnly = document.getElementById("flash-due"); if (dueOnly) dueOnly.checked = true;
+  switchTab("flash");
+}
+
+// 正誤に応じて定着度と復習日を更新（クイズ・スペル・リスニング共通）
 function applyResult(word, ok) {
   if (!word) return;
   const target = state.words.find(w => w.w === word.w) || word;
   target.box = ok ? Math.min(3, (target.box || 0) + 1) : Math.max(0, (target.box || 0) - 1);
+  scheduleNext(target);
   persist();
 }
 
@@ -2090,16 +2200,38 @@ function shuffle(a) {
   }
   return a;
 }
+function ttsSupported() {
+  return "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
+}
+function showTtsError(msg) {
+  const el = document.getElementById("tts-global-msg");
+  if (el) { el.textContent = msg; el.classList.remove("hidden"); }
+}
 function speak(text, rate = 0.9) {
-  if (!("speechSynthesis" in window)) return false;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "en-US";
-  u.rate = rate;
-  const en = speechSynthesis.getVoices().find(v => v.lang.startsWith("en"));
-  if (en) u.voice = en;
-  speechSynthesis.speak(u);
-  return true;
+  if (!ttsSupported()) {
+    showTtsError("お使いのブラウザは音声読み上げに対応していません。Chrome / Safari の最新版をお試しください。");
+    return false;
+  }
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = rate;
+    // iOS Safari は voices の読み込みが非同期。取得できた場合のみ指定する
+    const voices = speechSynthesis.getVoices() || [];
+    const en = voices.find(v => /^en[-_]US/i.test(v.lang)) || voices.find(v => /^en/i.test(v.lang));
+    if (en) u.voice = en;
+    u.onerror = () => showTtsError("音声を再生できませんでした。端末のマナーモード・音量をご確認ください。");
+    speechSynthesis.speak(u);
+    return true;
+  } catch (e) {
+    showTtsError("音声の再生に失敗しました。ページを再読み込みしてお試しください。");
+    return false;
+  }
+}
+// iOS Safari 対策: voices が後から読み込まれる場合に備える
+if (ttsSupported() && speechSynthesis.getVoices().length === 0) {
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
 }
 if ("speechSynthesis" in window) speechSynthesis.getVoices();
 
@@ -2171,11 +2303,18 @@ function renderHome() {
   renderWeeklyReport();
   syncReminderUI();
 
-  const weak = state.words.filter(w => w.box === 0).length;
-  document.getElementById("recommend").innerHTML =
-    weak > 0
-      ? `まだ覚えていない単語が <b>${weak}語</b> あります。単語帳で復習してからクイズに挑戦しましょう！`
-      : `全単語に一度は取り組みました！クイズとリスニングで定着させましょう 💪`;
+  const due = dueWords().length;
+  const learned = state.words.filter(w => w.due).length;
+  const hint = document.getElementById("due-hint");
+  if (hint) hint.textContent = learned === 0
+    ? "まずは15語からスタートしましょう"
+    : `今日の復習対象：${due}語`;
+  const weak = state.words.filter(w => w.box <= 1 && w.due).length;
+  document.getElementById("recommend").innerHTML = learned === 0
+    ? `まだ学習履歴がありません。<b>今日の学習をはじめる</b>から15語ずつ進めましょう。`
+    : due > 0
+      ? `忘却曲線にもとづく<b>今日の復習は ${due}語</b>です。${weak > 0 ? `うち苦手が <b>${weak}語</b>。` : ""}まず復習を終えてからクイズに挑戦しましょう！`
+      : `🎉 今日の復習はすべて完了しました！クイズやリスニングで力を試しましょう。`;
 }
 
 // ==================== 週間レポート ====================
@@ -2385,6 +2524,11 @@ function startFlash() {
   if (cat !== "ALL") idxs = idxs.filter(i => (state.words[i].cat || "その他") === cat);
   const weakEl = document.getElementById("flash-weak");
   if (weakEl && weakEl.checked) idxs = idxs.filter(i => state.words[i].box <= 1);
+  const dueEl = document.getElementById("flash-due");
+  if (dueEl && dueEl.checked) {
+    const today = dayKey(new Date());
+    idxs = idxs.filter(i => !state.words[i].due || state.words[i].due <= today);
+  }
   // レベルの低い単語を優先して出題
   flashQueue = shuffle(idxs).sort((a, b) => state.words[a].box - state.words[b].box).slice(0, 15);
   flashQueue = shuffle(flashQueue);
@@ -2407,7 +2551,9 @@ function showFlash() {
   document.getElementById("flash-progress").textContent = `${flashIdx + 1} / ${flashQueue.length}`;
 }
 function flipCard() {
-  document.getElementById("flashcard").classList.toggle("flipped");
+  const card = document.getElementById("flashcard");
+  if (card.dataset.swiped) return;
+  card.classList.toggle("flipped");
 }
 function speakWord() {
   speak(state.words[flashQueue[flashIdx]].w);
@@ -2431,6 +2577,7 @@ function answerCard(known) {
   const ub = document.getElementById("flash-undo");
   if (ub) ub.classList.remove("hidden");
   w.box = known ? Math.min(3, w.box + 1) : Math.max(0, w.box - 1);
+  scheduleNext(w);
   bumpToday();
   flashIdx++;
   if (flashIdx >= flashQueue.length) {
@@ -2726,6 +2873,20 @@ function nextSpell() {
   } else { showSpell(); }
 }
 
+// ==================== 設定モーダル ====================
+function openSettings() {
+  document.getElementById("settings-modal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  syncReminderUI();
+}
+function closeSettings() {
+  document.getElementById("settings-modal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeSettings();
+});
+
 // ==================== テーマ ====================
 function applyTheme() {
   const dark = state.theme === "dark";
@@ -2862,6 +3023,40 @@ function renderPhrases(more) {
     ? `<button class="btn small gray" onclick="renderPhrases(true)">もっと見る（残り ${list.length - phLimit} 件）</button>` : "";
 }
 
+// ==================== スワイプ操作（スマホ） ====================
+(function initSwipe() {
+  const card = document.getElementById("flashcard");
+  if (!card) return;
+  const inner = card.querySelector(".flashcard-inner");
+  let x0 = 0, y0 = 0, dx = 0, dragging = false;
+  const THRESHOLD = 70;
+  card.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1) return;
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = 0; dragging = true;
+    card.classList.add("swiping");
+  }, { passive: true });
+  card.addEventListener("touchmove", e => {
+    if (!dragging) return;
+    dx = e.touches[0].clientX - x0;
+    const dy = e.touches[0].clientY - y0;
+    if (Math.abs(dy) > Math.abs(dx)) { dragging = false; inner.style.transform = ""; card.classList.remove("swiping"); return; }
+    const flipped = card.classList.contains("flipped") ? " rotateY(180deg)" : "";
+    inner.style.transform = `translateX(${dx}px) rotate(${dx / 22}deg)${flipped}`;
+    inner.style.opacity = String(1 - Math.min(Math.abs(dx) / 320, .45));
+  }, { passive: true });
+  card.addEventListener("touchend", () => {
+    if (!dragging) return;
+    dragging = false;
+    card.classList.remove("swiping");
+    inner.style.transform = ""; inner.style.opacity = "";
+    if (Math.abs(dx) >= THRESHOLD) {
+      card.dataset.swiped = "1";           // 直後のclick(=めくり)を無効化
+      answerCard(dx > 0);
+      setTimeout(() => { delete card.dataset.swiped; }, 60);
+    }
+  });
+})();
+
 // ==================== キーボードショートカット ====================
 document.addEventListener("keydown", e => {
   const tag = (e.target.tagName || "").toLowerCase();
@@ -2887,6 +3082,13 @@ document.addEventListener("keydown", e => {
     }
   }
 });
+
+// ==================== PWA ====================
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
 
 // 初期表示
 applyTheme();
