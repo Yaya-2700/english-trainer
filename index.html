@@ -323,7 +323,7 @@
       "@type": "WebApplication",
       "name": "EigoNote（エイゴノート）",
       "url": "https://eigonote.jp/",
-      "description": "1,382語の単語帳・4択クイズ・リスニング・スペル・例文集を備えた無料の英語学習アプリ。忘却曲線にもとづく復習機能つき。",
+      "description": "1,694語の単語帳・4択クイズ・リスニング・スペル・例文集を備えた無料の英語学習アプリ。忘却曲線にもとづく復習機能つき。",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "Web",
       "inLanguage": "ja",
@@ -361,13 +361,13 @@
   <section id="tab-home">
     <div class="card hero">
       <h2 class="hero-title" data-i18n="heroTitle" data-i18n-html><span data-i18n="heroA">英語は、</span><span class="hl" data-i18n="heroB">毎日の積み上げ</span><span data-i18n="heroC">。</span></h2>
-      <p class="hero-sub" data-i18n="heroSub" data-i18n-html>1,382語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。</p>
+      <p class="hero-sub" data-i18n="heroSub" data-i18n-html>1,694語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。</p>
       <button class="btn lg" onclick="startTodayReview()" data-i18n="cta">🎯 今日の学習をはじめる →</button>
       <div id="due-hint" style="font-size:.78rem;color:var(--muted);margin-top:12px"></div>
       <div id="tts-global-msg" class="hidden" style="font-size:.76rem;color:var(--danger);margin-top:8px;line-height:1.6"></div>
       <div class="proof">
-        <div><div class="pv" id="pf-words">1,382</div><div class="pl" data-i18n="pWords">収録単語</div></div>
-        <div><div class="pv">1,382</div><div class="pl" data-i18n="pEx">例文</div></div>
+        <div><div class="pv" id="pf-words">1,694</div><div class="pl" data-i18n="pWords">収録単語</div></div>
+        <div><div class="pv">1,694</div><div class="pl" data-i18n="pEx">例文</div></div>
         <div><div class="pv">5</div><div class="pl" data-i18n="pModes">学習モード</div></div>
         <div><div class="pv">45</div><div class="pl" data-i18n="pCols">学習コラム</div></div>
       </div>
@@ -379,17 +379,17 @@
         <button class="mode-chip" onclick="switchTab('quiz')"><span class="mi">📝</span><span><span class="mt">4択クイズ</span><span class="md">意味を確認</span></span></button>
         <button class="mode-chip" onclick="switchTab('listen')"><span class="mi">🎧</span><span><span class="mt">リスニング</span><span class="md">耳で鍛える</span></span></button>
         <button class="mode-chip" onclick="switchTab('column')"><span class="mi">📖</span><span><span class="mt">今日のコラム</span><span class="md">読んで学ぶ</span></span></button>
-        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt">例文集</span><span class="md">1,382の例文</span></span></button>
+        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt">例文集</span><span class="md">1,694の例文</span></span></button>
       </div>
     </div>
     <div class="card" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
-      <div style="font-size:.8rem;opacity:.9;font-weight:600">🔥 連続学習</div>
+      <div style="font-size:.8rem;opacity:.9;font-weight:600" data-i18n="streakT">🔥 連続学習</div>
       <div style="font-size:2.6rem;font-weight:800;line-height:1.1;margin:2px 0"><span id="st-streak">0</span><span style="font-size:1.1rem;margin-left:4px">日</span></div>
-      <div style="font-size:.75rem;opacity:.85">自己ベスト <span id="st-beststreak">0</span> 日</div>
+      <div style="font-size:.75rem;opacity:.85"><span data-i18n="bestT">自己ベスト</span> <span id="st-beststreak">0</span> <span data-i18n="daysT">日</span></div>
       <div style="background:rgba(255,255,255,.25);border-radius:99px;height:10px;overflow:hidden;margin-top:14px">
         <div id="goal-bar" style="width:0%;height:100%;background:#fff;border-radius:99px;transition:width .5s"></div>
       </div>
-      <div style="font-size:.76rem;opacity:.95;margin-top:6px">今日の目標 <span id="goal-text">0 / 20</span></div>
+      <div style="font-size:.76rem;opacity:.95;margin-top:6px"><span data-i18n="goalT">今日の目標</span> <span id="goal-text">0 / 20</span></div>
     </div>
     <div class="stats-grid">
       <div class="stat"><div class="num" id="st-total">0</div><div class="label" data-i18n="sTotal">登録単語数</div></div>
@@ -399,7 +399,7 @@
     </div>
     <div class="card mt">
       <h2 data-i18n="mastery">📈 習得度</h2>
-      <div style="font-size:.8rem;color:var(--muted)">全単語のうち「習得済み（定着3）」の割合</div>
+      <div style="font-size:.8rem;color:var(--muted)" data-i18n="masteryNoteT">全単語のうち「習得済み（定着3）」の割合</div>
       <div class="progress-bar"><div id="mastery-bar" style="width:0%"></div></div>
       <div id="mastery-pct" style="text-align:right;font-size:.78rem;color:var(--muted);margin-top:4px">0%</div>
       <div id="level-progress" style="margin-top:16px"></div>
@@ -409,7 +409,7 @@
       <div id="history-chart" style="display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:130px;margin-top:10px"></div>
     </div>
     <div class="card">
-      <h2>🏅 達成バッジ <span id="badge-count" style="font-size:.8rem;color:var(--muted);font-weight:600"></span></h2>
+      <h2><span data-i18n="badgesT">🏅 達成バッジ</span> <span id="badge-count" style="font-size:.8rem;color:var(--muted);font-weight:600"></span></h2>
       <div id="badge-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:10px"></div>
     </div>
     <div class="card">
@@ -420,7 +420,7 @@
       <h2 data-i18n="recommend">🚀 今日のおすすめ</h2>
       <div style="font-size:.88rem;line-height:1.7" id="recommend"></div>
       <div class="btn-row mt">
-        <button class="btn" onclick="document.getElementById('flash-weak').checked=true;switchTab('flash')">😥 苦手から復習する</button>
+        <button class="btn" onclick="document.getElementById('flash-weak').checked=true;switchTab('flash')" data-i18n="weakStart">😥 苦手から復習する</button>
       </div>
     </div>
     <div class="card">
@@ -429,21 +429,21 @@
     </div>
     <div class="card">
       <h2 data-i18n="catStats">🔎 カテゴリ別の弱点分析</h2>
-      <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px">習得率が低い順に表示しています。苦手なカテゴリから攻めましょう。</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px" data-i18n="weakNote">習得率が低い順に表示しています。苦手なカテゴリから攻めましょう。</div>
       <div id="cat-stats"></div>
-      <div class="center mt"><button class="btn small gray" id="cat-more-btn" onclick="catStatsAll=!catStatsAll;renderCatStats()">すべて表示</button></div>
+      <div class="center mt"><button class="btn small gray" id="cat-more-btn" onclick="catStatsAll=!catStatsAll;renderCatStats()" data-i18n="showAll">すべて表示</button></div>
     </div>
     <div class="card">
-      <h2>📚 学習コラム</h2>
+      <h2 data-i18n="colHome">📚 学習コラム</h2>
       <div style="font-size:.88rem;line-height:1.7">
-        単語の覚え方、リスニング上達法、学習の習慣化のコツなどを記事で解説しています。<br>
-        <a href="columns.html" style="color:var(--primary);font-weight:700">→ コラム一覧を見る</a>
+        <span data-i18n="colHomeD">単語の覚え方、リスニング上達法、学習の習慣化のコツなどを記事で解説しています。</span><br>
+        <a href="columns.html" style="color:var(--primary);font-weight:700" data-i18n="colHomeCta">→ コラム一覧を見る</a>
       </div>
     </div>
     <div style="text-align:center;font-size:.75rem;color:var(--muted);padding:8px 0 4px">
-      <a href="columns.html" style="color:var(--muted)">学習コラム</a> ｜
-      <a href="about.html" style="color:var(--muted)">運営者情報</a> ｜
-      <a href="privacy.html" style="color:var(--muted)">プライバシーポリシー</a>
+      <a href="columns.html" style="color:var(--muted)" data-i18n="navCol2">学習コラム</a> ｜
+      <a href="about.html" style="color:var(--muted)" data-i18n="aboutLink">運営者情報</a> ｜
+      <a href="privacy.html" style="color:var(--muted)" data-i18n="privacyLink">プライバシーポリシー</a>
       <div style="margin-top:6px">&copy; 2026 EigoNote</div>
     </div>
   </section>
@@ -451,31 +451,31 @@
   <!-- ============ FLASHCARDS ============ -->
   <section id="tab-flash" class="hidden">
     <div class="card" style="padding:14px 16px;margin-bottom:14px">
-      <label style="margin-bottom:6px">📊 レベル</label>
+      <label style="margin-bottom:6px" data-i18n="levelT">📊 レベル</label>
       <select id="flash-level" onchange="startFlash()">
-        <option value="ALL">すべてのレベル</option>
-        <option value="初級">初級</option>
-        <option value="中級">中級</option>
-        <option value="上級">上級</option>
+        <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
+        <option value="初級" data-i18n="lvBeg">初級</option>
+        <option value="中級" data-i18n="lvInt">中級</option>
+        <option value="上級" data-i18n="lvAdv">上級</option>
       </select>
-      <label style="margin:10px 0 6px">📂 学習するカテゴリ</label>
-      <select id="flash-cat" onchange="startFlash()"><option value="ALL">すべて</option></select>
+      <label style="margin:10px 0 6px" data-i18n="catStudy">📂 学習するカテゴリ</label>
+      <select id="flash-cat" onchange="startFlash()"><option value="ALL" data-i18n="allT">すべて</option></select>
       <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)">
-        <input type="checkbox" id="flash-due" onchange="startFlash()" style="width:auto;margin:0"> 🗓️ 今日復習すべき単語だけ
+        <input type="checkbox" id="flash-due" onchange="startFlash()" style="width:auto;margin:0"> <span data-i18n="dueOnly">🗓️ 今日復習すべき単語だけ</span>
       </label>
       <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;font-size:.85rem;color:var(--text)">
-        <input type="checkbox" id="flash-weak" onchange="startFlash()" style="width:auto;margin:0"> 😥 苦手だけ復習（定着0〜1）
+        <input type="checkbox" id="flash-weak" onchange="startFlash()" style="width:auto;margin:0"> <span data-i18n="weakOnly">😥 苦手だけ復習（定着0〜1）</span>
       </label>
     </div>
     <div id="flash-study">
       <div class="quiz-meta" id="flash-progress"></div>
-      <div class="swipe-hint"><span>← まだ</span><span>タップでめくる</span><span>覚えた →</span></div>
+      <div class="swipe-hint"><span data-i18n="swipeLeft">← まだ</span><span data-i18n="tapFlip">タップでめくる</span><span data-i18n="swipeRight">覚えた →</span></div>
       <div class="flashcard" id="flashcard" onclick="flipCard()">
         <div class="flashcard-inner">
           <div class="face front">
             <div class="box-badge" id="fc-box"></div>
             <div class="word" id="fc-word"></div>
-            <button class="btn small outline" style="margin-top:12px" onclick="event.stopPropagation();speakWord()">🔊 発音を聞く</button>
+            <button class="btn small outline" style="margin-top:12px" onclick="event.stopPropagation();speakWord()" data-i18n="speakBtnT">🔊 発音を聞く</button>
             <div class="hint" data-i18n="tapToFlip">タップして意味を表示</div>
           </div>
           <div class="face back">
@@ -490,50 +490,51 @@
         <button class="btn green" onclick="answerCard(true)" data-i18n="known">✅ 覚えた</button>
       </div>
       <div class="center mt" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button class="btn small gray hidden" id="flash-undo" onclick="undoCard()">↩️ 直前に戻る</button>
-        <button class="btn small outline" id="rec-btn" onclick="toggleRecord()">🎤 発音を録音</button>
-        <button class="btn small gray hidden" id="rec-play" onclick="playRecording()">▶️ 自分の声</button>
+        <button class="btn small gray hidden" id="flash-undo" onclick="undoCard()" data-i18n="undoBtn">↩️ 直前に戻る</button>
+        <button class="btn small outline" id="rec-btn" onclick="toggleRecord()" data-i18n="recStart">🎤 発音を録音</button>
+        <button class="btn small gray hidden" id="rec-play" onclick="playRecording()" data-i18n="recPlay">▶️ 自分の声</button>
       </div>
+      <audio id="rec-audio" class="hidden" controls playsinline style="width:100%;max-width:320px;margin:10px auto 0;display:block"></audio>
       <div id="rec-msg" style="font-size:.76rem;color:var(--muted);text-align:center;margin-top:8px"></div>
       <p class="center" style="font-size:.72rem;color:var(--muted);margin-top:10px">
-        キーボード: <b>Space</b> めくる / <b>←</b> まだ / <b>→</b> 覚えた
+        <span data-i18n="kbdHint" data-i18n-html>キーボード: <b>Space</b> めくる / <b>←</b> まだ / <b>→</b> 覚えた</span>
       </p>
 
     </div>
     <div id="flash-done" class="card center hidden">
-      <h2>🎉 今日の復習おわり！</h2>
-      <p style="font-size:.85rem;color:var(--muted)">全カードを確認しました。もう一周する？</p>
-      <button class="btn mt" onclick="startFlash()">もう一周</button>
+      <h2 data-i18n="flashDone">🎉 今日の復習おわり！</h2>
+      <p style="font-size:.85rem;color:var(--muted)" data-i18n="flashDoneD">全カードを確認しました。もう一周する？</p>
+      <button class="btn mt" onclick="startFlash()" data-i18n="again">もう一周</button>
     </div>
 
     <div class="card mt">
-      <h2>➕ 単語を追加</h2>
-      <label>英単語</label>
+      <h2 data-i18n="addWord">➕ 単語を追加</h2>
+      <label data-i18n="enWord">英単語</label>
       <input id="add-word" placeholder="例: appreciate">
-      <label>意味（日本語）</label>
+      <label data-i18n="jaMeaning">意味（日本語）</label>
       <input id="add-meaning" placeholder="例: 感謝する">
-      <label>例文（任意）</label>
+      <label data-i18n="exOpt">例文（任意）</label>
       <input id="add-example" placeholder="例: I appreciate your help.">
-      <button class="btn" onclick="addWord()">追加する</button>
+      <button class="btn" onclick="addWord()" data-i18n="addBtn">追加する</button>
       <div id="add-msg" style="font-size:.8rem;color:var(--accent);margin-top:8px"></div>
     </div>
 
     <div class="card">
-      <h2>📖 単語リスト</h2>
-      <input id="wl-search" placeholder="🔍 英単語・意味で検索" oninput="renderWordList()" style="margin-bottom:8px">
+      <h2 data-i18n="wordList">📖 単語リスト</h2>
+      <input id="wl-search" placeholder="🔍 英単語・意味で検索" oninput="renderWordList()" style="margin-bottom:8px" data-i18n-ph="phSearch">
       <div style="display:flex;gap:8px">
         <select id="wl-sort" onchange="renderWordList()" style="margin-bottom:8px">
-          <option value="default">登録順</option>
-          <option value="az">A→Z順</option>
-          <option value="za">Z→A順</option>
-          <option value="weak">苦手な順</option>
-          <option value="strong">習得した順</option>
+          <option value="default" data-i18n="sortDefault">登録順</option>
+          <option value="az" data-i18n="sortAZ">A→Z順</option>
+          <option value="za" data-i18n="sortZA">Z→A順</option>
+          <option value="weak" data-i18n="sortWeak">苦手な順</option>
+          <option value="strong" data-i18n="sortStrong">習得した順</option>
         </select>
         <select id="wl-filter" onchange="renderWordList()" style="margin-bottom:8px">
-          <option value="ALL">すべて</option>
-          <option value="初級">初級</option>
-          <option value="中級">中級</option>
-          <option value="上級">上級</option>
+          <option value="ALL" data-i18n="allT">すべて</option>
+          <option value="初級" data-i18n="lvBeg">初級</option>
+          <option value="中級" data-i18n="lvInt">中級</option>
+          <option value="上級" data-i18n="lvAdv">上級</option>
         </select>
       </div>
       <div id="wl-count" style="font-size:.76rem;color:var(--muted);font-weight:600;margin-bottom:6px"></div>
@@ -545,48 +546,48 @@
   <!-- ============ QUIZ ============ -->
   <section id="tab-quiz" class="hidden">
     <div id="quiz-start" class="card center">
-      <h2>📝 4択クイズ</h2>
+      <h2 data-i18n="quizT">📝 4択クイズ</h2>
       <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
-        英→日と日→英が混ざって出ます。<br>難易度や問題数は下で変えられます。
+        <span data-i18n="quizD" data-i18n-html>英→日と日→英が混ざって出ます。<br>難易度や問題数は下で変えられます。</span>
       </p>
       <div style="max-width:280px;margin:14px auto 0;text-align:left">
-        <label>🎚️ 難易度（選択肢の紛らわしさ）</label>
+        <label data-i18n="quizDiffT">🎚️ 難易度（選択肢の紛らわしさ）</label>
         <select id="quiz-diff" onchange="saveQuizOpt()">
-          <option value="easy">やさしい（選択肢が大きく違う）</option>
-          <option value="normal" selected>ふつう（ランダム）</option>
-          <option value="hard">むずかしい（似た語が混ざる）</option>
+          <option value="easy" data-i18n="diffEasy">やさしい（選択肢が大きく違う）</option>
+          <option value="normal" selected data-i18n="diffNormal">ふつう（ランダム）</option>
+          <option value="hard" data-i18n="diffHard">むずかしい（似た語が混ざる）</option>
         </select>
-        <label style="margin-top:10px">🔢 問題数</label>
+        <label style="margin-top:10px" data-i18n="quizCountT">🔢 問題数</label>
         <select id="quiz-count" onchange="saveQuizOpt()">
-          <option value="5">5問（さくっと）</option>
-          <option value="10" selected>10問（標準）</option>
-          <option value="20">20問</option>
-          <option value="30">30問（がっつり）</option>
+          <option value="5" data-i18n="cnt5">5問（さくっと）</option>
+          <option value="10" selected data-i18n="cnt10">10問（標準）</option>
+          <option value="20" data-i18n="cnt20">20問</option>
+          <option value="30" data-i18n="cnt30">30問（がっつり）</option>
         </select>
-        <label style="margin-top:10px">⏱️ 制限時間</label>
+        <label style="margin-top:10px" data-i18n="quizTimerT">⏱️ 制限時間</label>
         <select id="quiz-timer" onchange="saveQuizOpt()">
-          <option value="0" selected>なし</option>
-          <option value="20">20秒／問</option>
-          <option value="10">10秒／問</option>
-          <option value="5">5秒／問（上級者向け）</option>
+          <option value="0" selected data-i18n="tlOff">なし</option>
+          <option value="20" data-i18n="tl20">20秒／問</option>
+          <option value="10" data-i18n="tl10">10秒／問</option>
+          <option value="5" data-i18n="tl5">5秒／問（上級者向け）</option>
         </select>
-        <label style="margin-top:10px">📊 レベル</label>
+        <label style="margin-top:10px" data-i18n="levelT">📊 レベル</label>
         <select id="quiz-level" onchange="populateQuizCat();saveQuizOpt()">
-          <option value="ALL">すべてのレベル</option>
-          <option value="初級">初級</option>
-          <option value="中級">中級</option>
-          <option value="上級">上級</option>
+          <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
+          <option value="初級" data-i18n="lvBeg">初級</option>
+          <option value="中級" data-i18n="lvInt">中級</option>
+          <option value="上級" data-i18n="lvAdv">上級</option>
         </select>
-        <label style="margin-top:10px">📂 カテゴリ</label>
-        <select id="quiz-cat" onchange="saveQuizOpt()"><option value="ALL">すべて</option></select>
+        <label style="margin-top:10px" data-i18n="catT">📂 カテゴリ</label>
+        <select id="quiz-cat" onchange="saveQuizOpt()"><option value="ALL" data-i18n="allT">すべて</option></select>
         <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)">
-          <input type="checkbox" id="quiz-weak" style="width:auto;margin:0" onchange="saveQuizOpt()"> 😥 苦手だけ（定着0〜1）
+          <input type="checkbox" id="quiz-weak" style="width:auto;margin:0" onchange="saveQuizOpt()"> <span data-i18n="weakOnly2">😥 苦手だけ（定着0〜1）</span>
         </label>
         <label style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:.85rem;color:var(--text)">
-          <input type="checkbox" id="quiz-due" style="width:auto;margin:0" onchange="saveQuizOpt()"> 📅 今日の復習ぶんだけ
+          <input type="checkbox" id="quiz-due" style="width:auto;margin:0" onchange="saveQuizOpt()"> <span data-i18n="dueOnly2">📅 今日の復習ぶんだけ</span>
         </label>
       </div>
-      <button class="btn mt" onclick="startQuiz()">スタート</button>
+      <button class="btn mt" onclick="startQuiz()" data-i18n="startT">スタート</button>
       <div id="quiz-warn" style="font-size:.78rem;color:var(--danger);margin-top:8px"></div>
     </div>
     <div id="quiz-play" class="hidden">
@@ -600,67 +601,67 @@
         <div id="quiz-choices"></div>
         <div class="feedback" id="quiz-feedback"></div>
         <div id="quiz-explain" class="explain hidden"></div>
-        <div class="center"><button class="btn hidden" id="quiz-next" onclick="nextQuiz()">次へ →</button></div>
+        <div class="center"><button class="btn hidden" id="quiz-next" onclick="nextQuiz()" data-i18n="nextT">次へ →</button></div>
       </div>
     </div>
     <div id="quiz-result" class="card center hidden">
-      <h2>結果発表</h2>
+      <h2 data-i18n="resultT">結果発表</h2>
       <div class="result-big" id="quiz-score"></div>
       <div id="quiz-comment" style="font-size:.9rem;color:var(--muted)"></div>
       <div id="quiz-review" style="text-align:left;margin-top:16px"></div>
-      <button class="btn mt" onclick="startQuiz()">もう一回</button>
+      <button class="btn mt" onclick="startQuiz()" data-i18n="retryT">もう一回</button>
     </div>
   </section>
 
   <!-- ============ LISTENING ============ -->
   <section id="tab-listen" class="hidden">
     <div id="listen-start" class="card center">
-      <h2>🎧 リスニング</h2>
+      <h2 data-i18n="listenT">🎧 リスニング</h2>
       <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
-        英語の例文が読み上げられます。<br>意味として正しいものを選んでください（全5問）。
+        <span data-i18n="listenD" data-i18n-html>英語の例文が読み上げられます。<br>意味として正しいものを選んでください（全5問）。</span>
       </p>
       <div style="max-width:260px;margin:8px auto 0;text-align:left">
-        <label>📊 レベル</label>
+        <label data-i18n="levelT">📊 レベル</label>
         <select id="listen-level">
-          <option value="ALL">すべてのレベル</option>
-          <option value="初級">初級</option>
-          <option value="中級">中級</option>
-          <option value="上級">上級</option>
+          <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
+          <option value="初級" data-i18n="lvBeg">初級</option>
+          <option value="中級" data-i18n="lvInt">中級</option>
+          <option value="上級" data-i18n="lvAdv">上級</option>
         </select>
       </div>
       <div style="max-width:260px;margin:8px auto 0;text-align:left">
-        <label>🔥 難易度</label>
+        <label data-i18n="listenDiffT">🔥 難易度</label>
         <select id="listen-diff">
-          <option value="hard" selected>むずかしい（上級優先・聞き直し1回）</option>
-          <option value="normal">ふつう（全レベル・聞き直し自由）</option>
+          <option value="hard" selected data-i18n="lsHard">むずかしい（上級優先・聞き直し1回）</option>
+          <option value="normal" data-i18n="lsNormal">ふつう（全レベル・聞き直し自由）</option>
         </select>
       </div>
       <div class="speed-row">
-        <span>読み上げ速度:</span>
+        <span data-i18n="rateLabel">読み上げ速度:</span>
         <select id="listen-speed" style="width:auto;margin:0">
-          <option value="0.7">ゆっくり</option>
-          <option value="0.9" selected>ふつう</option>
-          <option value="1.1">はやい</option>
+          <option value="0.7" data-i18n="rSlow">ゆっくり</option>
+          <option value="0.9" selected data-i18n="rNormal">ふつう</option>
+          <option value="1.1" data-i18n="rFast">はやい</option>
         </select>
       </div>
-      <button class="btn" onclick="startListen()">スタート</button>
+      <button class="btn" onclick="startListen()" data-i18n="startT">スタート</button>
       <div id="tts-warn" style="font-size:.75rem;color:var(--danger);margin-top:10px"></div>
     </div>
     <div id="listen-play" class="hidden">
       <div class="quiz-meta" id="listen-progress"></div>
       <div class="card center">
-        <button class="btn" id="listen-replay" onclick="playListen(true)">🔊 もう一度聞く</button>
-        <p style="font-size:.8rem;color:var(--muted);margin-top:10px">この英文の意味は？</p>
+        <button class="btn" id="listen-replay" onclick="playListen(true)" data-i18n="replayT">🔊 もう一度聞く</button>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:10px" data-i18n="listenQ">この英文の意味は？</p>
         <div id="listen-choices" class="mt" style="text-align:left"></div>
         <div class="feedback" id="listen-feedback"></div>
         <div id="listen-sentence" style="font-size:.85rem;color:var(--muted)"></div>
-        <button class="btn hidden mt" id="listen-next" onclick="nextListen()">次へ →</button>
+        <button class="btn hidden mt" id="listen-next" onclick="nextListen()" data-i18n="nextT">次へ →</button>
       </div>
     </div>
     <div id="listen-result" class="card center hidden">
-      <h2>結果発表</h2>
+      <h2 data-i18n="resultT">結果発表</h2>
       <div class="result-big" id="listen-score"></div>
-      <button class="btn mt" onclick="startListen()">もう一回</button>
+      <button class="btn mt" onclick="startListen()" data-i18n="retryT">もう一回</button>
     </div>
   </section>
 
@@ -668,13 +669,13 @@
   <section id="tab-column" class="hidden">
     <div class="card" style="text-align:center">
       <div style="font-size:.72rem;color:var(--primary);font-weight:800;letter-spacing:.06em">TODAY'S PICK</div>
-      <h2 style="margin:8px 0 4px">📖 今日のコラム</h2>
-      <div style="font-size:.8rem;color:var(--muted)">毎日1本、おすすめの記事をお届けします</div>
+      <h2 style="margin:8px 0 4px" data-i18n="colTodayT">📖 今日のコラム</h2>
+      <div style="font-size:.8rem;color:var(--muted)" data-i18n="colTodayD">毎日1本、おすすめの記事をお届けします</div>
       <div id="today-column" style="margin-top:16px"></div>
     </div>
     <div class="card">
-      <h2>📚 すべてのコラム（45記事）</h2>
-      <input type="search" id="col-search" placeholder="キーワードで探す（例：TOEIC、シャドーイング、習慣）" oninput="renderColumnList()" style="margin-bottom:10px">
+      <h2 data-i18n="colAllT">📚 すべてのコラム（45記事）</h2>
+      <input type="search" id="col-search" placeholder="キーワードで探す（例：TOEIC、シャドーイング、習慣）" oninput="renderColumnList()" style="margin-bottom:10px" data-i18n-ph="phColSearch">
       <div id="col-chips"></div>
       <div id="col-count" style="font-size:.74rem;color:var(--muted);margin:2px 0 4px;font-weight:600"></div>
       <div id="column-list"></div>
@@ -683,16 +684,16 @@
 
   <section id="tab-phrase" class="hidden">
     <div class="card" style="padding:14px 16px">
-      <label>📊 レベル</label>
+      <label data-i18n="levelT">📊 レベル</label>
       <select id="ph-level" onchange="renderPhrases()">
-        <option value="ALL">すべてのレベル</option>
-        <option value="初級">初級</option>
-        <option value="中級">中級</option>
-        <option value="上級">上級</option>
+        <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
+        <option value="初級" data-i18n="lvBeg">初級</option>
+        <option value="中級" data-i18n="lvInt">中級</option>
+        <option value="上級" data-i18n="lvAdv">上級</option>
       </select>
-      <label style="margin-top:8px">📂 カテゴリ</label>
-      <select id="ph-cat" onchange="renderPhrases()"><option value="ALL">すべて</option></select>
-      <input id="ph-search" placeholder="🔍 英文・日本語で検索" oninput="renderPhrases()" style="margin-top:8px">
+      <label style="margin-top:8px" data-i18n="catT">📂 カテゴリ</label>
+      <select id="ph-cat" onchange="renderPhrases()"><option value="ALL" data-i18n="allT">すべて</option></select>
+      <input id="ph-search" placeholder="🔍 英文・日本語で検索" oninput="renderPhrases()" style="margin-top:8px" data-i18n-ph="phSearch">
       <div id="ph-count" style="font-size:.76rem;color:var(--muted);font-weight:600"></div>
     </div>
     <div id="phrase-list"></div>
@@ -731,81 +732,87 @@
       </div>
       <div class="card plain">
         <h2 data-i18n="display">🎨 表示設定</h2>
-        <label>テーマ</label>
+        <label data-i18n="themeT">テーマ</label>
         <select id="set-theme" onchange="setTheme(this.value)">
-          <option value="light">☀️ ライト</option>
-          <option value="dark">🌙 ダーク</option>
-          <option value="auto">📱 端末の設定に合わせる</option>
+          <option value="light" data-i18n="thLight">☀️ ライト</option>
+          <option value="dark" data-i18n="thDark">🌙 ダーク</option>
+          <option value="auto" data-i18n="thAuto">📱 端末の設定に合わせる</option>
         </select>
         <label style="margin-top:10px">言語 / Language</label>
         <select id="set-lang" onchange="setLang(this.value)">
-          <option value="ja">🇯🇵 日本語</option>
+          <option value="ja" data-i18n="langJa">🇯🇵 日本語</option>
           <option value="en">🇺🇸 English</option>
         </select>
       </div>
       <div class="card plain">
         <h2 data-i18n="learnSet">🎯 学習設定</h2>
-        <label>1日の目標問題数</label>
+        <label data-i18n="goalSetT">1日の目標問題数</label>
         <select id="set-goal" onchange="setGoal(this.value)">
-          <option value="10">10問（軽め）</option>
-          <option value="20">20問（標準）</option>
-          <option value="30">30問</option>
-          <option value="50">50問（がっつり）</option>
+          <option value="10" data-i18n="g10">10問（軽め）</option>
+          <option value="20" data-i18n="g20">20問（標準）</option>
+          <option value="30" data-i18n="g30">30問</option>
+          <option value="50" data-i18n="g50">50問（がっつり）</option>
         </select>
-        <label style="margin-top:10px">読み上げ速度（既定）</label>
+        <label style="margin-top:10px" data-i18n="accentSet">🗣️ 発音（アクセント）</label>
+        <select id="set-accent" onchange="setAccent(this.value)">
+          <option value="us" data-i18n="accentUS">🇺🇸 アメリカ英語</option>
+          <option value="uk" data-i18n="accentUK">🇬🇧 イギリス英語</option>
+        </select>
+        <div id="accent-note" style="font-size:.74rem;color:var(--muted);line-height:1.6;margin:6px 0 0"></div>
+        <label style="margin-top:10px" data-i18n="rateSet">読み上げ速度（既定）</label>
         <select id="set-rate" onchange="setRate(this.value)">
-          <option value="0.7">ゆっくり</option>
-          <option value="0.9">ふつう</option>
-          <option value="1.1">はやい</option>
+          <option value="0.7" data-i18n="rSlow">ゆっくり</option>
+          <option value="0.9" data-i18n="rNormal">ふつう</option>
+          <option value="1.1" data-i18n="rFast">はやい</option>
         </select>
-        <label style="margin-top:10px">1回に出す単語数（単語帳）</label>
+        <label style="margin-top:10px" data-i18n="batchSetT">1回に出す単語数（単語帳）</label>
         <select id="set-batch" onchange="setBatch(this.value)">
-          <option value="10">10語</option>
-          <option value="15">15語</option>
-          <option value="25">25語</option>
-          <option value="40">40語</option>
+          <option value="10" data-i18n="b10">10語</option>
+          <option value="15" data-i18n="b15">15語</option>
+          <option value="25" data-i18n="b25">25語</option>
+          <option value="40" data-i18n="b40">40語</option>
         </select>
       </div>
     <div class="card plain">
-      <h2>🔔 学習リマインダー</h2>
-      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+      <h2 data-i18n="remindT">🔔 学習リマインダー</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px" data-i18n="remindD">
         このページを開いている間、指定時刻にブラウザ通知でお知らせします。
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <input type="time" id="remind-time" style="width:auto;margin:0" onchange="saveReminder()">
-        <button class="btn small" onclick="enableReminder()">🔔 通知をON</button>
+        <button class="btn small" onclick="enableReminder()" data-i18n="remindOn">🔔 通知をON</button>
         <button class="btn small gray" onclick="disableReminder()">OFF</button>
       </div>
       <div id="remind-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
     </div>
     <div class="card plain">
-      <h2>📥 単語の一括登録（CSV）</h2>
+      <h2 data-i18n="csvT">📥 単語の一括登録（CSV）</h2>
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:8px">
         1行につき「英単語,意味,例文,例文和訳,レベル」の形式で貼り付けてください（例文以降は省略可）。<br>
         レベル欄に「初級／中級／上級」と書くとその通りに登録されます。省略した場合は下の設定に従います。
       </div>
-      <label>📊 レベルの割り当て</label>
+      <label data-i18n="csvLvT">📊 レベルの割り当て</label>
       <select id="csv-level">
-        <option value="auto">自動で判定する（おすすめ）</option>
-        <option value="初級">すべて初級にする</option>
-        <option value="中級">すべて中級にする</option>
-        <option value="上級">すべて上級にする</option>
+        <option value="auto" data-i18n="csvAuto">自動で判定する（おすすめ）</option>
+        <option value="初級" data-i18n="csvBeg">すべて初級にする</option>
+        <option value="中級" data-i18n="csvInt">すべて中級にする</option>
+        <option value="上級" data-i18n="csvAdv">すべて上級にする</option>
       </select>
       <div style="font-size:.76rem;color:var(--muted);line-height:1.6;margin:6px 0 10px">
-        自動判定は、収録済みの1,382語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。
+        自動判定は、収録済みの1,694語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。
       </div>
-      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本&#10;ubiquitous,どこにでもある,,,上級" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
-      <div class="btn-row mt"><button class="btn small" onclick="importCsv()">一括登録する</button></div>
+      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本&#10;ubiquitous,どこにでもある,,,上級" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical" data-i18n-ph="phCsv"></textarea>
+      <div class="btn-row mt"><button class="btn small" onclick="importCsv()" data-i18n="csvBtn">一括登録する</button></div>
       <div id="csv-msg" style="font-size:.8rem;margin-top:10px"></div>
     </div>
     <div class="card plain">
-      <h2>💾 データのバックアップ</h2>
-      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px">
+      <h2 data-i18n="backupT">💾 データのバックアップ</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px" data-i18n="backupD">
         学習の進捗はこの端末のブラウザに保存されています。機種変更や別のブラウザへ引き継ぐには、バックアップを保存してください。
       </div>
       <div class="btn-row">
-        <button class="btn small" onclick="exportData()">⬇️ バックアップを保存</button>
-        <button class="btn small outline" onclick="document.getElementById('import-file').click()">⬆️ 復元する</button>
+        <button class="btn small" onclick="exportData()" data-i18n="backupSave">⬇️ バックアップを保存</button>
+        <button class="btn small outline" onclick="document.getElementById('import-file').click()" data-i18n="backupLoad">⬆️ 復元する</button>
       </div>
       <input type="file" id="import-file" accept="application/json,.json" onchange="importData(this)" style="display:none">
       <div id="backup-msg" style="font-size:.8rem;margin-top:10px"></div>
@@ -813,8 +820,8 @@
     <div class="card plain">
       <h2 data-i18n="fbTitle">💬 ご意見・ご要望</h2>
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px" data-i18n="fbDesc">使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。</div>
-      <textarea id="fb-text" rows="4" maxlength="1000" placeholder="例：リスニングの速度をもっと細かく変えたい" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical"></textarea>
-      <input type="email" id="fb-mail" maxlength="200" placeholder="返信がほしい方はメールアドレス（任意）" style="margin-top:8px">
+      <textarea id="fb-text" rows="4" maxlength="1000" placeholder="例：リスニングの速度をもっと細かく変えたい" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical" data-i18n-ph="phFb"></textarea>
+      <input type="email" id="fb-mail" maxlength="200" placeholder="返信がほしい方はメールアドレス（任意）" style="margin-top:8px" data-i18n-ph="phFbMail">
       <div class="btn-row mt"><button class="btn small" onclick="sendFeedback()" data-i18n="fbSend">送信する</button></div>
       <div id="fb-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
     </div>
@@ -2220,7 +2227,320 @@ const DEFAULT_WORDS = [
   ["warehouse","倉庫","Goods are stored in the warehouse.","商品は倉庫に保管されている。","TOEIC頻出","中級"],
   ["wholesale","卸売の","We offer wholesale prices.","卸売価格を提供している。","TOEIC頻出","中級"],
   ["withdraw","撤回する、引き出す","He withdrew his application.","彼は応募を取り下げた。","TOEIC頻出","中級"],
-];
+
+  // --- カテゴリ拡充分 ---
+  ["apprehensive","気がかりな","I am apprehensive about the change.","その変更が気がかりだ。","感情・反応","上級"],
+  ["elated","有頂天の","The team was elated after the win.","勝利後チームは有頂天だった。","感情・反応","上級"],
+  ["bewildered","当惑した","The tourists looked bewildered.","観光客は当惑した様子だった。","感情・反応","上級"],
+  ["irritated","いらいらした","I was irritated by the noise.","その騒音にいらいらした。","感情・反応","中級"],
+  ["dismayed","うろたえた","We were dismayed by the news.","その知らせにうろたえた。","感情・反応","上級"],
+  ["interest rate","金利","The bank raised its interest rate.","銀行は金利を引き上げた。","金融・経済","中級"],
+  ["loan","融資、ローン","She applied for a housing loan.","彼女は住宅ローンを申し込んだ。","金融・経済","中級"],
+  ["debt","負債、借金","The company reduced its debt.","その会社は負債を減らした。","金融・経済","中級"],
+  ["profit margin","利益率","The profit margin is shrinking.","利益率が縮小している。","金融・経済","上級"],
+  ["taxation","課税","Taxation policy was revised.","課税政策が見直された。","金融・経済","上級"],
+  ["monetary","金融の、通貨の","Monetary policy stayed unchanged.","金融政策は据え置かれた。","金融・経済","上級"],
+  ["liquidity","流動性","The bank needs more liquidity.","その銀行はより多くの流動性を必要とする。","金融・経済","上級"],
+  ["bankruptcy","破産","The chain filed for bankruptcy.","そのチェーンは破産を申請した。","金融・経済","上級"],
+  ["domestic","国内の（⇔foreign）","Domestic sales increased.","国内売上が増えた。","反対語ペア","中級"],
+  ["vertical","垂直の（⇔horizontal）","Draw a vertical line here.","ここに垂直な線を引いて。","反対語ペア","中級"],
+  ["horizontal","水平の（⇔vertical）","The shelf must stay horizontal.","棚は水平を保たねばならない。","反対語ペア","中級"],
+  ["superior","優れた（⇔inferior）","This model is superior.","この機種の方が優れている。","反対語ペア","中級"],
+  ["inferior","劣った（⇔superior）","The copy is inferior.","その複製は品質が劣る。","反対語ペア","中級"],
+  ["voluntary","自発的な（⇔compulsory）","Attendance is voluntary.","出席は自由だ。","反対語ペア","中級"],
+  ["compulsory","義務的な（⇔voluntary）","The course is compulsory.","その科目は必修だ。","反対語ペア","上級"],
+  ["concrete","具体的な（⇔abstract）","Give a concrete example.","具体例を挙げてください。","反対語ペア","中級"],
+  ["abstract","抽象的な（⇔concrete）","The idea is too abstract.","その考えは抽象的すぎる。","反対語ペア","中級"],
+  ["majority","大多数（⇔minority）","The majority agreed.","大多数が賛成した。","反対語ペア","中級"],
+  ["minority","少数（⇔majority）","A minority objected.","少数が反対した。","反対語ペア","中級"],
+  ["shallow","浅い（⇔deep）","The river is shallow here.","この辺りは川が浅い。","反対語ペア","中級"],
+  ["follow up","追って連絡する","I will follow up next week.","来週追って連絡します。","職場コミュニケーション","中級"],
+  ["touch base","連絡を取る","Let's touch base on Friday.","金曜に一度連絡を取りましょう。","職場コミュニケーション","上級"],
+  ["brief","手短に説明する","She briefed the team quickly.","彼女はチームに手短に説明した。","職場コミュニケーション","中級"],
+  ["recap","要点をまとめる","Let me recap the main points.","要点をまとめさせてください。","職場コミュニケーション","中級"],
+  ["align","足並みをそろえる","We need to align on the goal.","目標について足並みをそろえる必要がある。","職場コミュニケーション","上級"],
+  ["circulate","回覧する","Please circulate the memo.","この連絡文書を回覧してください。","職場コミュニケーション","上級"],
+  ["coordinate","調整する","She coordinates with two teams.","彼女は2つのチームと調整している。","職場コミュニケーション","中級"],
+  ["consult","相談する","Consult your manager first.","まず上司に相談してください。","職場コミュニケーション","中級"],
+  ["notify","通知する","Notify us of any changes.","変更があればお知らせください。","職場コミュニケーション","中級"],
+  ["liaise","連絡を取り合う","She liaises with the supplier.","彼女は仕入先と連絡を取り合っている。","職場コミュニケーション","上級"],
+  ["debrief","報告を受ける","We debriefed after the visit.","訪問後に報告を行った。","職場コミュニケーション","上級"],
+  ["mediate","仲裁する","He mediated the dispute.","彼はその争いを仲裁した。","職場コミュニケーション","上級"],
+  ["solicit","求める、募る","We solicit feedback each quarter.","四半期ごとに意見を募っています。","職場コミュニケーション","上級"],
+  ["hold the line","電話を切らずに待つ","Could you hold the line, please?","少々お待ちいただけますか。","電話・接客","中級"],
+  ["put through","電話をつなぐ","I'll put you through to sales.","営業におつなぎします。","電話・接客","中級"],
+  ["hang up","電話を切る","Don't hang up yet.","まだ電話を切らないで。","電話・接客","中級"],
+  ["call back","かけ直す","I'll call you back later.","後ほどかけ直します。","電話・接客","初級"],
+  ["extension","内線","My extension is 204.","内線は204です。","電話・接客","中級"],
+  ["voicemail","留守番電話","I left a voicemail.","留守番電話にメッセージを残した。","電話・接客","中級"],
+  ["on behalf of","〜を代表して","I'm calling on behalf of Mr. Lee.","リー氏の代理でお電話しています。","電話・接客","上級"],
+  ["in stock","在庫がある","That item is in stock.","その商品は在庫があります。","電話・接客","中級"],
+  ["out of stock","在庫切れ","The size is out of stock.","そのサイズは在庫切れです。","電話・接客","中級"],
+  ["prompt","迅速な","Thank you for your prompt reply.","迅速なご返信ありがとうございます。","電話・接客","中級"],
+  ["reception","受付","Please wait at the reception.","受付でお待ちください。","電話・接客","中級"],
+  ["clarification","説明、確認","I need some clarification.","少し確認させてください。","電話・接客","上級"],
+  ["appetizer","前菜","We ordered two appetizers.","前菜を2つ注文した。","レストラン","中級"],
+  ["main course","主菜","The main course was delicious.","主菜はおいしかった。","レストラン","中級"],
+  ["waiter","給仕、ウェイター","The waiter took our order.","ウェイターが注文を取った。","レストラン","初級"],
+  ["allergy","アレルギー","I have a nut allergy.","ナッツアレルギーがあります。","レストラン","中級"],
+  ["seasoning","調味料、味付け","The seasoning was just right.","味付けはちょうどよかった。","レストラン","中級"],
+  ["takeaway","持ち帰り","We ordered takeaway.","持ち帰りを注文した。","レストラン","中級"],
+  ["serve","出す、給仕する","Breakfast is served until ten.","朝食は10時まで提供されます。","レストラン","中級"],
+  ["crispy","カリッとした","The chicken was crispy.","鶏肉はカリッとしていた。","レストラン","中級"],
+  ["bland","味が薄い","The soup was rather bland.","スープはやや味が薄かった。","レストラン","上級"],
+  ["savory","塩味のきいた、風味のよい","I prefer savory snacks.","塩味のスナックが好きだ。","レストラン","上級"],
+  ["cuisine","料理（の様式）","We tried Thai cuisine.","タイ料理を試した。","レストラン","上級"],
+  ["garnish","付け合わせ、飾る","Garnish with fresh herbs.","生のハーブを添えてください。","レストラン","上級"],
+  ["beverage menu","ドリンクメニュー","Ask for the beverage menu.","ドリンクメニューをもらってください。","レストラン","中級"],
+  ["interrupt","さえぎる","Sorry to interrupt you.","お話の途中ですみません。","コミュニケーション","中級"],
+  ["argue","主張する、口論する","She argued for a change.","彼女は変更を主張した。","コミュニケーション","中級"],
+  ["express","表現する","He expressed his concern.","彼は懸念を表明した。","コミュニケーション","中級"],
+  ["respond","応答する","Please respond by Friday.","金曜までにご返答ください。","コミュニケーション","中級"],
+  ["misunderstand","誤解する","I think you misunderstood me.","誤解されたと思います。","コミュニケーション","中級"],
+  ["tone","口調","Her tone was polite.","彼女の口調は丁寧だった。","コミュニケーション","中級"],
+  ["small talk","世間話","We made small talk first.","まず世間話をした。","コミュニケーション","中級"],
+  ["interrupting","話をさえぎること","Interrupting is considered rude.","話をさえぎるのは失礼とされる。","コミュニケーション","中級"],
+  ["paraphrase","言い換える","Try to paraphrase the sentence.","その文を言い換えてみて。","コミュニケーション","上級"],
+  ["assertive","はっきり自己主張する","Be assertive but polite.","丁寧かつはっきり主張しよう。","コミュニケーション","上級"],
+  ["installment","分割払い","We paid in installments.","分割払いで支払った。","買い物・お金","上級"],
+  ["cashier","レジ係","Please pay at the cashier.","レジでお支払いください。","買い物・お金","中級"],
+  ["exchange","交換する","Can I exchange this shirt?","このシャツを交換できますか。","買い物・お金","中級"],
+  ["invoice total","請求合計","Check the invoice total.","請求合計をご確認ください。","買い物・お金","中級"],
+  ["retail","小売の","Retail prices went up.","小売価格が上がった。","買い物・お金","中級"],
+  ["clearance","在庫処分","The clearance sale ends today.","在庫処分セールは今日までだ。","買い物・お金","中級"],
+  ["thrifty","倹約家の","She is thrifty with money.","彼女はお金に倹約的だ。","買い物・お金","上級"],
+  ["extravagant","浪費的な","That is an extravagant gift.","それは高価すぎる贈り物だ。","買い物・お金","上級"],
+  ["deposit","手付金、預ける","We paid a deposit.","手付金を支払った。","買い物・お金","中級"],
+  ["currency exchange","両替","Where is the currency exchange?","両替所はどこですか。","買い物・お金","中級"],
+  ["overpriced","値段が高すぎる","The bag felt overpriced.","そのバッグは値段が高すぎると感じた。","買い物・お金","上級"],
+  ["reasonable","手ごろな","The price is reasonable.","値段は手ごろだ。","買い物・お金","中級"],
+  ["refundable","返金可能な","The ticket is not refundable.","そのチケットは返金不可です。","買い物・お金","上級"],
+  ["split the bill","割り勘にする","Let's split the bill.","割り勘にしよう。","買い物・お金","中級"],
+  ["save up","貯金する","She is saving up for a trip.","彼女は旅行のために貯金している。","買い物・お金","中級"],
+  ["attitude","態度","He has a positive attitude.","彼は前向きな態度だ。","心理・思考","中級"],
+  ["distraction","気を散らすもの","Phones are a big distraction.","スマホは大きな注意散漫の元だ。","心理・思考","中級"],
+  ["concentrate","集中する","I can't concentrate here.","ここでは集中できない。","心理・思考","中級"],
+  ["rational","理性的な","Try to stay rational.","理性的でいるようにしよう。","心理・思考","中級"],
+  ["irrational","不合理な","The fear seemed irrational.","その恐怖は不合理に思えた。","心理・思考","上級"],
+  ["stereotype","固定観念","Avoid national stereotypes.","国民性の固定観念は避けよう。","心理・思考","上級"],
+  ["self-esteem","自尊心","Praise builds self-esteem.","称賛は自尊心を育てる。","心理・思考","上級"],
+  ["procrastinate","先延ばしにする","I tend to procrastinate.","私は先延ばしにしがちだ。","心理・思考","上級"],
+  ["opponent","対戦相手","Our opponent was strong.","対戦相手は強かった。","スポーツ・健康","中級"],
+  ["referee","審判","The referee blew the whistle.","審判が笛を吹いた。","スポーツ・健康","中級"],
+  ["warm up","ウォーミングアップする","Warm up for ten minutes.","10分間ウォーミングアップして。","スポーツ・健康","中級"],
+  ["athlete","運動選手","She is a professional athlete.","彼女はプロの運動選手だ。","スポーツ・健康","中級"],
+  ["championship","選手権","The championship starts today.","選手権が今日始まる。","スポーツ・健康","中級"],
+  ["sprint","全力疾走する","He sprinted to the finish.","彼はゴールまで全力疾走した。","スポーツ・健康","中級"],
+  ["marathon","マラソン","She ran her first marathon.","彼女は初めてのマラソンを走った。","スポーツ・健康","中級"],
+  ["aerobic","有酸素の","Aerobic exercise helps the heart.","有酸素運動は心臓によい。","スポーツ・健康","上級"],
+  ["conditioning","体調管理、コンディション作り","Conditioning is done off-season.","体作りはオフシーズンに行う。","スポーツ・健康","上級"],
+  ["source","情報源","The report cited two sources.","その報道は2つの情報源を挙げた。","メディア・報道","中級"],
+  ["bias in reporting","報道の偏り","Readers noticed bias in reporting.","読者は報道の偏りに気づいた。","メディア・報道","上級"],
+  ["column","コラム","He writes a weekly column.","彼は週刊コラムを書いている。","メディア・報道","中級"],
+  ["subscription","購読","I canceled my subscription.","購読を解約した。","メディア・報道","中級"],
+  ["circulation","発行部数","The paper's circulation fell.","その新聞の発行部数は落ちた。","メディア・報道","上級"],
+  ["press release","報道発表","They issued a press release.","彼らは報道発表を出した。","メディア・報道","中級"],
+  ["anchor","キャスター","The anchor read the news.","キャスターがニュースを読んだ。","メディア・報道","上級"],
+  ["correspondent","特派員","Our correspondent is in Paris.","当社の特派員はパリにいる。","メディア・報道","上級"],
+  ["misinformation","誤情報","Misinformation spreads quickly.","誤情報は急速に広まる。","メディア・報道","上級"],
+  ["viral","拡散した","The clip went viral.","その動画は一気に拡散した。","メディア・報道","中級"],
+  ["feed","（SNSの）表示一覧","My feed is full of ads.","表示一覧が広告だらけだ。","メディア・報道","中級"],
+  ["streaming","配信","Streaming changed the industry.","配信が業界を変えた。","メディア・報道","中級"],
+  ["documentary","記録映画","We watched a documentary.","記録映画を見た。","メディア・報道","中級"],
+  ["publish","公開する、出版する","They published the results.","彼らは結果を公表した。","メディア・報道","中級"],
+  ["retract","撤回する","The paper retracted the story.","その新聞は記事を撤回した。","メディア・報道","上級"],
+  ["archive","保存記録","The archive is online now.","その保存記録は今オンラインにある。","メディア・報道","中級"],
+  ["hit the books","猛勉強する","I need to hit the books tonight.","今夜は猛勉強しないと。","イディオム","中級"],
+  ["once in a blue moon","ごくまれに","He calls once in a blue moon.","彼はごくまれにしか電話しない。","イディオム","上級"],
+  ["in the long run","長い目で見れば","It pays off in the long run.","長い目で見れば報われる。","イディオム","中級"],
+  ["pull someone's leg","からかう","He was pulling your leg.","彼はからかっていたんだよ。","イディオム","上級"],
+  ["the last straw","我慢の限界","That was the last straw.","それが我慢の限界だった。","イディオム","上級"],
+  ["a blessing in disguise","不幸中の幸い","The delay was a blessing in disguise.","その遅れは不幸中の幸いだった。","イディオム","上級"],
+  ["go the extra mile","一段の努力をする","She always goes the extra mile.","彼女はいつも一段の努力をする。","イディオム","上級"],
+  ["learn by heart","暗記する","Learn the phrases by heart.","そのフレーズを暗記して。","イディオム","中級"],
+  ["sleep on it","一晩考える","Let me sleep on it.","一晩考えさせてください。","イディオム","中級"],
+  ["in a nutshell","要するに","In a nutshell, we agreed.","要するに、合意しました。","イディオム","上級"],
+  ["hit the road","出発する","We should hit the road.","そろそろ出発しよう。","イディオム","中級"],
+  ["bend over backwards","労を惜しまない","They bent over backwards to help.","彼らは労を惜しまず助けてくれた。","上級イディオム","上級"],
+  ["take with a grain of salt","割り引いて聞く","Take that claim with a grain of salt.","その主張は割り引いて聞くべきだ。","上級イディオム","上級"],
+  ["play devil's advocate","あえて反対意見を言う","Let me play devil's advocate.","あえて反対の立場で言わせてください。","上級イディオム","上級"],
+  ["touch and go","予断を許さない","The situation was touch and go.","状況は予断を許さなかった。","上級イディオム","上級"],
+  ["by the book","規則どおりに","She does everything by the book.","彼女は何でも規則どおりに行う。","上級イディオム","上級"],
+  ["a far cry from","〜とは程遠い","It's a far cry from perfect.","完璧には程遠い。","上級イディオム","上級"],
+  ["up in the air","未定で","The plan is still up in the air.","計画はまだ未定だ。","上級イディオム","上級"],
+  ["on thin ice","危ない状況で","You are on thin ice here.","君は危うい立場にいる。","上級イディオム","上級"],
+  ["keep at bay","寄せつけない","Exercise keeps stress at bay.","運動はストレスを寄せつけない。","上級イディオム","上級"],
+  ["second nature","お手のもの","Typing is second nature to her.","タイピングは彼女のお手のものだ。","上級イディオム","上級"],
+  ["run its course","自然に収まる","Let the trend run its course.","その流行は自然に収まらせよう。","上級イディオム","上級"],
+  ["take its toll","打撃を与える","The heat took its toll.","暑さが打撃を与えた。","上級イディオム","上級"],
+  ["come to terms with","受け入れる","He came to terms with the loss.","彼はその喪失を受け入れた。","上級イディオム","上級"],
+  ["across the board","全面的に","Prices rose across the board.","価格は全面的に上がった。","上級イディオム","上級"],
+  ["at the eleventh hour","土壇場で","They agreed at the eleventh hour.","彼らは土壇場で合意した。","上級イディオム","上級"],
+  ["cut to the chase","本題に入る","Let's cut to the chase.","本題に入りましょう。","上級イディオム","上級"],
+  ["par for the course","よくあること","Delays are par for the course.","遅れはよくあることだ。","上級イディオム","上級"],
+  ["blow out of proportion","大げさに扱う","The media blew it out of proportion.","報道はそれを大げさに扱った。","上級イディオム","上級"],
+  ["peak","最高点、頂点に達する","Demand peaked in July.","需要は7月に最高となった。","数量・統計","中級"],
+  ["margin of error","誤差の範囲","The margin of error is 3%.","誤差の範囲は3%だ。","数量・統計","上級"],
+  ["sample size","標本数","The sample size was small.","標本数が少なかった。","数量・統計","上級"],
+  ["frequency","頻度","Check the frequency of use.","使用頻度を確認して。","数量・統計","中級"],
+  ["substantial increase","大幅な増加","We saw a substantial increase.","大幅な増加が見られた。","数量・統計","上級"],
+  ["slight decrease","わずかな減少","There was a slight decrease.","わずかな減少があった。","数量・統計","中級"],
+  ["double","2倍になる","Applications doubled this year.","応募が今年2倍になった。","数量・統計","中級"],
+  ["triple","3倍になる","Output tripled in a decade.","生産量は10年で3倍になった。","数量・統計","中級"],
+  ["per capita","一人当たりの","Per capita income increased.","一人当たり所得が増えた。","数量・統計","上級"],
+  ["aggregate","総計の","The aggregate value is high.","総計の価値は高い。","数量・統計","上級"],
+  ["accountant","会計士","She works as an accountant.","彼女は会計士として働いている。","職業・仕事","中級"],
+  ["architect","建築家","The architect drew the plans.","建築家が図面を描いた。","職業・仕事","中級"],
+  ["attorney","弁護士","Ask an attorney first.","まず弁護士に相談して。","職業・仕事","上級"],
+  ["consultant","コンサルタント","We hired a consultant.","コンサルタントを雇った。","職業・仕事","中級"],
+  ["technician","技術者","A technician fixed the line.","技術者が回線を直した。","職業・仕事","中級"],
+  ["recruiter","採用担当者","A recruiter contacted me.","採用担当者から連絡があった。","職業・仕事","中級"],
+  ["intern","インターン","She was an intern last summer.","彼女は昨夏インターンだった。","職業・仕事","中級"],
+  ["apprentice","見習い","He started as an apprentice.","彼は見習いから始めた。","職業・仕事","上級"],
+  ["freelancer","フリーランス","Many freelancers work remotely.","多くのフリーランスは遠隔で働く。","職業・仕事","中級"],
+  ["resign","辞職する","He resigned last month.","彼は先月辞職した。","職業・仕事","中級"],
+  ["qualification","資格","This job needs a qualification.","この仕事には資格が要る。","職業・仕事","中級"],
+  ["apprenticeship","見習い期間","The apprenticeship lasts a year.","見習い期間は1年だ。","職業・仕事","上級"],
+  ["vocation","天職","Teaching is her vocation.","教えることは彼女の天職だ。","職業・仕事","上級"],
+  ["payroll","給与支払い名簿","She handles the payroll.","彼女は給与処理を担当している。","職業・仕事","上級"],
+  ["severance","退職金","They offered a severance package.","退職金が提示された。","職業・仕事","上級"],
+  ["transfer at","〜で乗り換える","Transfer at the next station.","次の駅で乗り換えてください。","交通・移動","中級"],
+  ["congestion","渋滞","Traffic congestion is worse.","交通渋滞がひどくなった。","交通・移動","上級"],
+  ["roundabout","環状交差点","Take the second exit at the roundabout.","環状交差点で2つ目の出口へ。","交通・移動","上級"],
+  ["departure","出発","The departure was delayed.","出発が遅れた。","交通・移動","中級"],
+  ["arrival","到着","Check the arrival time.","到着時刻を確認して。","交通・移動","中級"],
+  ["shuttle","送迎バス","A shuttle runs every hour.","送迎バスは1時間ごとだ。","交通・移動","中級"],
+  ["fuel","燃料","Fuel prices keep rising.","燃料価格が上がり続けている。","交通・移動","中級"],
+  ["pedestrian crossing","横断歩道","Use the pedestrian crossing.","横断歩道を使ってください。","交通・移動","中級"],
+  ["timetable","時刻表","Check the new timetable.","新しい時刻表を確認して。","交通・移動","中級"],
+  ["one-way","片道の","I bought a one-way ticket.","片道切符を買った。","交通・移動","中級"],
+  ["round trip","往復","A round trip costs less.","往復のほうが安い。","交通・移動","中級"],
+  ["toll","通行料","We paid a toll on the highway.","高速道路で通行料を払った。","交通・移動","上級"],
+  ["carpool","相乗りする","They carpool to work.","彼らは相乗りで通勤する。","交通・移動","上級"],
+  ["expressway","高速道路","The expressway was closed.","高速道路は閉鎖されていた。","交通・移動","中級"],
+  ["agreement","合意、契約","We signed the agreement.","契約に署名した。","契約・手続き","中級"],
+  ["terms and conditions","利用規約","Accept the terms and conditions.","利用規約に同意してください。","契約・手続き","中級"],
+  ["application form","申込書","Fill in the application form.","申込書に記入してください。","契約・手続き","中級"],
+  ["signature","署名","Your signature is missing.","署名が抜けています。","契約・手続き","中級"],
+  ["notarize","公証する","The document must be notarized.","その書類は公証が必要だ。","契約・手続き","上級"],
+  ["amend","修正する","We amended the contract.","契約を修正した。","契約・手続き","上級"],
+  ["comply with","従う","We comply with local law.","現地法に従っています。","契約・手続き","上級"],
+  ["deadline extension","期限の延長","We requested a deadline extension.","期限の延長を求めた。","契約・手続き","中級"],
+  ["proof of identity","本人確認書類","Bring proof of identity.","本人確認書類をお持ちください。","契約・手続き","中級"],
+  ["registration","登録","Registration closes tomorrow.","登録は明日締め切りだ。","契約・手続き","中級"],
+  ["gardening","園芸","She enjoys gardening.","彼女は園芸を楽しんでいる。","趣味・スポーツ","中級"],
+  ["knitting","編み物","Knitting keeps me calm.","編み物は気持ちを落ち着かせる。","趣味・スポーツ","中級"],
+  ["camping","キャンプ","Camping is popular here.","ここではキャンプが人気だ。","趣味・スポーツ","初級"],
+  ["cycling","サイクリング","Cycling is good exercise.","サイクリングはよい運動だ。","趣味・スポーツ","中級"],
+  ["collecting","収集","Collecting stamps is his hobby.","切手収集が彼の趣味だ。","趣味・スポーツ","中級"],
+  ["pottery","陶芸","I signed up for pottery.","陶芸教室に申し込んだ。","趣味・スポーツ","上級"],
+  ["calligraphy","書道","She studies calligraphy.","彼女は書道を学んでいる。","趣味・スポーツ","上級"],
+  ["board game","ボードゲーム","We played a board game.","ボードゲームで遊んだ。","趣味・スポーツ","中級"],
+  ["puzzle","パズル","This puzzle is hard.","このパズルは難しい。","趣味・スポーツ","初級"],
+  ["amateur","素人の","He is an amateur painter.","彼は素人画家だ。","趣味・スポーツ","中級"],
+  ["enthusiast","愛好家","She is a film enthusiast.","彼女は映画愛好家だ。","趣味・スポーツ","上級"],
+  ["leisure","余暇","I read in my leisure time.","余暇には読書をする。","趣味・スポーツ","中級"],
+  ["pastime","気晴らし、娯楽","Fishing is a quiet pastime.","釣りは静かな娯楽だ。","趣味・スポーツ","上級"],
+  ["skill level","習熟度","Choose your skill level.","習熟度を選んでください。","趣味・スポーツ","中級"],
+  ["membership","会員資格","Membership costs 3,000 yen.","会費は3,000円だ。","趣味・スポーツ","中級"],
+  ["equipment","用具","Bring your own equipment.","用具はご持参ください。","趣味・スポーツ","中級"],
+  ["beginner-friendly","初心者向けの","The class is beginner-friendly.","その講座は初心者向けだ。","趣味・スポーツ","中級"],
+  ["indoor","屋内の","We need an indoor activity.","屋内でできることが必要だ。","趣味・スポーツ","中級"],
+  ["workshop","講習会","I joined a weekend workshop.","週末の講習会に参加した。","趣味・スポーツ","中級"],
+  ["recreation","レクリエーション","The park is for recreation.","その公園は憩いの場だ。","趣味・スポーツ","上級"],
+  ["pursue a hobby","趣味を続ける","She pursues her hobby daily.","彼女は毎日趣味を続けている。","趣味・スポーツ","中級"],
+  ["lean","もたれる、傾く","She leaned against the wall.","彼女は壁にもたれた。","動作・身体","中級"],
+  ["stretch out","伸ばす","He stretched out his arm.","彼は腕を伸ばした。","動作・身体","中級"],
+  ["shrug","肩をすくめる","He shrugged and said nothing.","彼は肩をすくめて何も言わなかった。","動作・身体","上級"],
+  ["blink","まばたきする","He blinked in the bright light.","彼は明るい光にまばたきした。","動作・身体","中級"],
+  ["tremble","震える","Her hands trembled slightly.","彼女の手はわずかに震えた。","動作・身体","上級"],
+  ["crawl","はう","The baby began to crawl.","赤ちゃんがはい始めた。","動作・身体","中級"],
+  ["kneel","ひざまずく","He knelt to tie his shoe.","彼は靴ひもを結ぼうとひざまずいた。","動作・身体","上級"],
+  ["clap","拍手する","The audience clapped loudly.","観客は大きく拍手した。","動作・身体","中級"],
+  ["stumble","つまずく","He stumbled on the step.","彼は段差でつまずいた。","動作・身体","上級"],
+  ["wrist","手首","I hurt my wrist.","手首を痛めた。","動作・身体","中級"],
+  ["ankle","足首","She twisted her ankle.","彼女は足首をひねった。","動作・身体","中級"],
+  ["shoulder","肩","My shoulder feels stiff.","肩が凝っている。","動作・身体","初級"],
+  ["elbow","ひじ","Rest your elbow here.","ここにひじを置いて。","動作・身体","中級"],
+  ["spine","背骨","Keep your spine straight.","背骨をまっすぐに保って。","動作・身体","上級"],
+  ["muscle","筋肉","Stretching relaxes the muscles.","ストレッチは筋肉をほぐす。","動作・身体","中級"],
+  ["posture check","姿勢の確認","Do a posture check hourly.","1時間ごとに姿勢を確認して。","動作・身体","中級"],
+  ["grip","握る力、握る","He has a strong grip.","彼は握力が強い。","動作・身体","中級"],
+  ["confused","混乱した","I'm a bit confused.","少し混乱しています。","気持ち・反応","中級"],
+  ["touched","感動した","I was touched by her letter.","彼女の手紙に感動した。","気持ち・反応","中級"],
+  ["hopeful","希望を持った","We remain hopeful.","私たちは希望を持ち続けている。","気持ち・反応","中級"],
+  ["stunned","呆然とした","We were stunned by the news.","その知らせに呆然とした。","気持ち・反応","上級"],
+  ["cheer up","元気づける","Her message cheered me up.","彼女の連絡に元気づけられた。","気持ち・反応","中級"],
+  ["calm down","落ち着く","Take a breath and calm down.","一息ついて落ち着いて。","気持ち・反応","中級"],
+  ["cheerless","わびしい","The room felt cheerless.","その部屋はわびしかった。","気持ち・反応","上級"],
+  ["light-footed","足取りの軽い","She felt light-footed today.","彼女は今日足取りが軽かった。","気持ち・反応","上級"],
+  ["moody","気分屋の","He can be moody in the morning.","彼は朝は気分屋になりがちだ。","気持ち・反応","上級"],
+  ["light-hearted","気楽な","It was a light-hearted talk.","気楽な会話だった。","気持ち・反応","上級"],
+  ["heartbroken","悲嘆に暮れた","She was heartbroken.","彼女は悲嘆に暮れていた。","気持ち・反応","上級"],
+  ["at ease","くつろいで","He put me at ease.","彼は私をくつろがせてくれた。","気持ち・反応","中級"],
+  ["parliament","議会","Parliament debated the bill.","議会はその法案を討議した。","政治・法律","上級"],
+  ["ballot","投票（用紙）","Cast your ballot by noon.","正午までに投票してください。","政治・法律","上級"],
+  ["prosecutor","検察官","The prosecutor presented evidence.","検察官が証拠を提示した。","政治・法律","上級"],
+  ["appeal","上訴する","They appealed the ruling.","彼らはその判決を上訴した。","政治・法律","上級"],
+  ["regulate","規制する","The law regulates imports.","その法律は輸入を規制する。","政治・法律","中級"],
+  ["treaty","条約","Both sides signed the treaty.","双方が条約に署名した。","政治・法律","上級"],
+  ["municipal","市の、地方自治の","Municipal elections are in June.","市議会選挙は6月だ。","政治・法律","上級"],
+  ["advocacy","擁護活動","Her advocacy changed the law.","彼女の擁護活動が法律を変えた。","政治・法律","上級"],
+  ["citizenship","市民権","He obtained citizenship.","彼は市民権を取得した。","政治・法律","上級"],
+  ["legislature","立法府","The legislature meets weekly.","立法府は毎週開かれる。","政治・法律","上級"],
+  ["defendant","被告","The defendant denied it.","被告はそれを否認した。","政治・法律","上級"],
+  ["as per","〜のとおり","As per our discussion, I attach the file.","ご相談のとおり、ファイルを添付します。","フォーマル表現","上級"],
+  ["in accordance with","〜に従って","In accordance with policy, we declined.","方針に従い、お断りしました。","フォーマル表現","上級"],
+  ["at your earliest convenience","ご都合のつき次第","Please reply at your earliest convenience.","ご都合のつき次第ご返信ください。","フォーマル表現","上級"],
+  ["should you have","もし〜がございましたら","Should you have questions, contact us.","ご質問がございましたらご連絡ください。","フォーマル表現","上級"],
+  ["we regret to inform","残念ながらお知らせします","We regret to inform you of the change.","残念ながら変更をお知らせします。","フォーマル表現","上級"],
+  ["please be advised","ご承知おきください","Please be advised that fees apply.","手数料がかかる旨ご承知おきください。","フォーマル表現","上級"],
+  ["subsequent to","〜の後に","Subsequent to the review, we revised it.","審査の後、修正しました。","フォーマル表現","上級"],
+  ["pursuant to","〜に基づいて","Pursuant to the contract, we billed you.","契約に基づき請求いたしました。","フォーマル表現","上級"],
+  ["wherein","その中で","A clause wherein liability is limited.","責任が限定される条項。","フォーマル表現","上級"],
+  ["to whom it may concern","関係者各位","To whom it may concern, please note...","関係者各位、ご留意ください。","フォーマル表現","上級"],
+  ["kindly note","ご留意ください","Kindly note the new address.","新住所にご留意ください。","フォーマル表現","上級"],
+  ["we appreciate your","〜に感謝いたします","We appreciate your patience.","ご辛抱に感謝いたします。","フォーマル表現","上級"],
+  ["upon receipt","受領次第","We will ship upon receipt of payment.","入金確認次第、発送します。","フォーマル表現","上級"],
+  ["in the event that","万一〜の場合","In the event that it rains, we cancel.","万一雨の場合は中止します。","フォーマル表現","上級"],
+  ["with respect to","〜については","With respect to timing, we agree.","時期については同意します。","フォーマル表現","上級"],
+  ["duly","正式に、きちんと","The form was duly signed.","用紙は正式に署名された。","フォーマル表現","上級"],
+  ["rehabilitation","リハビリ","Rehabilitation takes months.","リハビリには数か月かかる。","医療・健康（上級）","上級"],
+  ["blood pressure","血圧","Check your blood pressure daily.","毎日血圧を測ってください。","医療・健康（上級）","中級"],
+  ["allergy test","アレルギー検査","He took an allergy test.","彼はアレルギー検査を受けた。","医療・健康（上級）","中級"],
+  ["side effect","副作用","The side effects were mild.","副作用は軽度だった。","医療・健康（上級）","中級"],
+  ["clinical","臨床の","Clinical trials are ongoing.","臨床試験が進行中だ。","医療・健康（上級）","上級"],
+  ["hygiene","衛生","Hand hygiene prevents illness.","手指衛生は病気を防ぐ。","医療・健康（上級）","上級"],
+  ["recovery period","回復期間","The recovery period is short.","回復期間は短い。","医療・健康（上級）","中級"],
+  ["sedentary","座りがちな","A sedentary lifestyle is risky.","座りがちな生活は危険だ。","医療・健康（上級）","上級"],
+  ["insomnia","不眠症","Stress can cause insomnia.","ストレスは不眠症を招くことがある。","医療・健康（上級）","上級"],
+  ["dehydration","脱水","Dehydration causes headaches.","脱水は頭痛を引き起こす。","医療・健康（上級）","上級"],
+  ["exhibition","展覧会","The exhibition runs until May.","展覧会は5月まで開かれる。","芸術・文化","中級"],
+  ["curator","学芸員","The curator gave a tour.","学芸員が案内してくれた。","芸術・文化","上級"],
+  ["gallery","画廊","We visited a small gallery.","小さな画廊を訪れた。","芸術・文化","中級"],
+  ["composer","作曲家","The composer wrote it young.","その作曲家は若い時に書いた。","芸術・文化","中級"],
+  ["orchestra","管弦楽団","The orchestra played beautifully.","管弦楽団は見事に演奏した。","芸術・文化","中級"],
+  ["rehearsal","リハーサル","Rehearsal starts at six.","リハーサルは6時開始だ。","芸術・文化","中級"],
+  ["performance","公演","The performance sold out.","公演は完売した。","芸術・文化","中級"],
+  ["craft","工芸","Local craft is famous here.","ここは地元の工芸で有名だ。","芸術・文化","中級"],
+  ["literature","文学","He teaches English literature.","彼は英文学を教えている。","芸術・文化","中級"],
+  ["playwright","劇作家","The playwright won an award.","その劇作家は賞を取った。","芸術・文化","上級"],
+  ["choreography","振付","The choreography was stunning.","振付は見事だった。","芸術・文化","上級"],
+  ["folklore","民間伝承","The story comes from folklore.","その話は民間伝承に由来する。","芸術・文化","上級"],
+  ["restoration","修復","The restoration took years.","修復には何年もかかった。","芸術・文化","上級"],
+  ["coastline","海岸線","The coastline stretches for miles.","海岸線は何マイルも続く。","旅・地理","上級"],
+  ["latitude","緯度","The city sits at high latitude.","その都市は高緯度にある。","旅・地理","上級"],
+  ["archipelago","群島","Japan is an archipelago.","日本は群島だ。","旅・地理","上級"],
+  ["guidebook","ガイドブック","The guidebook was useful.","ガイドブックが役立った。","旅・地理","中級"],
+  ["currency conversion","通貨換算","Check the currency conversion.","通貨換算を確認して。","旅・地理","中級"],
+  ["tropical","熱帯の","The island has a tropical climate.","その島は熱帯気候だ。","旅・地理","中級"],
+  ["engineering","工学","She studies civil engineering.","彼女は土木工学を学ぶ。","学問分野","中級"],
+  ["pharmacology","薬理学","Pharmacology studies drug effects.","薬理学は薬の作用を研究する。","学問分野","上級"],
+  ["demography","人口統計学","Demography predicts population change.","人口統計学は人口変化を予測する。","学問分野","上級"],
+  ["botany","植物学","Botany covers plant life.","植物学は植物の生命を扱う。","学問分野","上級"],
+  ["neuroscience","神経科学","Neuroscience is advancing fast.","神経科学は急速に進歩している。","学問分野","上級"],
+  ["jurisprudence","法学","He studied jurisprudence abroad.","彼は海外で法学を学んだ。","学問分野","上級"],
+  ["discipline","学問分野","It is an interdisciplinary discipline.","それは学際的な分野だ。","学問分野","上級"],];
 
 // ==================== 状態管理 ====================
 const store = {
@@ -2255,7 +2575,8 @@ let state = store.load() || {
   remindTime: "20:00",
   lang: "ja",
   rate: 0.9,
-  batch: 15
+  batch: 15,
+  accent: "us"
 };
 // 既存ユーザーに新しい単語をマージ（進捗は保持）
 (function mergeNewWords() {
@@ -2285,6 +2606,7 @@ if (!state.remindTime) state.remindTime = "20:00";
 if (!state.lang) state.lang = "ja";
 if (!state.rate) state.rate = 0.9;
 if (!state.batch) state.batch = 15;
+if (!state.accent) state.accent = "us";
 if (state.todayDate !== new Date().toDateString()) {
   state.todayDate = new Date().toDateString();
   state.todayCount = 0;
@@ -2340,19 +2662,21 @@ function applyResult(word, ok) {
 
 // ==================== バッジ ====================
 const BADGES = [
-  { id: "first",      icon: "\u{1F331}", name: "はじめの一歩", desc: "初めて学習した",         check: () => Object.keys(state.history).length >= 1 },
-  { id: "study50",    icon: "\u{1F4DA}", name: "50問クリア",   desc: "累計50問に取り組んだ",   check: () => totalStudied() >= 50 },
-  { id: "study200",   icon: "\u{1F4D6}", name: "200問クリア",  desc: "累計200問に取り組んだ",  check: () => totalStudied() >= 200 },
-  { id: "study1000",  icon: "\u{1F393}", name: "1000問クリア", desc: "累計1000問に取り組んだ", check: () => totalStudied() >= 1000 },
-  { id: "master10",   icon: "\u{2B50}",  name: "10語習得",     desc: "10語を習得済みにした",   check: () => masteredCount() >= 10 },
-  { id: "master100",  icon: "\u{1F31F}", name: "100語習得",    desc: "100語を習得済みにした",  check: () => masteredCount() >= 100 },
-  { id: "master500",  icon: "\u{1F3C6}", name: "500語習得",    desc: "500語を習得済みにした",  check: () => masteredCount() >= 500 },
-  { id: "streak3",    icon: "\u{1F525}", name: "3日連続",      desc: "3日続けて学習した",      check: () => (state.bestStreak || 0) >= 3 },
-  { id: "streak7",    icon: "\u{1F4AA}", name: "7日連続",      desc: "7日続けて学習した",      check: () => (state.bestStreak || 0) >= 7 },
-  { id: "streak30",   icon: "\u{1F451}", name: "30日連続",     desc: "30日続けて学習した",     check: () => (state.bestStreak || 0) >= 30 },
-  { id: "quizPerfect",icon: "\u{1F3AF}", name: "クイズ満点",   desc: "10問以上のクイズで全問正解した",  check: () => !!state.quizPerfect || (state.quizBest || 0) >= 10 },
-  { id: "goal",       icon: "\u{1F389}", name: "目標達成",     desc: "1日の目標を達成した",    check: () => state.todayCount >= (state.dailyGoal || 20) }
+  { id: "first",      icon: "\u{1F331}", name: "", desc: "",         check: () => Object.keys(state.history).length >= 1 },
+  { id: "study50",    icon: "\u{1F4DA}", name: "", desc: "",   check: () => totalStudied() >= 50 },
+  { id: "study200",   icon: "\u{1F4D6}", name: "", desc: "",  check: () => totalStudied() >= 200 },
+  { id: "study1000",  icon: "\u{1F393}", name: "", desc: "", check: () => totalStudied() >= 1000 },
+  { id: "master10",   icon: "\u{2B50}",  name: "", desc: "",   check: () => masteredCount() >= 10 },
+  { id: "master100",  icon: "\u{1F31F}", name: "", desc: "",  check: () => masteredCount() >= 100 },
+  { id: "master500",  icon: "\u{1F3C6}", name: "", desc: "",  check: () => masteredCount() >= 500 },
+  { id: "streak3",    icon: "\u{1F525}", name: "", desc: "",      check: () => (state.bestStreak || 0) >= 3 },
+  { id: "streak7",    icon: "\u{1F4AA}", name: "", desc: "",      check: () => (state.bestStreak || 0) >= 7 },
+  { id: "streak30",   icon: "\u{1F451}", name: "", desc: "",     check: () => (state.bestStreak || 0) >= 30 },
+  { id: "quizPerfect",icon: "\u{1F3AF}", name: "", desc: "",  check: () => !!state.quizPerfect || (state.quizBest || 0) >= 10 },
+  { id: "goal",       icon: "\u{1F389}", name: "", desc: "",    check: () => state.todayCount >= (state.dailyGoal || 20) }
 ];
+function badgeName(id) { return t("bN_" + id); }
+function badgeDesc(id) { return t("bD_" + id); }
 function totalStudied() { return Object.values(state.history).reduce((a, b) => a + b, 0); }
 function masteredCount() { return state.words.filter(w => w.box >= 3).length; }
 function checkBadges() {
@@ -2437,6 +2761,37 @@ function showTtsError(msg) {
   const el = document.getElementById("tts-global-msg");
   if (el) { el.textContent = msg; el.classList.remove("hidden"); }
 }
+// アメリカ英語・イギリス英語の切り替え
+function accentLang() {
+  return (typeof state !== "undefined" && state.accent === "uk") ? "en-GB" : "en-US";
+}
+function pickVoice(lang) {
+  if (!ttsSupported()) return null;
+  const voices = speechSynthesis.getVoices() || [];
+  const want = lang === "en-GB" ? /^en[-_]GB/i : /^en[-_]US/i;
+  return voices.find(v => want.test(v.lang))
+      || voices.find(v => /^en/i.test(v.lang))
+      || null;
+}
+// 端末に選んだアクセントの音声が入っていないことがあるので、実際に使う音声を伝える
+function syncAccentNote() {
+  const el = document.getElementById("accent-note");
+  if (!el) return;
+  if (!ttsSupported()) { el.textContent = t("accentNoTts"); return; }
+  const want = accentLang();
+  const voices = speechSynthesis.getVoices() || [];
+  const exact = voices.find(v => (want === "en-GB" ? /^en[-_]GB/i : /^en[-_]US/i).test(v.lang));
+  if (!voices.length) { el.textContent = t("accentLoading"); return; }
+  el.textContent = exact
+    ? t("accentOk").replace("{v}", exact.name)
+    : t("accentMissing");
+}
+function setAccent(v) {
+  state.accent = (v === "uk") ? "uk" : "us";
+  persist();
+  syncAccentNote();
+}
+
 function speak(text, rate) {
   if (rate === undefined) rate = (typeof state !== "undefined" && state.rate) || 0.9;
   if (!ttsSupported()) {
@@ -2446,12 +2801,11 @@ function speak(text, rate) {
   try {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
+    u.lang = accentLang();
     u.rate = rate;
     // iOS Safari は voices の読み込みが非同期。取得できた場合のみ指定する
-    const voices = speechSynthesis.getVoices() || [];
-    const en = voices.find(v => /^en[-_]US/i.test(v.lang)) || voices.find(v => /^en/i.test(v.lang));
-    if (en) u.voice = en;
+    const v = pickVoice(u.lang);
+    if (v) u.voice = v;
     u.onerror = () => showTtsError("音声を再生できませんでした。端末のマナーモード・音量をご確認ください。");
     speechSynthesis.speak(u);
     return true;
@@ -2461,6 +2815,9 @@ function speak(text, rate) {
   }
 }
 // iOS Safari 対策: voices が後から読み込まれる場合に備える
+if (ttsSupported()) {
+  try { speechSynthesis.addEventListener("voiceschanged", () => { if (typeof syncAccentNote === "function") syncAccentNote(); }); } catch (e) {}
+}
 if (ttsSupported() && speechSynthesis.getVoices().length === 0) {
   speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
 }
@@ -2575,7 +2932,7 @@ function renderWeeklyReport() {
     : (diff > 0 ? `先週より <b style="color:var(--accent)">+${diff}問</b>` :
        diff < 0 ? `先週より <b style="color:var(--danger)">${diff}問</b>` : "先週と同じペース");
   const mastered = state.words.filter(w => w.box >= 3).length;
-  const comment = activeDays >= 6 ? "\u{1F525} 素晴らしい習慣です！"
+  const comment = activeDays >= 6 ? t("weekGreat")
     : activeDays >= 4 ? "\u{1F44D} いいペースです。この調子！"
     : activeDays >= 1 ? "\u{1F331} まずは週4日を目指しましょう。"
     : "\u{1F4AA} 今日から始めてみましょう！";
@@ -2679,7 +3036,7 @@ function scheduleReminder() {
 // ==================== CSV 一括登録 ====================
 // ==================== 追加した単語のレベル判定 ====================
 const LEVELS = ["初級", "中級", "上級"];
-// 収録済み1,382語のレベル表（同じ単語なら迷わずそのレベルを使う）
+// 収録済み1,694語のレベル表（同じ単語なら迷わずそのレベルを使う）
 const KNOWN_LEVEL = (() => {
   const m = {};
   DEFAULT_WORDS.forEach(([w, , , , , lv]) => { if (w && lv) m[String(w).toLowerCase()] = lv; });
@@ -2780,10 +3137,10 @@ function renderBadges() {
   document.getElementById("badge-count").textContent = `（${got} / ${BADGES.length}）`;
   el.innerHTML = BADGES.map(b => {
     const has = state.badges.includes(b.id);
-    return `<div title="${escapeHtml(b.desc)}" style="text-align:center;padding:12px 6px;border-radius:14px;
+    return `<div title="${escapeHtml(badgeDesc(b.id))}" style="text-align:center;padding:12px 6px;border-radius:14px;
       background:${has ? "var(--primary-soft)" : "var(--bg2)"};opacity:${has ? 1 : .45};border:1px solid ${has ? "rgba(91,110,245,.25)" : "transparent"}">
       <div style="font-size:1.7rem;line-height:1.2;filter:${has ? "none" : "grayscale(1)"}">${b.icon}</div>
-      <div style="font-size:.68rem;font-weight:700;margin-top:4px;color:${has ? "var(--primary-dark)" : "var(--muted)"}">${b.name}</div>
+      <div style="font-size:.68rem;font-weight:700;margin-top:4px;color:${has ? "var(--primary-dark)" : "var(--muted)"}">${badgeName(b.id)}</div>
     </div>`;
   }).join("");
 }
@@ -2798,10 +3155,11 @@ function populateCatSelect() {
   const cur = sel.value || "ALL";
   const pool = state.words.filter(w => lv === "ALL" || (w.level || "中級") === lv);
   const cats = [...new Set(pool.map(w => w.cat || "その他"))];
-  sel.innerHTML = '<option value="ALL">すべて（' + pool.length + '語）</option>' +
+  sel.innerHTML = '<option value="ALL">' + escapeHtml(t("catAll").replace("{n}", pool.length)) + '</option>' +
     cats.map(c => {
       const n = pool.filter(w => (w.cat || "その他") === c).length;
-      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '（' + n + '語）</option>';
+      const label = t("catItem").replace("{c}", c).replace("{n}", n);
+      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(label) + '</option>';
     }).join("");
   sel.value = cats.includes(cur) || cur === "ALL" ? cur : "ALL";
 }
@@ -2831,8 +3189,7 @@ function startFlash() {
   showFlash();
 }
 function showFlash() {
-  const rp = document.getElementById("rec-play"); if (rp) rp.classList.add("hidden");
-  const rm = document.getElementById("rec-msg"); if (rm) rm.textContent = "";
+  if (typeof resetRecording === "function") resetRecording();
   const card = document.getElementById("flashcard");
   card.classList.remove("flipped");
   const w = state.words[flashQueue[flashIdx]];
@@ -2893,7 +3250,7 @@ function addWord() {
   msg.textContent = `「${w}」を追加しました！`;
   renderWordList();
 }
-const MASTERY_LABEL = ["未学習", "学習中", "もう少し", "習得済み"];
+function masteryLabel(b) { return t("mLabel" + Math.max(0, Math.min(3, b || 0))); }
 let wlLimit = 50;
 function renderWordList(more) {
   const el = document.getElementById("word-list");
@@ -2913,20 +3270,20 @@ function renderWordList(more) {
   else if (sort === "weak") list.sort((a, b) => a.w.box - b.w.box || a.w.w.localeCompare(b.w.w));
   else if (sort === "strong") list.sort((a, b) => b.w.box - a.w.box || a.w.w.localeCompare(b.w.w));
   const cnt = document.getElementById("wl-count");
-  if (cnt) cnt.textContent = `${list.length} 語`;
+  if (cnt) cnt.textContent = t("wordsUnit").replace("{n}", list.length);
   const shown = list.slice(0, wlLimit);
   el.innerHTML = shown.length ? shown.map(o => {
     const w = o.w;
     return `<div class="word-item">
        <div><span class="en">${escapeHtml(w.w)}</span>
-       <button class="lvl-chip" title="タップでレベルを変更" onclick="cycleLevel(${o.i}, event)">${escapeHtml(w.level || "中級")}</button>
+       <button class="lvl-chip" title="${t('levelTip')}" onclick="cycleLevel(${o.i}, event)">${escapeHtml(w.level || "中級")}</button>
        <br><span class="ja">${escapeHtml(w.m)}</span></div>
-       <span class="mastery m${w.box}">${MASTERY_LABEL[w.box]}</span>
+       <span class="mastery m${w.box}">${masteryLabel(w.box)}</span>
      </div>`;
-  }).join("") : '<div style="text-align:center;color:var(--muted);font-size:.85rem;padding:16px 0">該当する単語がありません</div>';
+  }).join("") : `<div style="text-align:center;color:var(--muted);font-size:.85rem;padding:16px 0">${t("noWords")}</div>`;
   const moreEl = document.getElementById("wl-more");
   if (moreEl) moreEl.innerHTML = list.length > wlLimit
-    ? `<button class="btn small gray" onclick="renderWordList(true)">もっと見る（残り ${list.length - wlLimit} 語）</button>` : "";
+    ? `<button class="btn small gray" onclick="renderWordList(true)">${t("moreBtn").replace("{n}", list.length - wlLimit)}</button>` : "";
 }
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -2977,10 +3334,11 @@ function populateQuizCat() {
   const cur = sel.value || "ALL";
   const pool = state.words.filter(w => lv === "ALL" || (w.level || "中級") === lv);
   const cats = [...new Set(pool.map(w => w.cat || "その他"))].sort();
-  sel.innerHTML = '<option value="ALL">すべて（' + pool.length + '語）</option>' +
+  sel.innerHTML = '<option value="ALL">' + escapeHtml(t("catAll").replace("{n}", pool.length)) + '</option>' +
     cats.map(c => {
       const n = pool.filter(w => (w.cat || "その他") === c).length;
-      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '（' + n + '語）</option>';
+      const label = t("catItem").replace("{c}", c).replace("{n}", n);
+      return '<option value="' + escapeHtml(c) + '">' + escapeHtml(label) + '</option>';
     }).join("");
   sel.value = (cur === "ALL" || cats.includes(cur)) ? cur : "ALL";
 }
@@ -2998,7 +3356,7 @@ function startQuiz() {
   if (weak) pool = pool.filter(w => (w.box || 0) <= 1);
   if (dueOnly) pool = pool.filter(w => !w.due || w.due <= today);
   const warn = document.getElementById("quiz-warn");
-  if (pool.length < 4) { if (warn) warn.textContent = "この条件では単語が足りません（最低4語必要）。条件をゆるめてください。"; return; }
+  if (pool.length < 4) { if (warn) warn.textContent = t("notEnough"); return; }
   if (warn) warn.textContent = "";
   quizSet = shuffle(pool).slice(0, Math.min(count, pool.length)).map(w => ({ word: w, dir: Math.random() < 0.5 ? "e2j" : "j2e" }));
   quizIdx = 0; quizScore = 0; quizWrong = [];
@@ -3069,7 +3427,7 @@ function startQuizTimer() {
 }
 function timeUpQuiz() {
   if (quizAnswered) return;
-  revealQuiz(null, false, "⏰ 時間切れ…");
+  revealQuiz(null, false, t("fbTimeUp"));
 }
 
 function showQuiz() {
@@ -3087,8 +3445,8 @@ function showQuiz() {
       <span style="display:inline-block;min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:6px;
       background:var(--bg2);color:var(--muted);font-size:.72rem;font-weight:700;margin-right:9px">${i + 1}</span>${escapeHtml(isE2J ? c.m : c.w)}</button>`
   ).join("");
-  document.getElementById("quiz-progress").textContent = `第 ${quizIdx + 1} 問 / ${quizSet.length}`;
-  document.getElementById("quiz-direction").textContent = isE2J ? "この英単語の意味は？" : "この意味の英単語は？";
+  document.getElementById("quiz-progress").textContent = t("qProgress").replace("{i}", quizIdx + 1).replace("{n}", quizSet.length);
+  document.getElementById("quiz-direction").textContent = t(isE2J ? "qDirE2J" : "qDirJ2E");
   document.getElementById("quiz-question").textContent = isE2J ? q.word.w : q.word.m;
   document.getElementById("quiz-feedback").textContent = "";
   const exEl = document.getElementById("quiz-explain");
@@ -3138,7 +3496,7 @@ function revealQuiz(btn, ok, msg) {
   else quizScore++;
   applyResult(quizSet[quizIdx].word, ok);
   const fb = document.getElementById("quiz-feedback");
-  fb.textContent = msg || (ok ? "⭕ 正解！" : "❌ 残念…");
+  fb.textContent = msg || t(ok ? "fbRight" : "fbWrong");
   fb.style.color = ok ? "var(--accent)" : "var(--danger)";
   renderQuizExplain(quizSet[quizIdx].word, ok);
   bumpToday();
@@ -3160,20 +3518,17 @@ function nextQuiz() {
     document.getElementById("quiz-result").classList.remove("hidden");
     document.getElementById("quiz-score").textContent = `${quizScore} / ${quizSet.length}`;
     const pct = quizSet.length ? Math.round(quizScore / quizSet.length * 100) : 0;
-    const comments = pct >= 90 ? `正答率 ${pct}% — 素晴らしい！ほぼ完璧です 🏆`
-      : pct >= 70 ? `正答率 ${pct}% — いい調子！あと少しで満点 ✨`
-      : pct >= 40 ? `正答率 ${pct}% — まずまず。単語帳で復習しよう 📖`
-      : `正答率 ${pct}% — 焦らずコツコツ。単語帳からやり直そう 💪`;
+    const comments = t(pct >= 90 ? "qc90" : pct >= 70 ? "qc70" : pct >= 40 ? "qc40" : "qc0").replace("{p}", pct);
     document.getElementById("quiz-comment").textContent = comments;
     const rev = document.getElementById("quiz-review");
     if (rev) rev.innerHTML = quizWrong.length ? `
-      <div style="font-size:.85rem;font-weight:700;margin-bottom:8px">\u{1F4DD} 間違えた単語（${quizWrong.length}）</div>
+      <div style="font-size:.85rem;font-weight:700;margin-bottom:8px">${t("mistakes").replace("{n}", quizWrong.length)}</div>
       ${quizWrong.map(w => `<div class="word-item">
         <div><span class="en">${escapeHtml(w.w)}</span><br><span class="ja">${escapeHtml(w.m)}</span></div>
         <button class="btn small outline" onclick="speak('${w.w.replace(/'/g, "\\'")}')">\u{1F50A}</button>
       </div>`).join("")}
-      <div class="center mt"><button class="btn small" onclick="document.getElementById('quiz-weak').checked=true;startQuiz()">苦手だけでもう一度</button></div>
-    ` : '<div style="text-align:center;color:var(--accent);font-weight:700;font-size:.9rem">\u{1F389} 全問正解！</div>';
+      <div class="center mt"><button class="btn small" onclick="document.getElementById('quiz-weak').checked=true;startQuiz()">${t("retryWeak")}</button></div>
+    ` : `<div style="text-align:center;color:var(--accent);font-weight:700;font-size:.9rem">${t("allCorrect")}</div>`;
     if ((state.quizBestPct || 0) < pct) state.quizBestPct = pct;
     if (quizSet.length >= 10 && (state.quizBest === null || quizScore > state.quizBest)) state.quizBest = quizScore;
     if (quizSet.length >= 10 && quizScore === quizSet.length) state.quizPerfect = true;
@@ -3222,7 +3577,7 @@ function showListen() {
   listenAnswered = false;
   listenLockUntil = Date.now() + 400;
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  document.getElementById("listen-progress").textContent = `第 ${listenIdx + 1} 問 / ${listenSet.length}`;
+  document.getElementById("listen-progress").textContent = t("qProgress").replace("{i}", listenIdx + 1).replace("{n}", listenSet.length);
   document.getElementById("listen-feedback").textContent = "";
   document.getElementById("listen-sentence").textContent = "";
   document.getElementById("listen-next").classList.add("hidden");
@@ -3284,9 +3639,9 @@ function pickListen(btn) {
   else listenScore++;
   applyResult(listenSet[listenIdx], ok);
   const fb = document.getElementById("listen-feedback");
-  fb.textContent = ok ? "⭕ 正解！" : "❌ 残念…";
+  fb.textContent = t(ok ? "fbRight" : "fbWrong");
   fb.style.color = ok ? "var(--accent)" : "var(--danger)";
-  document.getElementById("listen-sentence").textContent = "英文: " + listenSet[listenIdx].ex;
+  document.getElementById("listen-sentence").textContent = t("enSentence") + listenSet[listenIdx].ex;
   bumpToday();
   document.getElementById("listen-next").classList.remove("hidden");
   listenLockUntil = Date.now() + 300;
@@ -3394,7 +3749,7 @@ const I18N = {
     tagline: "毎日コツコツ、英語力アップ",
     navHome: "ホーム", navFlash: "単語帳", navQuiz: "クイズ", navListen: "リスニング", navColumn: "コラム", navPhrase: "例文集",
     heroA: "英語は、", heroB: "毎日の積み上げ", heroC: "。",
-    heroSub: "1,382語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。",
+    heroSub: "1,694語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。",
     cta: "\u{1F3AF} 今日の学習をはじめる →",
     pWords: "収録単語", pEx: "例文", pModes: "学習モード", pCols: "学習コラム",
     modesTitle: "\u{1F3AF} 学習モードを選ぶ",
@@ -3402,7 +3757,7 @@ const I18N = {
     mQuiz: "4択クイズ", mQuizD: "意味を確認",
     mListen: "リスニング", mListenD: "耳で鍛える",
     mColumn: "今日のコラム", mColumnD: "読んで学ぶ",
-    mPhrase: "例文集", mPhraseD: "1,382の例文",
+    mPhrase: "例文集", mPhraseD: "1,694の例文",
     streak: "\u{1F525} 連続学習", days: "日", best: "自己ベスト", goalLabel: "今日の目標",
     sTotal: "登録単語数", sMastered: "習得済み", sQuiz: "クイズ最高スコア", sToday: "今日の学習回数",
     mastery: "\u{1F4C8} 習得度", masteryNote: "全単語のうち「習得済み（定着3）」の割合",
@@ -3416,6 +3771,211 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    bN_first: "はじめの一歩",
+    bD_first: "初めて学習した",
+    bN_study50: "50問クリア",
+    bD_study50: "累計50問に取り組んだ",
+    bN_study200: "200問クリア",
+    bD_study200: "累計200問に取り組んだ",
+    bN_study1000: "1000問クリア",
+    bD_study1000: "累計1000問に取り組んだ",
+    bN_master10: "10語習得",
+    bD_master10: "10語を習得済みにした",
+    bN_master100: "100語習得",
+    bD_master100: "100語を習得済みにした",
+    bN_master500: "500語習得",
+    bD_master500: "500語を習得済みにした",
+    bN_streak3: "3日連続",
+    bD_streak3: "3日続けて学習した",
+    bN_streak7: "7日連続",
+    bD_streak7: "7日続けて学習した",
+    bN_streak30: "30日連続",
+    bD_streak30: "30日続けて学習した",
+    bN_quizPerfect: "クイズ満点",
+    bD_quizPerfect: "10問以上のクイズで全問正解した",
+    bN_goal: "目標達成",
+    bD_goal: "1日の目標を達成した",
+    weekGreat: "🔥 素晴らしい習慣です！",
+    mLabel0: "未学習",
+    mLabel1: "学習中",
+    mLabel2: "もう少し",
+    mLabel3: "習得済み",
+    qc90: "正答率 {p}% — 素晴らしい！ほぼ完璧です 🏆",
+    qc70: "正答率 {p}% — いい調子！あと少しで満点 ✨",
+    qc40: "正答率 {p}% — まずまず。単語帳で復習しよう 📖",
+    qc0: "正答率 {p}% — 焦らずコツコツ。単語帳からやり直そう 💪",
+    enSentence: "英文: ",
+    catAll: "すべて（{n}語）",
+    catItem: "{c}（{n}語）",
+    colAllChip: "すべて（{n}）",
+    colChip: "{c}（{n}）",
+    heroSub2: "登録不要・完全無料で、今すぐ始められます。",
+    streakT: "🔥 連続学習",
+    bestT: "自己ベスト",
+    goalT: "今日の目標",
+    masteryNoteT: "全単語のうち「習得済み（定着3）」の割合",
+    badgesT: "🏅 達成バッジ",
+    weakStart: "😥 苦手から復習する",
+    weakNote: "習得率が低い順に表示しています。苦手なカテゴリから攻めましょう。",
+    showAll: "すべて表示",
+    colHome: "📚 学習コラム",
+    colHomeD: "単語の覚え方、リスニング上達法、学習の習慣化のコツなどを記事で解説しています。",
+    colHomeCta: "→ コラム一覧を見る",
+    navCol2: "学習コラム",
+    aboutLink: "運営者情報",
+    privacyLink: "プライバシーポリシー",
+    levelT: "📊 レベル",
+    allLevelsT: "すべてのレベル",
+    lvBeg: "初級",
+    lvInt: "中級",
+    lvAdv: "上級",
+    catStudy: "📂 学習するカテゴリ",
+    catT: "📂 カテゴリ",
+    allT: "すべて",
+    dueOnly: "🗓️ 今日復習すべき単語だけ",
+    weakOnly: "😥 苦手だけ復習（定着0〜1）",
+    swipeLeft: "← まだ",
+    tapFlip: "タップでめくる",
+    swipeRight: "覚えた →",
+    speakBtnT: "🔊 発音を聞く",
+    undoBtn: "↩️ 直前に戻る",
+    recStart: "🎤 発音を録音",
+    recPlay: "▶️ 自分の声",
+    kbd: "キーボード:",
+    kbdFlip: "めくる /",
+    kbdNo: "まだ /",
+    kbdYes: "覚えた",
+    flashDone: "🎉 今日の復習おわり！",
+    flashDoneD: "全カードを確認しました。もう一周する？",
+    again: "もう一周",
+    addWord: "➕ 単語を追加",
+    enWord: "英単語",
+    jaMeaning: "意味（日本語）",
+    exOpt: "例文（任意）",
+    addBtn: "追加する",
+    wordList: "📖 単語リスト",
+    sortDefault: "登録順",
+    sortAZ: "A→Z順",
+    sortZA: "Z→A順",
+    sortWeak: "苦手な順",
+    sortStrong: "習得した順",
+    quizT: "📝 4択クイズ",
+    quizD1: "英→日と日→英が混ざって出ます。",
+    quizD2: "難易度や問題数は下で変えられます。",
+    quizDiffT: "🎚️ 難易度（選択肢の紛らわしさ）",
+    diffEasy: "やさしい（選択肢が大きく違う）",
+    diffNormal: "ふつう（ランダム）",
+    diffHard: "むずかしい（似た語が混ざる）",
+    quizCountT: "🔢 問題数",
+    cnt5: "5問（さくっと）",
+    cnt10: "10問（標準）",
+    cnt20: "20問",
+    cnt30: "30問（がっつり）",
+    quizTimerT: "⏱️ 制限時間",
+    tlOff: "なし",
+    tl20: "20秒／問",
+    tl10: "10秒／問",
+    tl5: "5秒／問（上級者向け）",
+    weakOnly2: "😥 苦手だけ（定着0〜1）",
+    dueOnly2: "📅 今日の復習ぶんだけ",
+    startT: "スタート",
+    nextT: "次へ →",
+    resultT: "結果発表",
+    retryT: "もう一回",
+    listenT: "🎧 リスニング",
+    listenD1: "英語の例文が読み上げられます。",
+    listenD2: "意味として正しいものを選んでください（全5問）。",
+    listenDiffT: "🔥 難易度",
+    lsHard: "むずかしい（上級優先・聞き直し1回）",
+    lsNormal: "ふつう（全レベル・聞き直し自由）",
+    rateLabel: "読み上げ速度:",
+    rSlow: "ゆっくり",
+    rNormal: "ふつう",
+    rFast: "はやい",
+    replayT: "🔊 もう一度聞く",
+    listenQ: "この英文の意味は？",
+    colTodayT: "📖 今日のコラム",
+    colTodayD: "毎日1本、おすすめの記事をお届けします",
+    colAllT: "📚 すべてのコラム（45記事）",
+    themeT: "テーマ",
+    thLight: "☀️ ライト",
+    thDark: "🌙 ダーク",
+    thAuto: "📱 端末の設定に合わせる",
+    langJa: "🇯🇵 日本語",
+    goalSetT: "1日の目標問題数",
+    g10: "10問（軽め）",
+    g20: "20問（標準）",
+    g30: "30問",
+    g50: "50問（がっつり）",
+    rateSetT: "読み上げ速度（既定）",
+    batchSetT: "1回に出す単語数（単語帳）",
+    b10: "10語",
+    b15: "15語",
+    b25: "25語",
+    b40: "40語",
+    remindT: "🔔 学習リマインダー",
+    remindD: "このページを開いている間、指定時刻にブラウザ通知でお知らせします。",
+    remindOn: "🔔 通知をON",
+    csvT: "📥 単語の一括登録（CSV）",
+    csvLvT: "📊 レベルの割り当て",
+    csvAuto: "自動で判定する（おすすめ）",
+    csvBeg: "すべて初級にする",
+    csvInt: "すべて中級にする",
+    csvAdv: "すべて上級にする",
+    csvBtn: "一括登録する",
+    backupT: "💾 データのバックアップ",
+    backupD: "学習の進捗はこの端末のブラウザに保存されています。機種変更や別のブラウザへ引き継ぐには、バックアップを保存してください。",
+    backupSave: "⬇️ バックアップを保存",
+    backupLoad: "⬆️ 復元する",
+    accentSet: "🗣️ 発音（アクセント）",
+    accentUS: "🇺🇸 アメリカ英語",
+    accentUK: "🇬🇧 イギリス英語",
+    accentOk: "この端末の音声「{v}」で読み上げます。",
+    accentMissing: "この端末には選んだアクセントの音声が入っていないため、利用できる英語の音声で読み上げます。端末の設定から音声を追加すると切り替わります。",
+    accentLoading: "音声を読み込んでいます…",
+    accentNoTts: "このブラウザは読み上げに対応していません。",
+    recStop: "⏹ 停止",
+    recAsking: "マイクの使用を許可してください…",
+    recRecording: "録音中… 単語を発音してください（最長8秒）。",
+    recDone: "録音しました。お手本と聞き比べてみましょう。",
+    recDenied: "マイクの使用が許可されませんでした。ブラウザのアドレスバーの🔒からマイクを「許可」に変更してください。",
+    recNoMic: "マイクが見つかりませんでした。端末にマイクが接続されているかご確認ください。",
+    recBusy: "マイクが他のアプリで使用中のようです。他のアプリを閉じてお試しください。",
+    recNoSupport: "このブラウザは録音に対応していません。Chrome や Safari の最新版をお試しください。",
+    recNoSecure: "録音はhttpsのページでのみ利用できます。",
+    recFailed: "録音に失敗しました。ページを再読み込みしてお試しください。",
+    recEmpty: "音声が記録されませんでした。もう一度お試しください。",
+    recPlayFail: "再生できませんでした。端末の音量とマナーモードをご確認ください。",
+    recNothing: "まだ録音がありません。",
+    phSearch: "単語・意味で検索",
+    phColSearch: "キーワードで探す（例：TOEIC、シャドーイング、習慣）",
+    phCsv: "apple,りんご,I ate an apple.,りんごを食べた。\\nbook,本\\nubiquitous,どこにでもある,,,上級",
+    phFb: "例：リスニングの速度をもっと細かく変えたい",
+    phFbMail: "返信がほしい方はメールアドレス（任意）",
+    phWordEn: "英単語",
+    phWordJa: "意味（日本語）",
+    phWordEx: "例文（任意）",
+    qProgress: "第 {i} 問 / {n}",
+    qDirE2J: "この英単語の意味は？",
+    qDirJ2E: "この意味の英単語は？",
+    fbRight: "⭕ 正解！",
+    fbWrong: "❌ 残念…",
+    fbTimeUp: "⏰ 時間切れ…",
+    wordsUnit: "{n} 語",
+    itemsUnit: "{n} 件",
+    noWords: "該当する単語がありません",
+    noArticles: "「{q}」に一致する記事はありませんでした。<br>別のことばで探してみてください。",
+    moreBtn: "もっと見る（残り {n} 語）",
+    mistakes: "\\u{1F4DD} 間違えた単語（{n}）",
+    allCorrect: "\\u{1F389} 全問正解！",
+    retryWeak: "苦手だけでもう一度",
+    notEnough: "この条件では単語が足りません（最低4語必要）。条件をゆるめてください。",
+    readArticle: "記事を読む →",
+    levelTip: "タップでレベルを変更",
+    daysT: "日",
+    kbdHint: "キーボード: <b>Space</b> めくる / <b>←</b> まだ / <b>→</b> 覚えた",
+    quizD: "英→日と日→英が混ざって出ます。<br>難易度や問題数は下で変えられます。",
+    listenD: "英語の例文が読み上げられます。<br>意味として正しいものを選んでください（全5問）。",
     display: "\u{1F3A8} 表示設定", theme: "テーマ", language: "言語 / Language",
     learnSet: "\u{1F3AF} 学習設定", goalSet: "1日の目標問題数", rateSet: "読み上げ速度（既定）", batchSet: "1回に出す単語数（単語帳）",
     listen: "\u{1F3A7} リスニング", quiz: "\u{1F4DD} 4択クイズ", start: "スタート",
@@ -3427,7 +3987,7 @@ const I18N = {
     tagline: "Build your English, one day at a time",
     navHome: "Home", navFlash: "Cards", navQuiz: "Quiz", navListen: "Listening", navColumn: "Articles", navPhrase: "Sentences",
     heroA: "English is ", heroB: "built daily", heroC: ".",
-    heroSub: "1,382 words with flashcards, quizzes, listening and example sentences.<br>No sign-up. Completely free.",
+    heroSub: "1,694 words with flashcards, quizzes, listening and example sentences.<br>No sign-up. Completely free.",
     cta: "\u{1F3AF} Start today's session →",
     pWords: "Words", pEx: "Sentences", pModes: "Modes", pCols: "Articles",
     modesTitle: "\u{1F3AF} Choose a mode",
@@ -3435,7 +3995,7 @@ const I18N = {
     mQuiz: "Quiz", mQuizD: "Check meanings",
     mListen: "Listening", mListenD: "Train your ears",
     mColumn: "Today's article", mColumnD: "Read and learn",
-    mPhrase: "Sentences", mPhraseD: "1,382 examples",
+    mPhrase: "Sentences", mPhraseD: "1,694 examples",
     streak: "\u{1F525} Streak", days: "days", best: "Best", goalLabel: "Today's goal",
     sTotal: "Words", sMastered: "Mastered", sQuiz: "Best quiz score", sToday: "Today's reps",
     mastery: "\u{1F4C8} Progress", masteryNote: "Share of words mastered (level 3)",
@@ -3449,6 +4009,211 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    bN_first: "Getting started",
+    bD_first: "Studied for the first time",
+    bN_study50: "50 questions",
+    bD_study50: "Answered 50 questions in total",
+    bN_study200: "200 questions",
+    bD_study200: "Answered 200 questions in total",
+    bN_study1000: "1000 questions",
+    bD_study1000: "Answered 1000 questions in total",
+    bN_master10: "10 words mastered",
+    bD_master10: "Mastered 10 words",
+    bN_master100: "100 words mastered",
+    bD_master100: "Mastered 100 words",
+    bN_master500: "500 words mastered",
+    bD_master500: "Mastered 500 words",
+    bN_streak3: "3-day streak",
+    bD_streak3: "Studied 3 days in a row",
+    bN_streak7: "7-day streak",
+    bD_streak7: "Studied 7 days in a row",
+    bN_streak30: "30-day streak",
+    bD_streak30: "Studied 30 days in a row",
+    bN_quizPerfect: "Perfect quiz",
+    bD_quizPerfect: "Got every question right in a quiz of 10+",
+    bN_goal: "Goal reached",
+    bD_goal: "Hit your daily goal",
+    weekGreat: "🔥 What a great habit!",
+    mLabel0: "Not started",
+    mLabel1: "Learning",
+    mLabel2: "Almost",
+    mLabel3: "Mastered",
+    qc90: "{p}% correct — outstanding, almost perfect 🏆",
+    qc70: "{p}% correct — nice work, almost there ✨",
+    qc40: "{p}% correct — not bad. Review with the flashcards 📖",
+    qc0: "{p}% correct — take it steady and start again from the cards 💪",
+    enSentence: "Sentence: ",
+    catAll: "All ({n} words)",
+    catItem: "{c} ({n} words)",
+    colAllChip: "All ({n})",
+    colChip: "{c} ({n})",
+    heroSub2: "No sign-up. Completely free. Start right now.",
+    streakT: "🔥 Streak",
+    bestT: "Best",
+    goalT: "Today's goal",
+    masteryNoteT: "Share of all words marked as mastered (level 3)",
+    badgesT: "🏅 Badges",
+    weakStart: "😥 Review your weak words",
+    weakNote: "Sorted by lowest mastery. Start with your weakest categories.",
+    showAll: "Show all",
+    colHome: "📚 Study articles",
+    colHomeD: "Articles on memorising words, improving listening and building a study habit.",
+    colHomeCta: "→ Browse all articles",
+    navCol2: "Articles",
+    aboutLink: "About",
+    privacyLink: "Privacy policy",
+    levelT: "📊 Level",
+    allLevelsT: "All levels",
+    lvBeg: "Beginner",
+    lvInt: "Intermediate",
+    lvAdv: "Advanced",
+    catStudy: "📂 Category",
+    catT: "📂 Category",
+    allT: "All",
+    dueOnly: "🗓️ Only words due today",
+    weakOnly: "😥 Weak words only (level 0–1)",
+    swipeLeft: "← Not yet",
+    tapFlip: "Tap to flip",
+    swipeRight: "Got it →",
+    speakBtnT: "🔊 Listen",
+    undoBtn: "↩️ Undo",
+    recStart: "🎤 Record yourself",
+    recPlay: "▶️ Play my voice",
+    kbd: "Keyboard:",
+    kbdFlip: "flip /",
+    kbdNo: "not yet /",
+    kbdYes: "got it",
+    flashDone: "🎉 Done for today!",
+    flashDoneD: "You went through every card. Another round?",
+    again: "Go again",
+    addWord: "➕ Add a word",
+    enWord: "English word",
+    jaMeaning: "Meaning",
+    exOpt: "Example sentence (optional)",
+    addBtn: "Add",
+    wordList: "📖 Word list",
+    sortDefault: "Default order",
+    sortAZ: "A → Z",
+    sortZA: "Z → A",
+    sortWeak: "Weakest first",
+    sortStrong: "Strongest first",
+    quizT: "📝 Multiple choice",
+    quizD1: "English → Japanese and Japanese → English are mixed.",
+    quizD2: "You can change the difficulty and length below.",
+    quizDiffT: "🎚️ Difficulty (how similar the choices are)",
+    diffEasy: "Easy (clearly different choices)",
+    diffNormal: "Normal (random)",
+    diffHard: "Hard (similar words mixed in)",
+    quizCountT: "🔢 Number of questions",
+    cnt5: "5 (quick)",
+    cnt10: "10 (standard)",
+    cnt20: "20",
+    cnt30: "30 (long)",
+    quizTimerT: "⏱️ Time limit",
+    tlOff: "None",
+    tl20: "20 sec / question",
+    tl10: "10 sec / question",
+    tl5: "5 sec / question (expert)",
+    weakOnly2: "😥 Weak words only (level 0–1)",
+    dueOnly2: "📅 Only what's due today",
+    startT: "Start",
+    nextT: "Next →",
+    resultT: "Results",
+    retryT: "Try again",
+    listenT: "🎧 Listening",
+    listenD1: "An English sentence will be read aloud.",
+    listenD2: "Choose the correct meaning (5 questions).",
+    listenDiffT: "🔥 Difficulty",
+    lsHard: "Hard (advanced words, one replay)",
+    lsNormal: "Normal (all levels, replay freely)",
+    rateLabel: "Speed:",
+    rSlow: "Slow",
+    rNormal: "Normal",
+    rFast: "Fast",
+    replayT: "🔊 Play again",
+    listenQ: "What does this sentence mean?",
+    colTodayT: "📖 Today's article",
+    colTodayD: "One recommended article every day",
+    colAllT: "📚 All articles (45)",
+    themeT: "Theme",
+    thLight: "☀️ Light",
+    thDark: "🌙 Dark",
+    thAuto: "📱 Match my device",
+    langJa: "🇯🇵 日本語",
+    goalSetT: "Daily goal",
+    g10: "10 (light)",
+    g20: "20 (standard)",
+    g30: "30",
+    g50: "50 (heavy)",
+    rateSetT: "Default speech speed",
+    batchSetT: "Cards per session",
+    b10: "10 words",
+    b15: "15 words",
+    b25: "25 words",
+    b40: "40 words",
+    remindT: "🔔 Study reminder",
+    remindD: "While this page is open, you'll get a browser notification at the time you set.",
+    remindOn: "🔔 Turn on",
+    csvT: "📥 Bulk import (CSV)",
+    csvLvT: "📊 Level assignment",
+    csvAuto: "Detect automatically (recommended)",
+    csvBeg: "All beginner",
+    csvInt: "All intermediate",
+    csvAdv: "All advanced",
+    csvBtn: "Import",
+    backupT: "💾 Backup",
+    backupD: "Your progress is stored in this browser. Save a backup to move it to another device or browser.",
+    backupSave: "⬇️ Save backup",
+    backupLoad: "⬆️ Restore",
+    accentSet: "🗣️ Accent",
+    accentUS: "🇺🇸 American English",
+    accentUK: "🇬🇧 British English",
+    accentOk: "Using the voice “{v}” on this device.",
+    accentMissing: "Your device doesn't have a voice for this accent, so another English voice will be used. Adding the voice in your device settings will enable it.",
+    accentLoading: "Loading voices…",
+    accentNoTts: "This browser doesn't support speech.",
+    recStop: "⏹ Stop",
+    recAsking: "Please allow microphone access…",
+    recRecording: "Recording… say the word (up to 8 seconds).",
+    recDone: "Recorded. Compare it with the model pronunciation.",
+    recDenied: "Microphone access was denied. Open the 🔒 icon in the address bar and allow the microphone.",
+    recNoMic: "No microphone found. Check that one is connected.",
+    recBusy: "The microphone seems to be in use by another app. Close it and try again.",
+    recNoSupport: "This browser doesn't support recording. Try the latest Chrome or Safari.",
+    recNoSecure: "Recording only works on an https page.",
+    recFailed: "Recording failed. Please reload the page and try again.",
+    recEmpty: "Nothing was recorded. Please try again.",
+    recPlayFail: "Could not play. Check your volume and silent mode.",
+    recNothing: "No recording yet.",
+    phSearch: "Search words or meanings",
+    phColSearch: "Search by keyword",
+    phCsv: "apple,りんご,I ate an apple.,りんごを食べた。\\nbook,本\\nubiquitous,どこにでもある,,,上級",
+    phFb: "e.g. I'd like finer control over the listening speed",
+    phFbMail: "Email address if you'd like a reply (optional)",
+    phWordEn: "English word",
+    phWordJa: "Meaning",
+    phWordEx: "Example sentence (optional)",
+    qProgress: "Question {i} of {n}",
+    qDirE2J: "What does this word mean?",
+    qDirJ2E: "Which word means this?",
+    fbRight: "⭕ Correct!",
+    fbWrong: "❌ Not quite…",
+    fbTimeUp: "⏰ Time's up…",
+    wordsUnit: "{n} words",
+    itemsUnit: "{n} items",
+    noWords: "No words match",
+    noArticles: "No articles matched “{q}”.<br>Try a different keyword.",
+    moreBtn: "Show more ({n} left)",
+    mistakes: "\\u{1F4DD} Words you missed ({n})",
+    allCorrect: "\\u{1F389} A perfect score!",
+    retryWeak: "Retry the ones you missed",
+    notEnough: "Not enough words for these settings (at least 4 needed). Try relaxing the filters.",
+    readArticle: "Read the article →",
+    levelTip: "Tap to change the level",
+    daysT: "days",
+    kbdHint: "Keyboard: <b>Space</b> flip / <b>←</b> not yet / <b>→</b> got it",
+    quizD: "English → Japanese and Japanese → English are mixed.<br>Change the difficulty and length below.",
+    listenD: "An English sentence will be read aloud.<br>Choose the correct meaning (5 questions).",
     display: "\u{1F3A8} Appearance", theme: "Theme", language: "Language / 言語",
     learnSet: "\u{1F3AF} Learning", goalSet: "Daily goal (questions)", rateSet: "Speech rate (default)", batchSet: "Cards per session",
     listen: "\u{1F3A7} Listening", quiz: "\u{1F4DD} Quiz", start: "Start",
@@ -3466,9 +4231,17 @@ function applyLang() {
     const v = t(k);
     if (el.hasAttribute("data-i18n-html")) el.innerHTML = v; else el.textContent = v;
   });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => {
+    el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
+  });
   // 動的に描画される部分も更新
   if (typeof renderHome === "function") renderHome();
-  if (typeof renderWordList === "function") renderWordList();
+  if (typeof renderWordList === "function") renderWordList("keep");
+  if (typeof populateCatSelect === "function") populateCatSelect();
+  if (typeof populateQuizCat === "function") populateQuizCat();
+  if (typeof renderColumnTab === "function" && document.getElementById("today-column")) renderColumnTab();
+  if (typeof renderPhrases === "function" && document.getElementById("phrase-list")) renderPhrases();
+  if (typeof syncAccentNote === "function") syncAccentNote();
 }
 
 // ==================== 設定 ====================
@@ -3479,6 +4252,8 @@ function syncSettingsUI() {
   set("set-goal", state.dailyGoal || 20);
   set("set-rate", state.rate || 0.9);
   set("set-batch", state.batch || 15);
+  set("set-accent", state.accent || "us");
+  syncAccentNote();
 }
 function setTheme(v) { state.theme = v; persist(); applyTheme(); }
 function setGoal(v) { state.dailyGoal = Number(v); persist(); renderHome(); }
@@ -3559,38 +4334,101 @@ if (!state.batch) state.batch = 15;
 }
 
 // ==================== 発音の録音比較 ====================
-let mediaRecorder = null, recChunks = [], recUrl = null, recording = false;
+let mediaRecorder = null, recChunks = [], recUrl = null, recording = false, recStream = null, recTimer = null;
+
+// 端末が録音できる形式は Chrome=webm / iOS Safari=mp4 とばらつくので、対応形式を探して使う
+function pickRecMime() {
+  if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+  const list = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4;codecs=mp4a.40.2", "audio/mp4", "audio/ogg;codecs=opus", "audio/aac"];
+  for (const m of list) { if (MediaRecorder.isTypeSupported(m)) return m; }
+  return "";
+}
+function recMsg(txt, isError) {
+  const el = document.getElementById("rec-msg");
+  if (!el) return;
+  el.textContent = txt || "";
+  el.style.color = isError ? "var(--danger)" : "var(--muted)";
+}
+function setRecBtn(labelKey) {
+  const b = document.getElementById("rec-btn");
+  if (b) b.textContent = t(labelKey);
+}
 function toggleRecord() {
-  const msg = document.getElementById("rec-msg");
   if (recording) { stopRecord(); return; }
-  if (!navigator.mediaDevices || !window.MediaRecorder) {
-    msg.textContent = "このブラウザは録音に対応していません。"; return;
+  if (!window.isSecureContext) { recMsg(t("recNoSecure"), true); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+    recMsg(t("recNoSupport"), true); return;
   }
+  recMsg(t("recAsking"));
   navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    mediaRecorder = new MediaRecorder(stream);
+    recStream = stream;
+    const mime = pickRecMime();
+    try {
+      mediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+    } catch (e) {
+      try { mediaRecorder = new MediaRecorder(stream); }
+      catch (e2) { cleanupRec(); recMsg(t("recNoSupport"), true); return; }
+    }
     recChunks = [];
-    mediaRecorder.ondataavailable = e => recChunks.push(e.data);
+    mediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) recChunks.push(e.data); };
+    mediaRecorder.onerror = () => { cleanupRec(); recMsg(t("recFailed"), true); };
     mediaRecorder.onstop = () => {
+      // 実際に使われた形式で包む（ここを固定にすると iPhone で再生できない）
+      const type = (mediaRecorder && mediaRecorder.mimeType) || pickRecMime() || "audio/webm";
+      const blob = new Blob(recChunks, { type });
+      cleanupRec();
+      if (!blob.size) { recMsg(t("recEmpty"), true); return; }
       if (recUrl) URL.revokeObjectURL(recUrl);
-      recUrl = URL.createObjectURL(new Blob(recChunks, { type: "audio/webm" }));
-      document.getElementById("rec-play").classList.remove("hidden");
-      msg.textContent = "録音しました。お手本と聞き比べてみましょう。";
-      stream.getTracks().forEach(t => t.stop());
+      recUrl = URL.createObjectURL(blob);
+      const au = document.getElementById("rec-audio");
+      if (au) { au.src = recUrl; au.classList.remove("hidden"); }
+      const rp = document.getElementById("rec-play");
+      if (rp) rp.classList.remove("hidden");
+      recMsg(t("recDone"));
     };
-    mediaRecorder.start();
+    // 一定間隔でデータを受け取っておく（途中で止まっても中身が残るように）
+    mediaRecorder.start(250);
     recording = true;
-    document.getElementById("rec-btn").textContent = "\u23F9 停止";
-    msg.textContent = "録音中… 単語を発音してください。";
-    setTimeout(() => { if (recording) stopRecord(); }, 5000);
-  }).catch(() => { msg.textContent = "マイクの使用が許可されませんでした。"; });
+    setRecBtn("recStop");
+    recMsg(t("recRecording"));
+    recTimer = setTimeout(() => { if (recording) stopRecord(); }, 8000);
+  }).catch(err => {
+    const name = (err && err.name) || "";
+    if (name === "NotAllowedError" || name === "SecurityError") recMsg(t("recDenied"), true);
+    else if (name === "NotFoundError" || name === "DevicesNotFoundError") recMsg(t("recNoMic"), true);
+    else if (name === "NotReadableError") recMsg(t("recBusy"), true);
+    else recMsg(t("recFailed"), true);
+  });
+}
+function cleanupRec() {
+  if (recTimer) { clearTimeout(recTimer); recTimer = null; }
+  if (recStream) { recStream.getTracks().forEach(x => x.stop()); recStream = null; }
+  recording = false;
+  setRecBtn("recStart");
 }
 function stopRecord() {
-  if (mediaRecorder && recording) mediaRecorder.stop();
-  recording = false;
-  document.getElementById("rec-btn").textContent = "\u{1F3A4} 発音を録音";
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    try { mediaRecorder.stop(); return; } catch (e) {}
+  }
+  cleanupRec();
 }
 function playRecording() {
-  if (recUrl) new Audio(recUrl).play();
+  const au = document.getElementById("rec-audio");
+  if (au && recUrl) {
+    au.currentTime = 0;
+    const pr = au.play();
+    if (pr && pr.catch) pr.catch(() => recMsg(t("recPlayFail"), true));
+    return;
+  }
+  if (!recUrl) { recMsg(t("recNothing"), true); return; }
+}
+function resetRecording() {
+  stopRecord();
+  if (recUrl) { URL.revokeObjectURL(recUrl); recUrl = null; }
+  const au = document.getElementById("rec-audio");
+  if (au) { au.pause(); au.removeAttribute("src"); au.classList.add("hidden"); }
+  const rp = document.getElementById("rec-play"); if (rp) rp.classList.add("hidden");
+  recMsg("");
 }
 
 const COLUMNS = [{"s": "column-katakoto-datsu", "t": "「単語の羅列」を卒業して文で話すための3ステップ", "d": "英語が単語の羅列になってしまう人へ。主語・動詞を意識して短い文で話すトレーニング法を解説します。", "c": "英会話"}, {"s": "column-wasei-eigo", "t": "通じない和製英語とその正しい英語表現40", "d": "英語だと思って使うと通じない和製英語を、正しい英語表現とセットで紹介します。カタカナ語の落とし穴に注意。", "c": "英会話"}, {"s": "column-jisho-hikikata", "t": "英英辞典デビュー：辞書を使いこなす学習法", "d": "英和辞典から一歩進んだ英英辞典の使い方と、辞書を英語学習に活かすコツを初心者向けに解説します。", "c": "学習法"}, {"s": "column-time-management", "t": "1日15分でも伸びる英語学習の時間割の作り方", "d": "限られた時間で英語力を伸ばすための、スキマ時間を組み合わせた現実的な学習スケジュールの立て方を紹介します。", "c": "学習習慣"}, {"s": "column-eigo-nikki", "t": "英語日記で「使える英語」に変える書き方ガイド", "d": "英語日記が英語力アップに効く理由と、三日坊主にならずに続けるための簡単な書き方のコツを紹介します。", "c": "学習法"}, {"s": "column-kigou-hatsuon", "t": "発音記号の読み方入門：辞書の音を自分のものにする", "d": "発音記号の基本的な読み方を初心者向けに解説。辞書の発音表記を理解して正しい発音を身につける方法を紹介します。", "c": "発音"}, {"s": "column-quiz-bunpo", "t": "間違えやすい英文法クイズ10問【解説つき】", "d": "日本人が間違えやすい英文法のポイントをクイズ形式で確認。各問に詳しい解説をつけて弱点を克服します。", "c": "文法"}, {"s": "column-eigo-kodomo", "t": "子どもと一緒に楽しむおうち英語のはじめ方", "d": "家庭で子どもと英語に親しむための、歌・絵本・かけ流しなど無理なく始められる方法を保護者向けに紹介します。", "c": "学習法"}, {"s": "column-eikaiwa-kinchou", "t": "英会話の「緊張して話せない」を克服する心の準備", "d": "英会話で頭が真っ白になる原因と、緊張せずに話すための考え方・準備・練習法を具体的に解説します。", "c": "英会話"}, {"s": "column-eigo-shukanka", "t": "英語学習を「歯磨きレベル」の習慣にする科学的方法", "d": "意志力に頼らず英語学習を習慣化するための、行動科学にもとづくトリガー設定と小さな習慣の作り方を解説します。", "c": "学習習慣"}, {"s": "column-eiken-guide", "t": "英検の級別レベルと合格に必要な学習量の目安", "d": "英検の各級のレベル感、必要な語彙数、合格に向けた学習の進め方を級別に整理して解説します。", "c": "資格試験"}, {"s": "column-speaking-test", "t": "スピーキングテスト（面接）で緊張せず話すための準備", "d": "英検やTOEIC S&Wなどのスピーキングテストに向けた、定型表現の準備と本番での立ち回りを解説します。", "c": "資格試験"}, {"s": "column-collocation", "t": "コロケーションで覚える「自然な英語」の作り方", "d": "英単語を単体でなく組み合わせ（コロケーション）で覚えることで、自然で通じやすい英語が身につく理由と方法を解説します。", "c": "学習法"}, {"s": "column-eigo-mokuhyou", "t": "「英語を話せるようになりたい」を具体的な目標に変える方法", "d": "漠然とした英語学習の目標を、達成可能で測定できる形に落とし込むための考え方と具体例を紹介します。", "c": "学習習慣"}, {"s": "column-mistake-ok", "t": "英語は間違えていい。ミスを恐れないマインドセット", "d": "英語学習でミスを恐れる心理の正体と、間違いを成長に変えるための考え方・実践法を解説します。", "c": "学習習慣"}, {"s": "column-reibun-gakushu", "t": "例文ごと覚える学習法：単語帳の次のステップ", "d": "単語を単体で覚えるより例文ごと記憶するほうが定着し使える理由と、例文学習の具体的な進め方を解説します。", "c": "学習法"}, {"s": "column-rokuon-hatsuon", "t": "自分の発音を録音して直す：客観視トレーニング", "d": "自分の英語を録音して聞き返す発音改善法の効果と、具体的な手順・チェックポイントを解説します。", "c": "発音"}, {"s": "column-shukan-report", "t": "学習を数値で振り返る：週次レビューのすすめ", "d": "英語学習を週単位で振り返る習慣の効果と、記録すべき指標・改善サイクルの回し方を解説します。", "c": "学習習慣"}, {"s": "column-eigo-input-output", "t": "インプットとアウトプットの黄金比を知る", "d": "英語学習における読む・聞く（インプット）と話す・書く（アウトプット）の理想的なバランスと切り替え方を解説します。", "c": "学習法"}, {"s": "column-eigo-plateau2", "t": "覚えた単語をすぐ忘れる人のための復習設計", "d": "せっかく覚えた英単語を忘れないための復習タイミングと、忘却を前提にした学習設計の作り方を解説します。", "c": "学習法"}, {"s": "column-genzai-kanryo", "t": "現在完了形が「わかったつもり」で終わる人への完全ガイド", "d": "現在完了形を経験・完了・継続で整理し過去形との違いを解説。", "c": "文法"}, {"s": "column-kanshi", "t": "a/an/theの使い分けを日本人向けに整理する冠詞入門", "d": "冠詞a/an/theの使い分けと無冠詞のケースを解説。", "c": "文法"}, {"s": "column-zenchishi", "t": "前置詞 in / on / at のイメージで攻略する時間と場所の表現", "d": "前置詞in/on/atをコアイメージで整理。", "c": "文法"}, {"s": "column-jodoushi", "t": "can / may / must / should の違いを話し手の気持ちで理解する助動詞", "d": "助動詞を義務・推量・許可の観点で解説。", "c": "文法"}, {"s": "column-kankeidaimeishi", "t": "関係代名詞 who / which / that を2文合体で理解する", "d": "関係代名詞を2文をつなぐ仕組みから解説。", "c": "文法"}, {"s": "column-hatsuon-boin", "t": "カタカナ英語を卒業する母音の発音入門", "d": "英語の母音の区別と通じる発音のコツ。", "c": "発音"}, {"s": "column-hatsuon-lr", "t": "日本人の永遠の課題 L と R の発音を克服する", "d": "LとRの発音の違いと練習法を解説。", "c": "発音"}, {"s": "column-toeic-part5", "t": "TOEIC Part5を時間内に解く文法・語彙問題の攻略法", "d": "Part5を速く解く選択肢の見方と解法。", "c": "TOEIC"}, {"s": "column-toeic-listening", "t": "TOEICリスニングでスコアを伸ばす先読みテクニック", "d": "Part3・4の先読みと各パート戦略。", "c": "TOEIC"}, {"s": "column-business-mail", "t": "そのまま使える英語ビジネスメールの型とフレーズ", "d": "英語ビジネスメールの構成と定番フレーズ。", "c": "英会話"}, {"s": "column-eiga-gakushu", "t": "洋画・海外ドラマで英語を学ぶ効果的な方法", "d": "映画・ドラマ学習の作品選びと字幕活用法。", "c": "学習法"}, {"s": "column-eijakubun", "t": "英作文が書けるようになる「日本語を崩す」思考法", "d": "難しい日本語を崩して英訳する手順。", "c": "学習法"}, {"s": "column-slump", "t": "英語学習の伸び悩み（プラトー）を抜け出す方法", "d": "停滞期の正体と突破する学習の見直し方。", "c": "学習習慣"}, {"s": "column-kihon-doushi", "t": "get / take / make など基本動詞を使いこなす英会話術", "d": "基本動詞のコアイメージで表現の幅を広げる。", "c": "英会話"}, {"s": "column-online-eikaiwa", "t": "オンライン英会話を最大限に活用する受講前後のコツ", "d": "オンライン英会話の予習・受講・復習のコツ。", "c": "学習法"}, {"s": "column-tango-kioku", "t": "英単語が覚えられない人へ。記憶に残る「間隔反復」学習法", "d": "間隔反復で英単語を効率よく覚える方法。", "c": "学習法"}, {"s": "column-shakaijin-jikan", "t": "忙しい社会人のための英語学習時間の作り方", "d": "スキマ時間の活用と習慣化のコツ。", "c": "学習習慣"}, {"s": "column-listening", "t": "リスニングが聞き取れない3つの原因と対策", "d": "音・速度・語彙からリスニング上達法を解説。", "c": "リスニング"}, {"s": "column-shadowing", "t": "シャドーイングの正しいやり方を5ステップで解説", "d": "発音とリスニングを鍛えるシャドーイング。", "c": "リスニング"}, {"s": "column-toeic-hajimete", "t": "TOEIC初受験ガイド：スコアの仕組みと直前1か月の対策", "d": "TOEICの形式・スコア目安・直前対策。", "c": "TOEIC"}, {"s": "column-bunpo-yarinaoshi", "t": "英文法やり直しは「中学英語」からで大丈夫な理由", "d": "やり直しは中学英文法から始めるのが近道。", "c": "文法"}, {"s": "column-kaiwa-phrase", "t": "そのまま使える日常英会話フレーズ30選【場面別】", "d": "場面別の定番英会話フレーズ集。", "c": "英会話"}, {"s": "column-app-katsuyo", "t": "英語学習アプリを三日坊主にしない使い方", "d": "アプリを継続の武器に変える使い分け術。", "c": "学習習慣"}, {"s": "column-tadoku", "t": "多読のすすめ：辞書を引かずに英語を読む勉強法", "d": "多読の3原則とレベル別の始め方。", "c": "学習法"}, {"s": "column-motivation", "t": "英語学習のモチベーションが続かないときの7つの処方箋", "d": "やる気に頼らず続ける具体策を7つ紹介。", "c": "学習習慣"}];
@@ -3605,7 +4443,7 @@ function renderColumnTab() {
       <div style="font-size:.68rem;color:rgba(255,255,255,.85);font-weight:700">${escapeHtml(c.c)}</div>
       <div style="font-size:1.1rem;font-weight:800;color:#fff;line-height:1.5;margin:6px 0 8px">${escapeHtml(c.t)}</div>
       <div style="font-size:.82rem;color:rgba(255,255,255,.9);line-height:1.7">${escapeHtml(c.d)}</div>
-      <div style="margin-top:14px;font-size:.82rem;font-weight:800;color:#fff">記事を読む →</div>
+      <div style="margin-top:14px;font-size:.82rem;font-weight:800;color:#fff">${t("readArticle")}</div>
     </a>`;
   renderColumnChips();
   renderColumnList();
@@ -3620,9 +4458,9 @@ function renderColumnChips() {
   COLUMNS.forEach(c => { counts[c.c] = (counts[c.c] || 0) + 1; });
   colCats = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
   el.innerHTML =
-    `<button class="cchip ${colCat === "ALL" ? "on" : ""}" onclick="setColCat(-1)">すべて（${COLUMNS.length}）</button>` +
+    `<button class="cchip ${colCat === "ALL" ? "on" : ""}" onclick="setColCat(-1)">${escapeHtml(t("colAllChip").replace("{n}", COLUMNS.length))}</button>` +
     colCats.map((c, i) =>
-      `<button class="cchip ${colCat === c ? "on" : ""}" onclick="setColCat(${i})">${escapeHtml(c)}（${counts[c]}）</button>`
+      `<button class="cchip ${colCat === c ? "on" : ""}" onclick="setColCat(${i})">${escapeHtml(t("colChip").replace("{c}", c).replace("{n}", counts[c]))}</button>`
     ).join("");
 }
 function setColCat(i) {
@@ -3635,7 +4473,7 @@ function renderColumnList() {
   let list = COLUMNS.filter(c => colCat === "ALL" || c.c === colCat);
   if (q) list = list.filter(c => (c.t + " " + c.d + " " + c.c).toLowerCase().includes(q));
   const cnt = document.getElementById("col-count");
-  if (cnt) cnt.textContent = `${list.length} 件`;
+  if (cnt) cnt.textContent = t("itemsUnit").replace("{n}", list.length);
   const el = document.getElementById("column-list");
   if (!el) return;
   el.innerHTML = list.length ? list.map(c => `
@@ -3645,7 +4483,7 @@ function renderColumnList() {
       <div style="font-size:.75rem;color:var(--muted);line-height:1.6;margin-top:3px">${escapeHtml(c.d)}</div>
     </a>`).join("")
     : `<div style="text-align:center;color:var(--muted);font-size:.85rem;padding:20px 0">
-         「${escapeHtml(q)}」に一致する記事はありませんでした。<br>別のことばで探してみてください。
+         ${t("noArticles").replace("{q}", escapeHtml(q))}
        </div>`;
 }
 
@@ -3828,7 +4666,7 @@ function snapshot() {
       theme: state.theme || "light", lang: state.lang || "ja",
       dailyGoal: state.dailyGoal || 20, rate: state.rate || 0.9, batch: state.batch || 15,
       remindOn: !!state.remindOn, remindTime: state.remindTime || "20:00",
-      quizOpt: state.quizOpt || null
+      quizOpt: state.quizOpt || null, accent: state.accent || "us"
     },
     stats: {
       streak: state.streak || 0, bestStreak: state.bestStreak || 0,
@@ -3898,6 +4736,7 @@ function mergeFromCloud(c, applySettings) {
     if (st.batch) state.batch = st.batch;
     if (st.remindTime) state.remindTime = st.remindTime;
     if (st.quizOpt) state.quizOpt = st.quizOpt;
+    if (st.accent) state.accent = st.accent;
   }
   persist();
   try { applyTheme(); applyLang(); renderWordList(); loadQuizOpt(); } catch (e) {}
