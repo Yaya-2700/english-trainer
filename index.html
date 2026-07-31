@@ -788,8 +788,7 @@
     <div class="card plain">
       <h2 data-i18n="csvT">📥 単語の一括登録（CSV）</h2>
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:8px">
-        1行につき「英単語,意味,例文,例文和訳,レベル」の形式で貼り付けてください（例文以降は省略可）。<br>
-        レベル欄に「初級／中級／上級」と書くとその通りに登録されます。省略した場合は下の設定に従います。
+        <span data-i18n="csvD1" data-i18n-html>1行につき「英単語,意味,例文,例文和訳,レベル」の形式で貼り付けてください（例文以降は省略可）。<br>レベル欄に「初級／中級／上級」と書くとその通りに登録されます。省略した場合は下の設定に従います。</span>
       </div>
       <label data-i18n="csvLvT">📊 レベルの割り当て</label>
       <select id="csv-level">
@@ -799,7 +798,7 @@
         <option value="上級" data-i18n="csvAdv">すべて上級にする</option>
       </select>
       <div style="font-size:.76rem;color:var(--muted);line-height:1.6;margin:6px 0 10px">
-        自動判定は、収録済みの1,694語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。
+        <span data-i18n="csvD2">自動判定は、収録済みの1,694語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。</span>
       </div>
       <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本&#10;ubiquitous,どこにでもある,,,上級" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical" data-i18n-ph="phCsv"></textarea>
       <div class="btn-row mt"><button class="btn small" onclick="importCsv()" data-i18n="csvBtn">一括登録する</button></div>
@@ -2972,8 +2971,8 @@ function renderCatStats() {
   el.innerHTML = shown.map(r => `
     <div style="margin-bottom:11px">
       <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px">
-        <span style="font-weight:700">${escapeHtml(r.cat)}
-          <span style="font-size:.66rem;color:var(--muted);font-weight:600;margin-left:4px">${escapeHtml(r.lv)}</span></span>
+        <span style="font-weight:700">${escapeHtml(catLabel(r.cat))}
+          <span style="font-size:.66rem;color:var(--muted);font-weight:600;margin-left:4px">${escapeHtml(lvLabel(r.lv))}</span></span>
         <span style="color:var(--muted);font-weight:600">${r.done}/${r.total}（${r.pct}%）</span>
       </div>
       <div style="background:var(--bg2);border-radius:99px;height:7px;overflow:hidden">
@@ -2992,8 +2991,8 @@ function syncReminderUI() {
   if (!t) return;
   t.value = state.remindTime || "20:00";
   if (msg) msg.textContent = state.remindOn
-    ? `\u{1F514} ${state.remindTime || "20:00"} に通知します（このページを開いている間）`
-    : "通知はオフです。";
+    ? t("remindSet").replace("{t}", state.remindTime || "20:00")
+    : t("remindOff");
   if (state.remindOn) scheduleReminder();
 }
 function saveReminder() {
@@ -3002,14 +3001,14 @@ function saveReminder() {
 }
 function enableReminder() {
   const msg = document.getElementById("remind-msg");
-  if (!("Notification" in window)) { if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "このブラウザは通知に対応していません。"; } return; }
+  if (!("Notification" in window)) { if (msg) { msg.style.color = "var(--danger)"; msg.textContent = t("remindNoSupport"); } return; }
   Notification.requestPermission().then(p => {
     if (p === "granted") {
       state.remindOn = true;
       state.remindTime = document.getElementById("remind-time").value || "20:00";
       persist(); syncReminderUI();
-      new Notification("EigoNote", { body: "通知をオンにしました。毎日この時刻にお知らせします。" });
-    } else if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "通知が許可されませんでした。ブラウザの設定をご確認ください。"; }
+      new Notification("EigoNote", { body: t("remindBody") });
+    } else if (msg) { msg.style.color = "var(--danger)"; msg.textContent = t("remindDenied"); }
   });
 }
 function disableReminder() {
@@ -3158,7 +3157,7 @@ function populateCatSelect() {
   sel.innerHTML = '<option value="ALL">' + escapeHtml(t("catAll").replace("{n}", pool.length)) + '</option>' +
     cats.map(c => {
       const n = pool.filter(w => (w.cat || "その他") === c).length;
-      const label = t("catItem").replace("{c}", c).replace("{n}", n);
+      const label = t("catItem").replace("{c}", catLabel(c)).replace("{n}", n);
       return '<option value="' + escapeHtml(c) + '">' + escapeHtml(label) + '</option>';
     }).join("");
   sel.value = cats.includes(cur) || cur === "ALL" ? cur : "ALL";
@@ -3276,7 +3275,7 @@ function renderWordList(more) {
     const w = o.w;
     return `<div class="word-item">
        <div><span class="en">${escapeHtml(w.w)}</span>
-       <button class="lvl-chip" title="${t('levelTip')}" onclick="cycleLevel(${o.i}, event)">${escapeHtml(w.level || "中級")}</button>
+       <button class="lvl-chip" title="${t('levelTip')}" onclick="cycleLevel(${o.i}, event)">${escapeHtml(lvLabel(w.level || "中級"))}</button>
        <br><span class="ja">${escapeHtml(w.m)}</span></div>
        <span class="mastery m${w.box}">${masteryLabel(w.box)}</span>
      </div>`;
@@ -3285,6 +3284,17 @@ function renderWordList(more) {
   if (moreEl) moreEl.innerHTML = list.length > wlLimit
     ? `<button class="btn small gray" onclick="renderWordList(true)">${t("moreBtn").replace("{n}", list.length - wlLimit)}</button>` : "";
 }
+// カテゴリ名は英語表示のときだけ訳語に置き換える（単語の意味そのものは日本語のまま）
+const CAT_EN = {"TOEIC頻出": "TOEIC frequent","IT・テクノロジー": "IT & technology","つなぎ言葉": "Linking words","アカデミック": "Academic","イディオム": "Idioms","コミュニケーション": "Communication","スポーツ・健康": "Sports & fitness","フォーマル表現": "Formal expressions","ビジネス": "Business","ビジネス上級": "Business (advanced)","メディア・報道": "Media & news","レストラン": "Restaurant","上級イディオム": "Idioms (advanced)","上級名詞": "Nouns (advanced)","上級形容詞": "Adjectives (advanced)","上級動詞": "Verbs (advanced)","上級句動詞": "Phrasal verbs (advanced)","上級語彙": "Vocabulary (advanced)","交通・移動": "Transport","仕事": "Work","会話": "Conversation","健康・体": "Health & body","動作・身体": "Movement & body","動詞（基本）": "Verbs (basic)","医療・健康（上級）": "Medicine & health (advanced)","反対語ペア": "Opposite pairs","号": "Misc","味": "Taste","契約・手続き": "Contracts & procedures","学問分野": "Academic fields","学校・学び": "School & learning","家・生活": "Home & living","心理・思考": "Mind & thinking","恋愛・人間関係": "Relationships","感情・形容詞": "Feelings & adjectives","感情・反応": "Emotions & reactions","感覚・様子": "Senses & manner","抽象概念": "Abstract concepts","描写・文学": "Description & literature","政治・法律": "Politics & law","数量・統計": "Numbers & statistics","旅・地理": "Travel & geography","旅行": "Travel","日常": "Everyday","時事・社会": "Current affairs","時間・数量": "Time & quantity","気持ち・反応": "Feelings & reactions","気候": "Climate","environment": "Environment","環境・エネルギー": "Environment & energy","生活": "Daily life","科学・技術": "Science & technology","職場コミュニケーション": "Workplace communication","職業・仕事": "Jobs & careers","自分の単語": "My words","芸術・文化": "Arts & culture","英会話": "Conversation","衣類": "Clothing","要求・依頼": "Requests","趣味・スポーツ": "Hobbies & sports","身体": "Body","農業": "Agriculture","金融・経済": "Finance & economy","電話・接客": "Phone & customer service","食べ物・料理": "Food & cooking","買い物・お金": "Shopping & money","性格・人物": "Personality & people","性質・状態": "Qualities & states","天気・自然": "Weather & nature","句動詞": "Phrasal verbs","その他": "Other"};
+function lvLabel(lv) {
+  const k = { "初級": "lvBeg", "中級": "lvInt", "上級": "lvAdv" }[lv];
+  return k ? t(k) : (lv || "");
+}
+function catLabel(c) {
+  const name = c || "その他";
+  return (typeof state !== "undefined" && state.lang === "en" && CAT_EN[name]) ? CAT_EN[name] : name;
+}
+
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
@@ -3478,7 +3488,7 @@ function renderQuizExplain(w, ok) {
       </div>
       <button class="btn small outline" style="flex:none;margin:0" onclick="speak('${safeW}')" aria-label="発音を聞く">🔊</button>
     </div>
-    <div class="emeta">${escapeHtml(w.level || "")}${w.cat ? " ・ " + escapeHtml(w.cat) : ""}</div>
+    <div class="emeta">${escapeHtml(t("lv" + ({"初級":"Beg","中級":"Int","上級":"Adv"}[w.level] || "Int")))}${w.cat ? " ・ " + escapeHtml(catLabel(w.cat)) : ""}</div>
     ${exHtml}`;
   el.classList.remove("hidden");
 }
@@ -3771,6 +3781,14 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    exUnit: "{n} 例文",
+    remindOff: "通知はオフです。",
+    remindSet: "\\u{1F514} {t} に通知します（このページを開いている間）",
+    remindNoSupport: "このブラウザは通知に対応していません。",
+    remindDenied: "通知が許可されませんでした。ブラウザの設定をご確認ください。",
+    remindBody: "通知をオンにしました。毎日この時刻にお知らせします。",
+    csvD1: "1行につき「英単語,意味,例文,例文和訳,レベル」の形式で貼り付けてください（例文以降は省略可）。<br>レベル欄に「初級／中級／上級」と書くとその通りに登録されます。省略した場合は下の設定に従います。",
+    csvD2: "自動判定は、収録済みの1,694語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。",
     dueHintNew: "まずは15語からスタートしましょう",
     dueHint: "今日の復習対象：{n}語",
     recNew: "まだ学習履歴がありません。<b>今日の学習をはじめる</b>から15語ずつ進めましょう。",
@@ -4027,6 +4045,14 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    exUnit: "{n} sentences",
+    remindOff: "Reminders are off.",
+    remindSet: "\\u{1F514} You'll be notified at {t} while this page is open.",
+    remindNoSupport: "This browser doesn't support notifications.",
+    remindDenied: "Notifications were not allowed. Please check your browser settings.",
+    remindBody: "Reminders are on. You'll hear from us at this time each day.",
+    csvD1: "Paste one word per line as: word, meaning, example, example translation, level (everything after the meaning is optional).<br>Write 初級 / 中級 / 上級 in the level column to set it directly. Leave it out and the setting below applies.",
+    csvD2: "Automatic detection reuses the level if the word is already among the 1,694 built-in words; otherwise it estimates from length, syllable count and endings such as -tion or -ous. It is only a rough guess, so tap the level chip in the word list to change it.",
     dueHintNew: "Start with your first 15 words",
     dueHint: "Due for review today: {n} words",
     recNew: "No study history yet. Tap <b>Start today's session</b> and work through 15 words at a time.",
@@ -4539,7 +4565,7 @@ function renderPhrases(more) {
     const pool = state.words.filter(w => w.ex && (lv === "ALL" || (w.level || "中級") === lv));
     const cats = [...new Set(pool.map(w => w.cat || "その他"))];
     catSel.innerHTML = '<option value="ALL">' + escapeHtml(t("allT")) + '</option>' +
-      cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(catLabel(c))}</option>`).join("");
     catSel.value = (cur === "ALL" || cats.includes(cur)) ? cur : "ALL";
   }
   const cat = catSel ? catSel.value : "ALL";
@@ -4549,7 +4575,7 @@ function renderPhrases(more) {
   if (q) list = list.filter(w => (w.ex || "").toLowerCase().includes(q) || (w.exJa || "").includes(q) || w.w.toLowerCase().includes(q));
 
   const cnt = document.getElementById("ph-count");
-  if (cnt) cnt.textContent = `${list.length} 例文`;
+  if (cnt) cnt.textContent = t("exUnit").replace("{n}", list.length);
   const shown = list.slice(0, phLimit);
   listEl.innerHTML = shown.length ? shown.map(w => `
     <div class="card" style="padding:16px 18px;margin-bottom:11px">
