@@ -3927,8 +3927,6 @@ function notoAnswer(raw) {
   if (has("ダーク", "dark", "暗く", "黒く")) { setTheme("dark"); syncSettingsUI(); return { mood: "happy", html: nt("ダークモードにしました。","Switched to dark mode.") }; }
   if (has("ライト", "light mode", "明るく", "白く")) { setTheme("light"); syncSettingsUI(); return { mood: "happy", html: nt("ライトモードにしました。","Switched to light mode.") }; }
   if (has("端末の設定", "自動で", "auto theme", "system theme")) { setTheme("auto"); syncSettingsUI(); return { mood: "happy", html: nt("端末の設定に合わせるようにしました。","It will now follow your device setting.") }; }
-  if (/(英語|english).{0,4}(表示|ひょうじ|にして|に切り替|ui)/.test(t0) || /switch.*english/.test(t0)) { setLang("en"); return { mood: "happy", html: "Switched the interface to English." }; }
-  if (/(日本語|japanese).{0,4}(表示|にして|に切り替|ui)/.test(t0) || /switch.*japanese/.test(t0)) { setLang("ja"); return { mood: "happy", html: "表示を日本語に戻しました。" }; }
   let m = t0.match(/(?:目標|goal).{0,6}?(\d+)/) || t0.match(/(\d+)\s*(?:問|questions?).{0,4}(?:目標|goal|に)/);
   if (m) {
     const n = Math.max(1, Math.min(200, Number(m[1])));
@@ -3945,6 +3943,10 @@ function notoAnswer(raw) {
     if (has("アメリカ", "american", "us", "米国")) { setAccent("us"); syncSettingsUI(); return { mood: "happy", html: nt("発音をアメリカ英語にしました。","Accent set to American English.") }; }
     return { mood: "normal", html: nt("アメリカ英語とイギリス英語を選べます。どちらにしますか？","You can choose American or British English. Which would you like?"),
       actions: notoBtn(nt("アメリカ英語","American"), "notoAsk('アメリカ英語の発音にして')") + notoBtn(nt("イギリス英語","British"), "notoAsk('イギリス英語の発音にして')") };
+  }
+  if (!has("発音", "アクセント", "accent", "pronunciation")) {
+    if (/(表示|画面|ui|インターフェース|言語).{0,6}(英語|english)/.test(t0) || /(英語|english).{0,3}(表示|ui)/.test(t0) || /switch.*(ui|interface|display).*english/.test(t0)) { setLang("en"); return { mood: "happy", html: "Switched the interface to English." }; }
+    if (/(表示|画面|ui|インターフェース|言語).{0,6}(日本語|japanese)/.test(t0) || /(日本語|japanese).{0,3}(表示|ui)/.test(t0) || /switch.*(ui|interface|display).*japanese/.test(t0)) { setLang("ja"); return { mood: "happy", html: "表示を日本語に戻しました。" }; }
   }
   if (has("通知", "リマインダー", "reminder", "notification")) {
     return { mood: "normal", html: nt("学習リマインダーは設定から時刻を決めてオンにできます。ページを開いている間にお知らせします。","You can set a reminder time in settings. It notifies you while this page is open."),
