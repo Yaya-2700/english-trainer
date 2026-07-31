@@ -4897,11 +4897,14 @@ function startCourseDay() {
   const idxs = courseDayWords(st.c, st.day);
   if (!idxs.length) { finishCourse(); return; }
   courseMode = true;
+  // 先にタブを切り替える。switchTab が単語帳を作り直すので、そのあとで差し替える
+  switchTab("flash");
+  setFlashMode("learn");
   flashQueue = idxs.slice();
   flashIdx = 0;
   flashUndo = null;
-  switchTab("flash");
-  setFlashMode("learn");
+  const ub = document.getElementById("flash-undo");
+  if (ub) ub.classList.add("hidden");
   document.getElementById("flash-study").classList.remove("hidden");
   document.getElementById("flash-done").classList.add("hidden");
   showFlash();
