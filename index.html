@@ -175,6 +175,32 @@
     background: var(--bg2); border: 1px solid var(--border); font-family: inherit; cursor: pointer; vertical-align: 2px;
   }
   .lvl-chip:active { transform: scale(.94); }
+
+  /* クイズの解説パネル */
+  .explain { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 13px 15px; margin: 2px 0 12px; text-align: left; }
+  .explain .ew { font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; }
+  .explain .em { font-size: .88rem; font-weight: 700; color: var(--primary-dark); margin-top: 1px; }
+  .explain .emeta { font-size: .66rem; color: var(--muted); margin-top: 5px; font-weight: 600; }
+  .explain .eex { font-size: .84rem; color: var(--muted); line-height: 1.75; margin-top: 9px; }
+
+  /* 画面下部の控えめなお知らせ */
+  .toast {
+    position: fixed; left: 12px; right: 12px; bottom: 78px; z-index: 900; max-width: 520px; margin: 0 auto;
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,.18);
+    padding: 13px 14px; display: flex; gap: 10px; align-items: center; animation: toastUp .25s ease;
+  }
+  @keyframes toastUp { from { transform: translateY(18px); opacity: 0 } to { transform: none; opacity: 1 } }
+  .toast .tx { flex: 1; min-width: 0 }
+  .toast .btn.small { margin: 0; flex: none }
+
+  /* コラムのカテゴリチップ */
+  .cchip {
+    display: inline-block; padding: 6px 12px; border-radius: 99px; font-size: .76rem; font-weight: 700;
+    background: var(--bg2); color: var(--muted); border: 1px solid var(--border);
+    margin: 0 6px 6px 0; cursor: pointer; font-family: inherit;
+  }
+  .cchip.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .cchip:active { transform: scale(.96); }
   .choice.correct { border-color: var(--accent); background: var(--accent-soft); }
   .choice.wrong { border-color: var(--danger); background: #fdecec; }
   .choice:disabled { cursor: default; }
@@ -573,6 +599,7 @@
         <div class="quiz-q" id="quiz-question"></div>
         <div id="quiz-choices"></div>
         <div class="feedback" id="quiz-feedback"></div>
+        <div id="quiz-explain" class="explain hidden"></div>
         <div class="center"><button class="btn hidden" id="quiz-next" onclick="nextQuiz()">次へ →</button></div>
       </div>
     </div>
@@ -647,9 +674,9 @@
     </div>
     <div class="card">
       <h2>📚 すべてのコラム（45記事）</h2>
-      <div style="display:flex;gap:8px;margin-bottom:10px">
-        <select id="col-cat" onchange="renderColumnList()"><option value="ALL">すべてのカテゴリ</option></select>
-      </div>
+      <input type="search" id="col-search" placeholder="キーワードで探す（例：TOEIC、シャドーイング、習慣）" oninput="renderColumnList()" style="margin-bottom:10px">
+      <div id="col-chips"></div>
+      <div id="col-count" style="font-size:.74rem;color:var(--muted);margin:2px 0 4px;font-weight:600"></div>
       <div id="column-list"></div>
     </div>
   </section>
@@ -2334,6 +2361,66 @@ function checkBadges() {
   });
 }
 
+// ==================== 画面下部のお知らせ（トースト） ====================
+let toastEl = null, toastTimer = null;
+function hideToast() {
+  if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+  if (toastEl && toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
+  toastEl = null;
+}
+function showToast(html, timeout) {
+  hideToast();
+  toastEl = document.createElement("div");
+  toastEl.className = "toast";
+  toastEl.setAttribute("role", "status");
+  toastEl.innerHTML = html;
+  document.body.appendChild(toastEl);
+  if (timeout) toastTimer = setTimeout(hideToast, timeout);
+}
+
+// ==================== ログインのご案内 ====================
+// 学習の記録が「失いたくないもの」になった節目にだけ、控えめに1度お知らせする。
+// ・1日1回まで ・2回閉じたらもう出さない ・ログイン済みなら出さない
+function loginPromptState() {
+  if (!state.loginPrompt) state.loginPrompt = { shown: 0, dismissed: 0, lastDay: null };
+  return state.loginPrompt;
+}
+function loginPromptReason() {
+  if ((state.streak || 0) >= 3) return `連続学習 ${state.streak}日達成`;
+  if ((state.badges || []).length >= 2) return `バッジを${state.badges.length}個獲得`;
+  if (totalStudied() >= 50) return `累計${totalStudied()}問クリア`;
+  return null;
+}
+function maybeLoginPrompt() {
+  if (window.eigoSignedIn) return;          // すでにログイン済み
+  if (!window.eigoAuthReady) return;        // ログイン機能が使えない環境
+  const p = loginPromptState();
+  if (p.dismissed >= 2) return;             // 2回閉じられたら以後出さない
+  if (p.lastDay === dayKey(new Date())) return;  // 1日1回まで
+  const reason = loginPromptReason();
+  if (!reason) return;
+  p.lastDay = dayKey(new Date()); p.shown++;
+  persist();
+  showToast(`
+    <div class="tx">
+      <div style="font-weight:800;font-size:.87rem">\u{1F389} ${escapeHtml(reason)}</div>
+      <div style="font-size:.76rem;color:var(--muted);line-height:1.6;margin-top:2px">ログインしておくと、この記録を機種変更しても引き継げます。</div>
+    </div>
+    <button class="btn small" onclick="loginFromToast()">ログイン</button>
+    <button class="btn small gray" onclick="dismissLoginPrompt()" aria-label="閉じる">✕</button>`, 12000);
+}
+function loginFromToast() {
+  hideToast();
+  openSettings();
+  if (typeof window.eigoSignIn === "function") window.eigoSignIn();
+}
+function dismissLoginPrompt() {
+  const p = loginPromptState();
+  p.dismissed++;
+  persist();
+  hideToast();
+}
+
 // ==================== ユーティリティ ====================
 function shuffle(a) {
   a = a.slice();
@@ -3004,8 +3091,38 @@ function showQuiz() {
   document.getElementById("quiz-direction").textContent = isE2J ? "この英単語の意味は？" : "この意味の英単語は？";
   document.getElementById("quiz-question").textContent = isE2J ? q.word.w : q.word.m;
   document.getElementById("quiz-feedback").textContent = "";
+  const exEl = document.getElementById("quiz-explain");
+  if (exEl) { exEl.innerHTML = ""; exEl.classList.add("hidden"); }
   document.getElementById("quiz-next").classList.add("hidden");
   startQuizTimer();
+}
+
+// 答え合わせのあとに出す解説
+// 正解なら例文だけ（テンポを止めない）、不正解・時間切れなら意味と発音までまとめて出す
+function renderQuizExplain(w, ok) {
+  const el = document.getElementById("quiz-explain");
+  if (!el) return;
+  const exHtml = w.ex
+    ? `<div class="eex">${highlightWord(w.ex, w.w)}${w.exJa ? "<br>" + escapeHtml(w.exJa) : ""}</div>`
+    : "";
+  if (ok) {
+    if (!exHtml) { el.classList.add("hidden"); el.innerHTML = ""; return; }
+    el.innerHTML = exHtml;
+    el.classList.remove("hidden");
+    return;
+  }
+  const safeW = escapeHtml(w.w.replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="flex:1;min-width:0">
+        <div class="ew">${escapeHtml(w.w)}</div>
+        <div class="em">${escapeHtml(w.m)}</div>
+      </div>
+      <button class="btn small outline" style="flex:none;margin:0" onclick="speak('${safeW}')" aria-label="発音を聞く">🔊</button>
+    </div>
+    <div class="emeta">${escapeHtml(w.level || "")}${w.cat ? " ・ " + escapeHtml(w.cat) : ""}</div>
+    ${exHtml}`;
+  el.classList.remove("hidden");
 }
 
 // 選択肢を確定して答え合わせをする（時間切れは btn = null）
@@ -3023,6 +3140,7 @@ function revealQuiz(btn, ok, msg) {
   const fb = document.getElementById("quiz-feedback");
   fb.textContent = msg || (ok ? "⭕ 正解！" : "❌ 残念…");
   fb.style.color = ok ? "var(--accent)" : "var(--danger)";
+  renderQuizExplain(quizSet[quizIdx].word, ok);
   bumpToday();
   document.getElementById("quiz-next").classList.remove("hidden");
   // 「次へ」も同じ理由で少しの間だけ無効にする
@@ -3060,6 +3178,7 @@ function nextQuiz() {
     if (quizSet.length >= 10 && (state.quizBest === null || quizScore > state.quizBest)) state.quizBest = quizScore;
     if (quizSet.length >= 10 && quizScore === quizSet.length) state.quizPerfect = true;
     persist();
+    maybeLoginPrompt();
   } else {
     showQuiz();
   }
@@ -3176,6 +3295,7 @@ function nextListen() {
   if (Date.now() < listenLockUntil) return;
   listenIdx++;
   if (listenIdx >= listenSet.length) {
+    maybeLoginPrompt();
     document.getElementById("listen-play").classList.add("hidden");
     document.getElementById("listen-result").classList.remove("hidden");
     document.getElementById("listen-score").textContent = `${listenScore} / ${listenSet.length}`;
@@ -3487,22 +3607,46 @@ function renderColumnTab() {
       <div style="font-size:.82rem;color:rgba(255,255,255,.9);line-height:1.7">${escapeHtml(c.d)}</div>
       <div style="margin-top:14px;font-size:.82rem;font-weight:800;color:#fff">記事を読む →</div>
     </a>`;
-  const sel = document.getElementById("col-cat");
-  if (sel && sel.options.length <= 1) {
-    const cats = [...new Set(COLUMNS.map(x => x.c))];
-    sel.innerHTML = '<option value="ALL">すべてのカテゴリ</option>' +
-      cats.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
-  }
+  renderColumnChips();
+  renderColumnList();
+}
+
+// カテゴリはタップできるチップで出す（記事数つき）
+let colCat = "ALL", colCats = [];
+function renderColumnChips() {
+  const el = document.getElementById("col-chips");
+  if (!el) return;
+  const counts = {};
+  COLUMNS.forEach(c => { counts[c.c] = (counts[c.c] || 0) + 1; });
+  colCats = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
+  el.innerHTML =
+    `<button class="cchip ${colCat === "ALL" ? "on" : ""}" onclick="setColCat(-1)">すべて（${COLUMNS.length}）</button>` +
+    colCats.map((c, i) =>
+      `<button class="cchip ${colCat === c ? "on" : ""}" onclick="setColCat(${i})">${escapeHtml(c)}（${counts[c]}）</button>`
+    ).join("");
+}
+function setColCat(i) {
+  colCat = (i < 0) ? "ALL" : (colCats[i] || "ALL");
+  renderColumnChips();
   renderColumnList();
 }
 function renderColumnList() {
-  const cat = (document.getElementById("col-cat") || {}).value || "ALL";
-  const list = COLUMNS.filter(c => cat === "ALL" || c.c === cat);
-  document.getElementById("column-list").innerHTML = list.map(c => `
+  const q = ((document.getElementById("col-search") || {}).value || "").trim().toLowerCase();
+  let list = COLUMNS.filter(c => colCat === "ALL" || c.c === colCat);
+  if (q) list = list.filter(c => (c.t + " " + c.d + " " + c.c).toLowerCase().includes(q));
+  const cnt = document.getElementById("col-count");
+  if (cnt) cnt.textContent = `${list.length} 件`;
+  const el = document.getElementById("column-list");
+  if (!el) return;
+  el.innerHTML = list.length ? list.map(c => `
     <a href="${c.s}.html" style="display:block;text-decoration:none;color:inherit;padding:13px 4px;border-bottom:1px solid var(--border)">
       <div style="font-size:.66rem;color:var(--primary);font-weight:700">${escapeHtml(c.c)}</div>
       <div style="font-size:.9rem;font-weight:700;line-height:1.5;margin-top:3px">${escapeHtml(c.t)}</div>
-    </a>`).join("");
+      <div style="font-size:.75rem;color:var(--muted);line-height:1.6;margin-top:3px">${escapeHtml(c.d)}</div>
+    </a>`).join("")
+    : `<div style="text-align:center;color:var(--muted);font-size:.85rem;padding:20px 0">
+         「${escapeHtml(q)}」に一致する記事はありませんでした。<br>別のことばで探してみてください。
+       </div>`;
 }
 
 // ==================== 例文集 ====================
@@ -3642,10 +3786,13 @@ const firebaseConfig = {
 };
 
 let auth = null, db = null;
+window.eigoAuthReady = false;
+window.eigoSignedIn = false;
 try {
   const app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
+  window.eigoAuthReady = true;
 } catch (e) {
   accMsg("クラウド同期を初期化できませんでした（オフラインでもアプリは使えます）");
 }
@@ -3874,7 +4021,9 @@ window.sendFeedback = async function () {
 if (auth) {
   getRedirectResult(auth).catch(() => {});
   onAuthStateChanged(auth, async user => {
+    window.eigoSignedIn = !!user;
     renderAcc(user);
+    if (user && typeof window.hideToast === "function") window.hideToast();
     if (!user) return;
     accMsg(L("学習データを読み込んでいます…", "Loading your data…"));
     try {
