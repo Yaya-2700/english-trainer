@@ -450,6 +450,7 @@
         <div><div class="pv">45</div><div class="pl" data-i18n="pCols">学習コラム</div></div>
       </div>
     </div>
+    <div class="card" id="course-card"></div>
     <div class="card">
       <h2 data-i18n="modesTitle">🎯 学習モードを選ぶ</h2>
       <div class="modes">
@@ -592,6 +593,7 @@
     <div id="flash-done" class="card center hidden fl-learn">
       <div id="noto-flashdone" style="display:flex;justify-content:center;margin-bottom:8px"></div>
       <h2 data-i18n="flashDone">🎉 今日の復習おわり！</h2>
+      <div id="course-done"></div>
       <p style="font-size:.85rem;color:var(--muted)" data-i18n="flashDoneD">全カードを確認しました。もう一周する？</p>
       <button class="btn mt" onclick="startFlash()" data-i18n="again">もう一周</button>
     </div>
@@ -4525,6 +4527,7 @@ function applyHomeMode() {
 }
 function renderHome() {
   applyHomeMode();
+  if (typeof renderCourse === "function") renderCourse();
   const total = state.words.length;
   const mastered = state.words.filter(w => w.box >= 3).length;
   document.getElementById("st-total").textContent = total;
@@ -4831,6 +4834,151 @@ function renderBadges() {
   }).join("");
 }
 
+// ==================== 学習コース ====================
+// 「次に何をするか」を迷わないための、日ごとに区切られた道すじ。
+// 単語は やさしい順 に並べて日ごとに切り分けるので、進むほど少しずつ難しくなる。
+const COURSES = [
+  { id: "daily",  icon: "☕", days: 7,  per: 15,
+    cats: ["日常", "家・生活", "時間・数量", "動詞（基本）", "気持ち・反応", "感情・形容詞", "健康・体", "食べ物・料理"] },
+  { id: "travel", icon: "✈️", days: 7,  per: 15,
+    cats: ["旅行", "旅・地理", "交通・移動", "レストラン", "買い物・お金", "電話・接客"] },
+  { id: "biz",    icon: "💼", days: 10, per: 15,
+    cats: ["ビジネス", "ビジネス上級", "職場コミュニケーション", "契約・手続き", "職業・仕事", "フォーマル表現"] },
+  { id: "toeic",  icon: "🎯", days: 10, per: 15,
+    cats: ["TOEIC頻出", "ビジネス", "金融・経済", "数量・統計", "契約・手続き", "職場コミュニケーション"] }
+];
+const LV_ORDER = { "初級": 0, "中級": 1, "上級": 2 };
+
+function courseById(id) { return COURSES.find(c => c.id === id) || null; }
+function courseName(c) { return t("crs_" + c.id); }
+
+// コースが使う単語を、やさしい順に並べて返す（毎回同じ並びになる）
+function coursePool(c) {
+  const set = new Set(c.cats);
+  return state.words
+    .map((w, i) => ({ w, i }))
+    .filter(o => set.has(o.w.cat) && o.w.ex && o.w.exJa)
+    .sort((a, b) =>
+      (LV_ORDER[a.w.level] ?? 1) - (LV_ORDER[b.w.level] ?? 1) ||
+      a.w.w.localeCompare(b.w.w))
+    .map(o => o.i);
+}
+// day は 1 から始まる
+function courseDayWords(c, day) {
+  const pool = coursePool(c);
+  const start = (day - 1) * c.per;
+  return pool.slice(start, start + c.per);
+}
+function courseState() {
+  if (!state.course) return null;
+  const c = courseById(state.course.id);
+  return c ? { c, day: state.course.day || 1, done: state.course.done || 0 } : null;
+}
+function startCourse(id) {
+  const c = courseById(id);
+  if (!c) return;
+  state.course = { id: id, day: 1, done: 0 };
+  persist();
+  renderCourse();
+  startCourseDay();
+}
+function quitCourse() {
+  state.course = null;
+  courseMode = false;
+  persist();
+  renderCourse();
+}
+
+// ---------- 1日分を学習する ----------
+let courseMode = false;
+function startCourseDay() {
+  const st = courseState();
+  if (!st) return;
+  const idxs = courseDayWords(st.c, st.day);
+  if (!idxs.length) { finishCourse(); return; }
+  courseMode = true;
+  flashQueue = idxs.slice();
+  flashIdx = 0;
+  flashUndo = null;
+  switchTab("flash");
+  setFlashMode("learn");
+  document.getElementById("flash-study").classList.remove("hidden");
+  document.getElementById("flash-done").classList.add("hidden");
+  showFlash();
+  renderCourse();
+}
+function completeCourseDay() {
+  const st = courseState();
+  if (!st) return;
+  state.course.done = Math.max(state.course.done || 0, st.day);
+  if (st.day >= st.c.days) { finishCourse(); return; }
+  state.course.day = st.day + 1;
+  persist();
+  courseMode = false;
+  renderCourse();
+  notoSetMood("happy", 2600);
+}
+function finishCourse() {
+  const st = courseState();
+  courseMode = false;
+  if (st) { state.course.done = st.c.days; state.course.finished = true; }
+  persist();
+  renderCourse();
+  notoSetMood("celebrate", 3600);
+}
+
+// 単語帳を1周し終えたときに、コースの続きを案内する
+function renderCourseDone() {
+  const el = document.getElementById("course-done");
+  if (!el) return;
+  const st = courseState();
+  if (!st) { el.innerHTML = ""; return; }
+  const finished = (st.done || 0) >= st.c.days;
+  el.innerHTML = finished
+    ? '<div style="font-size:.9rem;line-height:1.8;margin:10px 0">' + t("crsCongrats").replace("{c}", escapeHtml(courseName(st.c))) + "</div>" +
+      '<button class="btn" onclick="closeAllAndHome()">' + escapeHtml(t("crsOther")) + "</button>"
+    : '<div style="font-size:.9rem;line-height:1.8;margin:10px 0">' +
+        t("crsNext").replace("{d}", st.day).replace("{t}", st.c.days) + "</div>" +
+      '<button class="btn" onclick="startCourseDay()">' + escapeHtml(t("crsGoNext")) + "</button>";
+}
+function closeAllAndHome() { switchTab("home"); }
+
+// ---------- ホームの表示 ----------
+function renderCourse() {
+  const el = document.getElementById("course-card");
+  if (!el) return;
+  const st = courseState();
+  if (!st) {
+    el.innerHTML =
+      '<h2 data-i18n="crsTitle">' + escapeHtml(t("crsTitle")) + "</h2>" +
+      '<div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px">' + escapeHtml(t("crsLead")) + "</div>" +
+      '<div style="display:grid;gap:8px">' +
+      COURSES.map(c =>
+        '<button class="btn outline" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px" onclick="startCourse(\'' + c.id + '\')">' +
+        '<span style="font-size:1.2rem">' + c.icon + "</span>" +
+        '<span style="flex:1;min-width:0"><span style="display:block;font-weight:800">' + escapeHtml(courseName(c)) + "</span>" +
+        '<span style="display:block;font-size:.72rem;color:var(--muted);font-weight:600">' +
+        t("crsMeta").replace("{d}", c.days).replace("{n}", c.per) + "</span></span></button>").join("") +
+      "</div>";
+    return;
+  }
+  const total = st.c.days, done = Math.min(st.done, total);
+  const pct = Math.round(done / total * 100);
+  const finished = done >= total;
+  el.innerHTML =
+    '<h2>' + st.c.icon + " " + escapeHtml(courseName(st.c)) + "</h2>" +
+    '<div style="font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:8px">' +
+      (finished ? t("crsDone") : t("crsDay").replace("{d}", st.day).replace("{t}", total)) + "</div>" +
+    '<div class="progress-bar"><div style="width:' + pct + '%"></div></div>' +
+    '<div style="text-align:right;font-size:.74rem;color:var(--muted);margin-top:4px">' + done + " / " + total + "</div>" +
+    (finished
+      ? '<div class="btn-row mt"><button class="btn small outline" onclick="quitCourse()">' + escapeHtml(t("crsOther")) + "</button></div>"
+      : '<div style="font-size:.8rem;color:var(--muted);line-height:1.7;margin-top:10px">' +
+        t("crsToday").replace("{n}", courseDayWords(st.c, st.day).length) + "</div>" +
+        '<button class="btn mt" style="width:100%" onclick="startCourseDay()">' + escapeHtml(t("crsStart")) + "</button>" +
+        '<div class="center mt"><button class="btn small gray" onclick="quitCourse()">' + escapeHtml(t("crsQuit")) + "</button></div>");
+}
+
 // ==================== 単語帳 ====================
 let flashQueue = [], flashIdx = 0;
 function populateCatSelect() {
@@ -4979,6 +5127,8 @@ function answerCard(known) {
   if (flashIdx >= flashQueue.length) {
     document.getElementById("flash-study").classList.add("hidden");
     document.getElementById("flash-done").classList.remove("hidden");
+    if (courseMode) completeCourseDay();
+    renderCourseDone();
     renderWordList();
   } else {
     showFlash();
@@ -5608,6 +5758,22 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    crsTitle: "📚 学習コース",
+    crsLead: "毎日15語ずつ、決まった順で進むコースです。次に何をするか迷いません。",
+    crsMeta: "{d}日間 ・ 1日{n}語",
+    crsDay: "{d}日目 / 全{t}日",
+    crsToday: "今日の分は {n}語 です。",
+    crsStart: "今日の分をはじめる",
+    crsQuit: "コースをやめる",
+    crsOther: "別のコースを選ぶ",
+    crsDone: "完走しました 🎉",
+    crsNext: "{d}日目まで終わりました。全{t}日のうちここまで来ています。",
+    crsGoNext: "次の日に進む",
+    crsCongrats: "<b>{c}</b> を完走しました！おつかれさま。",
+    crs_daily: "日常英語 7日コース",
+    crs_travel: "旅行英語 7日コース",
+    crs_biz: "仕事・ビジネス英語コース",
+    crs_toeic: "TOEIC頻出語コース",
     notoTip: "英語のことも設定も、ここから聞けるよ",
     segLearn: "学ぶ",
     segFind: "さがす",
@@ -5892,6 +6058,22 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    crsTitle: "📚 Courses",
+    crsLead: "Fifteen words a day in a set order, so you never wonder what to do next.",
+    crsMeta: "{d} days ・ {n} words a day",
+    crsDay: "Day {d} of {t}",
+    crsToday: "Today's set is {n} words.",
+    crsStart: "Start today's set",
+    crsQuit: "Leave this course",
+    crsOther: "Choose another course",
+    crsDone: "Completed 🎉",
+    crsNext: "Day {d} done. That's {d} of {t}.",
+    crsGoNext: "Go to the next day",
+    crsCongrats: "You finished <b>{c}</b>. Nicely done.",
+    crs_daily: "Everyday English — 7 days",
+    crs_travel: "Travel English — 7 days",
+    crs_biz: "Business English",
+    crs_toeic: "TOEIC essentials",
     notoTip: "Ask me about English or your settings",
     segLearn: "Learn",
     segFind: "Browse",
@@ -6176,6 +6358,7 @@ function applyLang() {
   if (typeof renderPhrases === "function" && document.getElementById("phrase-list")) renderPhrases();
   if (typeof syncAccentNote === "function") syncAccentNote();
   if (typeof notoRenderChips === "function") { notoRenderChips(); notoPaintFaces(); }
+  if (typeof renderCourse === "function") renderCourse();
 }
 
 // ==================== 設定 ====================
@@ -6607,6 +6790,7 @@ function snapshot() {
       streak: state.streak || 0, bestStreak: state.bestStreak || 0,
       lastStudyDate: state.lastStudyDate || null,
       todayCount: state.todayCount || 0, todayDate: state.todayDate || null,
+      course: state.course || null,
       quizBest: (state.quizBest === null || state.quizBest === undefined) ? null : state.quizBest,
       quizBestPct: (state.quizBestPct === null || state.quizBestPct === undefined) ? null : state.quizBestPct,
       quizPerfect: !!state.quizPerfect,
@@ -6652,6 +6836,11 @@ function mergeFromCloud(c, applySettings) {
   }
   if (s.quizPerfect) state.quizPerfect = true;
   if (s.quizDone) state.quizDone = Math.max(state.quizDone || 0, s.quizDone);
+  // コースは進んでいる方を採用する
+  if (s.course && s.course.id) {
+    const mine = state.course;
+    if (!mine || mine.id !== s.course.id || (s.course.done || 0) > (mine.done || 0)) state.course = s.course;
+  }
   // 連続学習は「より新しい記録」を採用
   const lt = state.lastStudyDate ? Date.parse(state.lastStudyDate) : 0;
   const ct = s.lastStudyDate ? Date.parse(s.lastStudyDate) : 0;
