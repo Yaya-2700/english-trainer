@@ -3291,6 +3291,10 @@ function lvLabel(lv) {
   const k = { "初級": "lvBeg", "中級": "lvInt", "上級": "lvAdv" }[lv];
   return k ? t(k) : (lv || "");
 }
+const COL_EN = {"学習法": "Study methods", "学習習慣": "Study habits", "文法": "Grammar", "英会話": "Speaking", "発音": "Pronunciation", "TOEIC": "TOEIC", "リスニング": "Listening", "資格試験": "Exams"};
+function colCatLabel(c) {
+  return (typeof state !== "undefined" && state.lang === "en" && COL_EN[c]) ? COL_EN[c] : (c || "");
+}
 function catLabel(c) {
   const name = c || "その他";
   return (typeof state !== "undefined" && state.lang === "en" && CAT_EN[name]) ? CAT_EN[name] : name;
@@ -3348,7 +3352,7 @@ function populateQuizCat() {
   sel.innerHTML = '<option value="ALL">' + escapeHtml(t("catAll").replace("{n}", pool.length)) + '</option>' +
     cats.map(c => {
       const n = pool.filter(w => (w.cat || "その他") === c).length;
-      const label = t("catItem").replace("{c}", c).replace("{n}", n);
+      const label = t("catItem").replace("{c}", catLabel(c)).replace("{n}", n);
       return '<option value="' + escapeHtml(c) + '">' + escapeHtml(label) + '</option>';
     }).join("");
   sel.value = (cur === "ALL" || cats.includes(cur)) ? cur : "ALL";
@@ -4503,7 +4507,7 @@ function renderColumnTab() {
   document.getElementById("today-column").innerHTML = `
     <a href="${c.s}.html" style="display:block;text-decoration:none;color:inherit;
       background:linear-gradient(135deg,#5b6ef5,#8a63f0);border-radius:18px;padding:22px 20px;text-align:left">
-      <div style="font-size:.68rem;color:rgba(255,255,255,.85);font-weight:700">${escapeHtml(c.c)}</div>
+      <div style="font-size:.68rem;color:rgba(255,255,255,.85);font-weight:700">${escapeHtml(colCatLabel(c.c))}</div>
       <div style="font-size:1.1rem;font-weight:800;color:#fff;line-height:1.5;margin:6px 0 8px">${escapeHtml(c.t)}</div>
       <div style="font-size:.82rem;color:rgba(255,255,255,.9);line-height:1.7">${escapeHtml(c.d)}</div>
       <div style="margin-top:14px;font-size:.82rem;font-weight:800;color:#fff">${t("readArticle")}</div>
@@ -4523,7 +4527,7 @@ function renderColumnChips() {
   el.innerHTML =
     `<button class="cchip ${colCat === "ALL" ? "on" : ""}" onclick="setColCat(-1)">${escapeHtml(t("colAllChip").replace("{n}", COLUMNS.length))}</button>` +
     colCats.map((c, i) =>
-      `<button class="cchip ${colCat === c ? "on" : ""}" onclick="setColCat(${i})">${escapeHtml(t("colChip").replace("{c}", c).replace("{n}", counts[c]))}</button>`
+      `<button class="cchip ${colCat === c ? "on" : ""}" onclick="setColCat(${i})">${escapeHtml(t("colChip").replace("{c}", colCatLabel(c)).replace("{n}", counts[c]))}</button>`
     ).join("");
 }
 function setColCat(i) {
@@ -4541,7 +4545,7 @@ function renderColumnList() {
   if (!el) return;
   el.innerHTML = list.length ? list.map(c => `
     <a href="${c.s}.html" style="display:block;text-decoration:none;color:inherit;padding:13px 4px;border-bottom:1px solid var(--border)">
-      <div style="font-size:.66rem;color:var(--primary);font-weight:700">${escapeHtml(c.c)}</div>
+      <div style="font-size:.66rem;color:var(--primary);font-weight:700">${escapeHtml(colCatLabel(c.c))}</div>
       <div style="font-size:.9rem;font-weight:700;line-height:1.5;margin-top:3px">${escapeHtml(c.t)}</div>
       <div style="font-size:.75rem;color:var(--muted);line-height:1.6;margin-top:3px">${escapeHtml(c.d)}</div>
     </a>`).join("")
