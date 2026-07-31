@@ -548,7 +548,7 @@
       <label style="margin:10px 0 6px" data-i18n="catStudy" for="flash-cat">📂 学習するカテゴリ</label>
         <select id="flash-cat" onchange="saveFlashOpt();startFlash()" aria-label="学習するカテゴリ"><option value="ALL" data-i18n="allT">すべて</option></select>
       <div class="catshort" id="cat-short"></div>
-      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)" for="add-word">
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)" for="flash-due">
         <input type="checkbox" id="flash-due" onchange="startFlash()" style="width:auto;margin:0"> <span data-i18n="dueOnly">🗓️ 今日復習すべき単語だけ</span>
       </label>
       <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;font-size:.85rem;color:var(--text)">
@@ -673,7 +673,7 @@
         </select>
         <label style="margin-top:10px" data-i18n="catT" for="quiz-cat">📂 カテゴリ</label>
         <select id="quiz-cat" onchange="saveQuizOpt()" aria-label="出題カテゴリ"><option value="ALL" data-i18n="allT">すべて</option></select>
-        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)" for="listen-level">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)" for="quiz-weak">
           <input type="checkbox" id="quiz-weak" style="width:auto;margin:0" onchange="saveQuizOpt()"> <span data-i18n="weakOnly2">😥 苦手だけ（定着0〜1）</span>
         </label>
         <label style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:.85rem;color:var(--text)">
