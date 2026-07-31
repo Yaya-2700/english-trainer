@@ -2986,10 +2986,11 @@ function renderCatStats() {
 // ==================== リマインダー ====================
 let reminderTimer = null;
 function syncReminderUI() {
-  const t = document.getElementById("remind-time");
+  // 変数名を t にすると翻訳関数 t() を隠してしまうので timeEl にする
+  const timeEl = document.getElementById("remind-time");
   const msg = document.getElementById("remind-msg");
-  if (!t) return;
-  t.value = state.remindTime || "20:00";
+  if (!timeEl) return;
+  timeEl.value = state.remindTime || "20:00";
   if (msg) msg.textContent = state.remindOn
     ? t("remindSet").replace("{t}", state.remindTime || "20:00")
     : t("remindOff");
@@ -4330,8 +4331,8 @@ function prefersDark() {
   return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 function applyTheme() {
-  const t = state.theme || "light";
-  const dark = t === "dark" || (t === "auto" && prefersDark());
+  const th = state.theme || "light";
+  const dark = th === "dark" || (th === "auto" && prefersDark());
   document.body.classList.toggle("dark", dark);
   const btn = document.getElementById("theme-toggle");
   if (btn) btn.textContent = dark ? "\u2600\uFE0F" : "\u{1F319}";
