@@ -201,6 +201,39 @@
   }
   .cchip.on { background: var(--primary); color: #fff; border-color: var(--primary); }
   .cchip:active { transform: scale(.96); }
+
+  /* ノトくん */
+  :root { --noto-body: #5b6ef5; --noto-ring: rgba(255,255,255,.5); --noto-face: #ffffff; --noto-pupil: #2b2f6b; }
+  body.dark { --noto-body: #7d8cf8; --noto-pupil: #1e2147; }
+  .noto-fab {
+    position: fixed; right: 14px; bottom: 78px; z-index: 850;
+    width: 58px; height: 58px; border-radius: 50%; border: none; padding: 0;
+    background: var(--card); box-shadow: 0 6px 20px rgba(30,41,59,.22);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .noto-fab:active { transform: scale(.94); }
+  .noto-fab .nb { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--danger); border: 2px solid var(--card); display: none; }
+  .noto-fab.alert .nb { display: block; }
+  .noto-msg { display: flex; gap: 9px; margin-bottom: 14px; align-items: flex-start; }
+  .noto-msg.me { flex-direction: row-reverse; }
+  .noto-bubble {
+    max-width: 82%; padding: 11px 14px; border-radius: 16px; font-size: .87rem; line-height: 1.75;
+    background: var(--bg2); color: var(--text); border: 1px solid var(--border);
+  }
+  .noto-msg.me .noto-bubble { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .noto-bubble b { color: var(--primary-dark); }
+  .noto-msg.me .noto-bubble b { color: #fff; }
+  .noto-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
+  .noto-chip {
+    padding: 7px 12px; border-radius: 99px; font-size: .76rem; font-weight: 700; font-family: inherit;
+    background: var(--primary-soft); color: var(--primary-dark); border: 1px solid var(--border); cursor: pointer;
+  }
+  .noto-chip:active { transform: scale(.96); }
+  .noto-foot { border-top: 1px solid var(--border); padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: var(--card); }
+  .noto-row { display: flex; gap: 8px; align-items: center; }
+  .noto-row input { margin: 0; flex: 1 }
+  .noto-act { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 9px; }
   .choice.correct { border-color: var(--accent); background: var(--accent-soft); }
   .choice.wrong { border-color: var(--danger); background: #fdecec; }
   .choice:disabled { cursor: default; }
@@ -300,7 +333,9 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7228040067218129" crossorigin="anonymous"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#5b6ef5">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="EigoNote">
 <meta property="og:type" content="website">
@@ -418,7 +453,11 @@
     </div>
     <div class="card">
       <h2 data-i18n="recommend">🚀 今日のおすすめ</h2>
-      <div style="font-size:.88rem;line-height:1.7" id="recommend"></div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <span id="noto-home" style="flex:none"></span>
+        <div style="font-size:.88rem;line-height:1.7;flex:1;min-width:0" id="recommend"></div>
+      </div>
+      <div class="center mt"><button class="btn small outline" onclick="openNoto()" data-i18n="notoAskBtn">ノトくんに聞く</button></div>
       <div class="btn-row mt">
         <button class="btn" onclick="document.getElementById('flash-weak').checked=true;switchTab('flash')" data-i18n="weakStart">😥 苦手から復習する</button>
       </div>
@@ -831,6 +870,31 @@
   </div>
 </div>
 
+
+<button class="noto-fab" id="noto-fab" onclick="openNoto()" aria-label="ノトくんに聞く"><span id="noto-fab-face"></span><span class="nb"></span></button>
+
+<div id="noto-modal" class="modal hidden" onclick="if(event.target===this)closeNoto()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <span id="noto-avatar"></span>
+        <div style="min-width:0">
+          <div style="font-weight:800;font-size:1rem" data-i18n="notoName">ノトくん</div>
+          <div style="font-size:.72rem;color:var(--muted)" data-i18n="notoRole">英語と設定のお手伝い</div>
+        </div>
+      </div>
+      <button class="modal-x" onclick="closeNoto()" aria-label="閉じる">✕</button>
+    </div>
+    <div class="modal-body" id="noto-log" style="padding-bottom:6px"></div>
+    <div class="noto-foot">
+      <div class="noto-chips" id="noto-chips"></div>
+      <div class="noto-row">
+        <input id="noto-text" data-i18n-ph="notoPh" placeholder="例：ダークモードにして" onkeydown="if(event.key==='Enter'){event.preventDefault();notoSend();}">
+        <button class="btn small" onclick="notoSend()" data-i18n="notoSend">送る</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <nav>
   <button id="nav-home" class="active" onclick="switchTab('home')"><span class="icon">🏠</span><span data-i18n="navHome">ホーム</span></button>
@@ -3702,9 +3766,308 @@ function badgeDesc(id) { return t("bD_" + id); }
 function totalStudied() { return Object.values(state.history).reduce((a, b) => a + b, 0); }
 function masteredCount() { return state.words.filter(w => w.box >= 3).length; }
 function checkBadges() {
+  let earned = false;
   BADGES.forEach(b => {
-    if (!state.badges.includes(b.id) && b.check()) state.badges.push(b.id);
+    if (!state.badges.includes(b.id) && b.check()) { state.badges.push(b.id); earned = true; }
   });
+  if (earned) notoSetMood("celebrate", 3200);
+}
+
+// ==================== ノトくん（キャラクター） ====================
+// 表情つきのSVG。サイズを変えても崩れないよう 100x100 の座標系で描いている。
+function notoSvg(mood, size) {
+  const S = size || 40;
+  let eyes, mouth;
+  if (mood === "happy" || mood === "celebrate") {
+    eyes = '<path d="M38 47 Q45 38 52 47" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>' +
+           '<path d="M62 47 Q69 38 76 47" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>';
+    mouth = mood === "celebrate"
+      ? '<ellipse cx="57" cy="68" rx="12" ry="9" fill="var(--noto-face)"/>'
+      : '<path d="M44 64 Q57 79 70 64" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>';
+  } else {
+    const dy = mood === "thinking" ? -4 : 2;
+    eyes = '<circle cx="45" cy="46" r="9" fill="var(--noto-face)"/><circle cx="69" cy="46" r="9" fill="var(--noto-face)"/>' +
+           '<circle cx="' + (mood === "thinking" ? 45 : 46.5) + '" cy="' + (46 + dy) + '" r="4" fill="var(--noto-pupil)"/>' +
+           '<circle cx="' + (mood === "thinking" ? 69 : 70.5) + '" cy="' + (46 + dy) + '" r="4" fill="var(--noto-pupil)"/>';
+    mouth = mood === "worry"
+      ? '<path d="M46 70 Q57 61 68 70" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>'
+      : mood === "thinking"
+        ? '<path d="M47 67 L67 67" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>'
+        : '<path d="M46 65 Q57 76 68 65" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>';
+  }
+  return '<svg viewBox="0 0 100 100" width="' + S + '" height="' + S + '" aria-hidden="true" style="display:block">' +
+    '<rect x="14" y="9" width="72" height="82" rx="13" fill="var(--noto-body)"/>' +
+    '<circle cx="25" cy="28" r="4" fill="var(--noto-ring)"/>' +
+    '<circle cx="25" cy="50" r="4" fill="var(--noto-ring)"/>' +
+    '<circle cx="25" cy="72" r="4" fill="var(--noto-ring)"/>' +
+    eyes + mouth + '</svg>';
+}
+
+let notoMood = "normal", notoMoodTimer = null;
+function notoSetMood(mood, ms) {
+  notoMood = mood;
+  notoPaintFaces();
+  if (notoMoodTimer) clearTimeout(notoMoodTimer);
+  if (ms) notoMoodTimer = setTimeout(() => { notoMood = notoBaseMood(); notoPaintFaces(); }, ms);
+}
+// 何もしていないときの顔は、その日の状況で決める
+function notoBaseMood() {
+  try {
+    if ((state.todayCount || 0) >= (state.dailyGoal || 20)) return "happy";
+    if (dueWords().length > 0 && (state.todayCount || 0) === 0) return "worry";
+  } catch (e) {}
+  return "normal";
+}
+function notoPaintFaces() {
+  const f = document.getElementById("noto-fab-face");
+  if (f) f.innerHTML = notoSvg(notoMood, 38);
+  const a = document.getElementById("noto-avatar");
+  if (a) a.innerHTML = notoSvg(notoMood, 40);
+  document.querySelectorAll("[data-noto-face]").forEach(el => {
+    el.innerHTML = notoSvg(notoMood, Number(el.getAttribute("data-noto-face")) || 44);
+  });
+  const fab = document.getElementById("noto-fab");
+  if (fab) fab.classList.toggle("alert", notoMood === "worry");
+}
+
+// ==================== ノトくんとの会話 ====================
+let notoOpen = false, notoGreeted = false;
+function nt(ja, en) { return (state.lang === "en") ? en : ja; }
+
+function openNoto() {
+  document.getElementById("noto-modal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  notoOpen = true;
+  try { history.pushState({ modal: "noto" }, ""); } catch (e) {}
+  notoPaintFaces();
+  notoRenderChips();
+  if (!notoGreeted) { notoGreeted = true; notoSay(notoGreeting()); }
+  setTimeout(() => { const i = document.getElementById("noto-text"); if (i) i.focus(); }, 120);
+}
+function closeNoto(fromPop) {
+  document.getElementById("noto-modal").classList.add("hidden");
+  document.body.style.overflow = "";
+  if (notoOpen && !fromPop) { try { history.back(); } catch (e) {} }
+  notoOpen = false;
+}
+function notoGreeting() {
+  const due = dueWords().length, left = Math.max(0, (state.dailyGoal || 20) - (state.todayCount || 0));
+  return nt(
+    "こんにちは、ノトくんです。<br>今日の復習は <b>" + due + "語</b>、目標まであと <b>" + left + "問</b> です。<br>英語のこと、設定の変更、使い方の質問、なんでも聞いてください。",
+    "Hi, I'm Noto.<br>You have <b>" + due + " words</b> due today and <b>" + left + "</b> to go for your goal.<br>Ask me about English, your settings, or how anything works."
+  );
+}
+function notoSay(html, actions) {
+  const log = document.getElementById("noto-log");
+  if (!log) return;
+  const wrap = document.createElement("div");
+  wrap.className = "noto-msg";
+  wrap.innerHTML = '<span style="flex:none">' + notoSvg(notoMood, 30) + '</span>' +
+    '<div class="noto-bubble">' + html + (actions || "") + '</div>';
+  log.appendChild(wrap);
+  log.scrollTop = log.scrollHeight;
+}
+function notoYou(text) {
+  const log = document.getElementById("noto-log");
+  if (!log) return;
+  const wrap = document.createElement("div");
+  wrap.className = "noto-msg me";
+  wrap.innerHTML = '<div class="noto-bubble">' + escapeHtml(text) + "</div>";
+  log.appendChild(wrap);
+  log.scrollTop = log.scrollHeight;
+}
+function notoBtn(label, fn) {
+  return '<button class="btn small outline" style="margin:0" onclick="' + fn + '">' + escapeHtml(label) + "</button>";
+}
+function notoRenderChips() {
+  const el = document.getElementById("noto-chips");
+  if (!el) return;
+  const chips = state.lang === "en"
+    ? ["What can you do?", "How am I doing?", "Dark mode", "Recording doesn't work", "Move to a new phone"]
+    : ["何ができるの？", "今日の進捗は？", "ダークモードにして", "録音ができない", "機種変したい"];
+  el.innerHTML = chips.map(c => '<button class="noto-chip" onclick="notoAsk(' + JSON.stringify(c).replace(/"/g, "&quot;") + ')">' + escapeHtml(c) + "</button>").join("");
+}
+function notoAsk(text) {
+  const i = document.getElementById("noto-text");
+  if (i) i.value = text;
+  notoSend();
+}
+function notoSend() {
+  const i = document.getElementById("noto-text");
+  const q = (i.value || "").trim();
+  if (!q) return;
+  i.value = "";
+  notoYou(q);
+  notoSetMood("thinking");
+  setTimeout(() => {
+    const r = notoAnswer(q);
+    notoSetMood(r.mood || "normal", 2600);
+    notoSay(r.html, r.actions ? '<div class="noto-act">' + r.actions + "</div>" : "");
+  }, 260);
+}
+
+// ---------- 受け答えの本体 ----------
+// 具体的な指示から先に判定し、最後に単語検索へ落とす
+function notoAnswer(raw) {
+  const q = raw.trim();
+  const t0 = q.toLowerCase().replace(/[　]/g, " ");
+  const has = (...ws) => ws.some(w => t0.includes(w));
+
+  // 1) あいさつ・できること
+  if (/^(hi|hello|hey|やあ|こんにちは|こんばんは|おはよう)[!！。\s]*$/i.test(q)) {
+    return { mood: "happy", html: notoGreeting() };
+  }
+  if (has("何ができ", "なにができ", "使い方", "ヘルプ", "what can you", "help", "how do i use")) {
+    return { mood: "normal", html: nt(
+      "こんなことができます。<br>・<b>設定の変更</b>「ダークモードにして」「目標を30問に」<br>・<b>単語の意味</b>「invoice ってどういう意味？」<br>・<b>画面の移動</b>「クイズやりたい」<br>・<b>進捗の確認</b>「今日どれくらい？」<br>・<b>困りごと</b>「録音ができない」<br>・<b>要望を送る</b>「こんな機能がほしい」",
+      "Here's what I can do.<br>・<b>Change settings</b> — \"dark mode\", \"set my goal to 30\"<br>・<b>Look up words</b> — \"what does invoice mean?\"<br>・<b>Move around</b> — \"open the quiz\"<br>・<b>Check progress</b> — \"how am I doing?\"<br>・<b>Troubleshoot</b> — \"recording doesn't work\"<br>・<b>Send feedback</b> — \"I'd like a feature that…\"") };
+  }
+
+  // 2) 設定の変更
+  if (has("ダーク", "dark", "暗く", "黒く")) { setTheme("dark"); syncSettingsUI(); return { mood: "happy", html: nt("ダークモードにしました。","Switched to dark mode.") }; }
+  if (has("ライト", "light mode", "明るく", "白く")) { setTheme("light"); syncSettingsUI(); return { mood: "happy", html: nt("ライトモードにしました。","Switched to light mode.") }; }
+  if (has("端末の設定", "自動で", "auto theme", "system theme")) { setTheme("auto"); syncSettingsUI(); return { mood: "happy", html: nt("端末の設定に合わせるようにしました。","It will now follow your device setting.") }; }
+  if (/(英語|english).{0,4}(表示|ひょうじ|にして|に切り替|ui)/.test(t0) || /switch.*english/.test(t0)) { setLang("en"); return { mood: "happy", html: "Switched the interface to English." }; }
+  if (/(日本語|japanese).{0,4}(表示|にして|に切り替|ui)/.test(t0) || /switch.*japanese/.test(t0)) { setLang("ja"); return { mood: "happy", html: "表示を日本語に戻しました。" }; }
+  let m = t0.match(/(?:目標|goal).{0,6}?(\d+)/) || t0.match(/(\d+)\s*(?:問|questions?).{0,4}(?:目標|goal|に)/);
+  if (m) {
+    const n = Math.max(1, Math.min(200, Number(m[1])));
+    state.dailyGoal = n; persist(); syncSettingsUI(); renderHome();
+    return { mood: "happy", html: nt("1日の目標を <b>" + n + "問</b> にしました。","Daily goal set to <b>" + n + "</b> questions.") };
+  }
+  if (has("速度", "スピード", "speed", "はやく読", "ゆっくり読")) {
+    const v = has("ゆっくり", "slow") ? 0.7 : has("はやい", "早く", "速く", "fast") ? 1.1 : 0.9;
+    setRate(v); syncSettingsUI();
+    return { mood: "happy", html: nt("読み上げ速度を「" + (v === 0.7 ? "ゆっくり" : v === 1.1 ? "はやい" : "ふつう") + "」にしました。","Speech speed set to " + (v === 0.7 ? "slow" : v === 1.1 ? "fast" : "normal") + ".") };
+  }
+  if (has("発音", "アクセント", "accent", "pronunciation")) {
+    if (has("イギリス", "british", "uk", "英国")) { setAccent("uk"); syncSettingsUI(); return { mood: "happy", html: nt("発音をイギリス英語にしました。","Accent set to British English.") }; }
+    if (has("アメリカ", "american", "us", "米国")) { setAccent("us"); syncSettingsUI(); return { mood: "happy", html: nt("発音をアメリカ英語にしました。","Accent set to American English.") }; }
+    return { mood: "normal", html: nt("アメリカ英語とイギリス英語を選べます。どちらにしますか？","You can choose American or British English. Which would you like?"),
+      actions: notoBtn(nt("アメリカ英語","American"), "notoAsk('アメリカ英語の発音にして')") + notoBtn(nt("イギリス英語","British"), "notoAsk('イギリス英語の発音にして')") };
+  }
+  if (has("通知", "リマインダー", "reminder", "notification")) {
+    return { mood: "normal", html: nt("学習リマインダーは設定から時刻を決めてオンにできます。ページを開いている間にお知らせします。","You can set a reminder time in settings. It notifies you while this page is open."),
+      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
+  }
+
+  // 3) 画面の移動
+  if (has("クイズ", "quiz")) return { mood: "happy", html: nt("クイズを開きます。","Opening the quiz."), actions: notoBtn(nt("クイズへ","Go to quiz"), "closeNoto();switchTab('quiz')") };
+  if (has("リスニング", "listening")) return { mood: "happy", html: nt("リスニングを開きます。","Opening listening."), actions: notoBtn(nt("リスニングへ","Go to listening"), "closeNoto();switchTab('listen')") };
+  if (has("単語帳", "フラッシュ", "flashcard", "cards")) return { mood: "happy", html: nt("単語帳を開きます。","Opening the flashcards."), actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
+  if (has("コラム", "記事", "article", "column")) return { mood: "happy", html: nt("コラムを開きます。45記事あります。","Opening the articles. There are 45 of them."), actions: notoBtn(nt("コラムへ","Go to articles"), "closeNoto();switchTab('column')") };
+  if (has("例文集", "例文一覧", "sentences")) return { mood: "happy", html: nt("例文集を開きます。","Opening the sentence list."), actions: notoBtn(nt("例文集へ","Go to sentences"), "closeNoto();switchTab('phrase')") };
+  if (has("復習", "今日の学習", "review", "start studying")) {
+    const due = dueWords().length;
+    return { mood: "happy", html: nt("今日の復習対象は <b>" + due + "語</b> です。はじめましょう。","<b>" + due + " words</b> are due today. Let's get going."),
+      actions: notoBtn(nt("復習をはじめる","Start review"), "closeNoto();startTodayReview()") };
+  }
+
+  // 4) 進捗
+  if (has("進捗", "どれくらい", "どのくらい", "状況", "今日は", "連続", "streak", "how am i", "my progress", "how many")) {
+    const mastered = state.words.filter(w => w.box >= 3).length;
+    const pct = Math.round(mastered / state.words.length * 100);
+    return { mood: (state.todayCount || 0) > 0 ? "happy" : "normal", html: nt(
+      "今日は <b>" + (state.todayCount || 0) + "問</b>（目標 " + (state.dailyGoal || 20) + "問）。<br>連続学習は <b>" + (state.streak || 0) + "日</b>、自己ベストは " + (state.bestStreak || 0) + "日。<br>習得済みは <b>" + mastered + "語</b>（全" + state.words.length + "語の" + pct + "%）です。",
+      "Today: <b>" + (state.todayCount || 0) + "</b> of " + (state.dailyGoal || 20) + ".<br>Streak <b>" + (state.streak || 0) + " days</b>, best " + (state.bestStreak || 0) + ".<br>Mastered <b>" + mastered + " words</b> (" + pct + "% of " + state.words.length + ").") };
+  }
+
+  // 5) 困りごと・よくある質問
+  if (has("引き継", "機種変", "データが消", "バックアップ", "移行", "new phone", "back up", "transfer my data")) {
+    return { mood: "normal", html: nt(
+      "学習の記録はこの端末のブラウザに保存されています。引き継ぐ方法は2つあります。<br>・<b>Googleでログイン</b>すると自動でクラウドに保存され、別の端末でも同じアカウントで続きから使えます。<br>・設定の<b>バックアップ保存</b>でファイルとして書き出すこともできます。",
+      "Your progress is stored in this browser. Two ways to carry it over:<br>・<b>Sign in with Google</b> and it syncs automatically to any device.<br>・Or export a <b>backup file</b> from settings."),
+      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
+  }
+  if (has("録音")|| /record/.test(t0)) {
+    return { mood: "worry", html: nt(
+      "録音は単語帳の画面にある「🎤 発音を録音」から使えます。うまくいかないときは次を確認してください。<br>・マイクの使用を<b>許可</b>しているか（アドレスバーの🔒から変更できます）<br>・他のアプリがマイクを使っていないか<br>・iPhoneの場合はSafariの最新版か<br>録音後は再生プレーヤーが出ます。出ない場合は画面下のメッセージに理由が表示されます。",
+      "Recording lives on the flashcard screen under \"Record yourself\". If it isn't working:<br>・Check the mic is <b>allowed</b> (the 🔒 icon in the address bar)<br>・Make sure no other app is using the mic<br>・On iPhone, use an up-to-date Safari<br>A player appears after recording; if not, the message below it explains why."),
+      actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
+  }
+  if (has("音が出", "聞こえ", "読み上げ", "音声", "no sound", "can't hear", "speech")) {
+    return { mood: "worry", html: nt(
+      "読み上げは端末の音声機能を使っています。音が出ないときは、<b>マナーモード</b>と<b>音量</b>をまず確認してください。それでも駄目な場合はブラウザを最新版にするか、Chrome / Safari でお試しください。",
+      "Speech uses your device's built-in voices. First check <b>silent mode</b> and <b>volume</b>. If it still fails, update your browser or try Chrome or Safari.") };
+  }
+  if (has("無料", "お金", "課金", "有料", "free", "cost", "pay")) {
+    return { mood: "happy", html: nt("EigoNoteは<b>完全無料</b>です。登録もいりません。ログインは学習記録を引き継ぎたいときだけで、こちらも無料です。","EigoNote is <b>completely free</b> and needs no sign-up. Signing in is optional — only if you want your progress synced.") };
+  }
+  if (has("単語を追加", "自分の単語", "csv", "単語登録", "add words", "my own words")) {
+    return { mood: "normal", html: nt(
+      "設定の「単語の一括登録（CSV）」から追加できます。1行に「英単語,意味,例文,例文和訳,レベル」の形式です。レベルを省いても<b>自動で判定</b>しますし、あとから単語一覧のレベル表示をタップして直せます。",
+      "Use \"Bulk import (CSV)\" in settings — one line per word: word, meaning, example, translation, level. Leave the level out and it's <b>detected automatically</b>; you can tap the level chip later to change it."),
+      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
+  }
+  if (has("レベル", "初級", "中級", "上級", "level", "beginner", "advanced")) {
+    return { mood: "normal", html: nt(
+      "単語は<b>初級・中級・上級</b>の3段階に分かれています。単語帳・クイズ・リスニングそれぞれで絞り込めます。自分で追加した単語のレベルは、単語一覧のレベル表示をタップすると変えられます。",
+      "Words are graded <b>beginner, intermediate and advanced</b>. You can filter by level in the cards, quiz and listening. Tap the level chip in the word list to change one.") };
+  }
+  if (has("定着", "習得", "忘却", "間隔", "srs", "spaced", "mastered")) {
+    return { mood: "normal", html: nt(
+      "覚えた単語は<b>1日 → 3日 → 7日 → 21日</b>の間隔で復習に戻ってきます。忘れかけた頃に出す仕組みです。間違えると間隔が戻り、定着3で「習得済み」になります。",
+      "Words you get right come back after <b>1, 3, 7 and 21 days</b> — just as you're about to forget them. A wrong answer shortens the interval; level 3 means mastered.") };
+  }
+  if (has("要望", "改善", "不具合", "バグ", "ほしい", "欲しい", "feedback", "bug", "feature", "suggest")) {
+    return { mood: "normal", html: nt(
+      "ご意見はいつでも歓迎です。設定の一番下にある「ご意見・ご要望」から送れます。開発の参考にさせていただきます。",
+      "Feedback is always welcome. Use the form at the bottom of settings and it goes straight to the developer."),
+      actions: notoBtn(nt("フィードバックを書く","Write feedback"), "notoToFeedback()") };
+  }
+
+  // 6) 単語をしらべる
+  const w = notoLookup(q);
+  if (w) return w;
+
+  // 7) わからないとき
+  return { mood: "worry", html: nt(
+    "うまく聞き取れませんでした。<br>設定の変更・単語の意味・進捗の確認・使い方の質問なら答えられます。私で分からないことは、ご要望として開発者に届けられます。",
+    "Sorry, I didn't catch that.<br>I can change settings, look up words, report your progress and answer how-to questions. Anything else, I can pass on to the developer as feedback."),
+    actions: notoBtn(nt("できることを見る","What can you do?"), "notoAsk('何ができるの？')") + notoBtn(nt("要望として送る","Send as feedback"), "notoToFeedback()") };
+}
+
+// 収録済みの単語から探す
+function notoLookup(q) {
+  const k = q.replace(/[?？。！!]/g, "").trim();
+  const kl = k.toLowerCase().replace(/^(what does|の意味|意味は)/, "").trim();
+  const key = (kl.match(/[a-z][a-z' -]*/) || [kl])[0].trim();
+  let hit = state.words.find(x => x.w.toLowerCase() === key) ||
+            state.words.find(x => x.m === k) ||
+            state.words.find(x => x.w.toLowerCase() === kl);
+  if (!hit && key.length >= 3) {
+    const near = state.words.filter(x => x.w.toLowerCase().startsWith(key)).slice(0, 5);
+    if (near.length === 1) hit = near[0];
+    else if (near.length > 1) {
+      return { mood: "thinking", html: nt("近い単語がいくつかあります。どれですか？","Several words start with that. Which one?"),
+        actions: near.map(x => notoBtn(x.w, "notoAsk(" + JSON.stringify(x.w).replace(/"/g, "&quot;") + ")")).join("") };
+    }
+  }
+  if (!hit && k.length >= 2) {
+    const byMeaning = state.words.filter(x => x.m.includes(k)).slice(0, 5);
+    if (byMeaning.length) {
+      return { mood: "normal", html: nt("「" + escapeHtml(k) + "」に近い単語です。","Words close to \"" + escapeHtml(k) + "\":"),
+        actions: byMeaning.map(x => notoBtn(x.w, "notoAsk(" + JSON.stringify(x.w).replace(/"/g, "&quot;") + ")")).join("") };
+    }
+  }
+  if (!hit) return null;
+  const safe = escapeHtml(hit.w.replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
+  const box = masteryLabel(hit.box);
+  return { mood: "happy", html:
+    '<div style="font-size:1.05rem;font-weight:800">' + escapeHtml(hit.w) + "</div>" +
+    '<div style="font-weight:700;color:var(--primary-dark)">' + escapeHtml(hit.m) + "</div>" +
+    '<div style="font-size:.72rem;color:var(--muted);margin-top:4px">' + escapeHtml(lvLabel(hit.level)) + " ・ " + escapeHtml(catLabel(hit.cat)) + " ・ " + escapeHtml(box) + "</div>" +
+    (hit.ex ? '<div style="margin-top:8px;line-height:1.75">' + highlightWord(hit.ex, hit.w) + "<br>" + escapeHtml(hit.exJa || "") + "</div>" : ""),
+    actions: notoBtn("🔊 " + nt("発音", "Listen"), "speak('" + safe + "')") };
+}
+
+function notoToFeedback() {
+  closeNoto();
+  openSettings();
+  setTimeout(() => {
+    const ta = document.getElementById("fb-text");
+    if (ta) { ta.scrollIntoView({ block: "center" }); ta.focus(); }
+  }, 200);
 }
 
 // ==================== 画面下部のお知らせ（トースト） ====================
@@ -3847,6 +4210,7 @@ if ("speechSynthesis" in window) speechSynthesis.getVoices();
 
 // ==================== タブ ====================
 function switchTab(name) {
+  if (notoOpen) closeNoto();
   if (settingsOpen) closeSettings();
   ensureScroll();
   ["home", "flash", "quiz", "listen", "column", "phrase"].forEach(t => {
@@ -3856,6 +4220,8 @@ function switchTab(name) {
   if (name !== "quiz" && typeof clearQuizTimer === "function") clearQuizTimer();
   if (name === "home") renderHome();
   if (name === "quiz") loadQuizOpt();
+notoMood = notoBaseMood();
+notoPaintFaces();
   if (name === "flash") { startFlash(); renderWordList(); }
   if (name === "phrase") renderPhrases();
   if (name === "column") renderColumnTab();
@@ -3928,6 +4294,8 @@ function renderHome() {
     ? t("dueHintNew")
     : t("dueHint").replace("{n}", due);
   const weak = state.words.filter(w => w.box <= 1 && w.due).length;
+  const nf = document.getElementById("noto-home");
+  if (nf) nf.innerHTML = notoSvg(notoMood, 46);
   document.getElementById("recommend").innerHTML = learned === 0
     ? t("recNew")
     : due > 0
@@ -4537,6 +4905,7 @@ function revealQuiz(btn, ok, msg) {
   fb.textContent = msg || t(ok ? "fbRight" : "fbWrong");
   fb.style.color = ok ? "var(--accent)" : "var(--danger)";
   renderQuizExplain(quizSet[quizIdx].word, ok);
+  notoSetMood(ok ? "happy" : "worry", 2200);
   bumpToday();
   document.getElementById("quiz-next").classList.remove("hidden");
   // 「次へ」も同じ理由で少しの間だけ無効にする
@@ -4776,8 +5145,14 @@ function closeSettings(fromPop) {
   settingsOpen = false;
 }
 // ブラウザの戻るボタンでも閉じられるように
-window.addEventListener("popstate", () => { if (settingsOpen) closeSettings(true); });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && settingsOpen) closeSettings(); });
+window.addEventListener("popstate", () => {
+  if (notoOpen) { closeNoto(true); return; }
+  if (settingsOpen) closeSettings(true);
+});
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (notoOpen) closeNoto(); else if (settingsOpen) closeSettings();
+});
 // 万一の取り残し防止（タブ切替時に必ず解除）
 function ensureScroll() { document.body.style.overflow = ""; }
 
@@ -4809,6 +5184,11 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    notoName: "ノトくん",
+    notoRole: "英語と設定のお手伝い",
+    notoPh: "例：ダークモードにして",
+    notoSend: "送る",
+    notoAskBtn: "ノトくんに聞く",
     exUnit: "{n} 例文",
     remindOff: "通知はオフです。",
     remindSet: "\\u{1F514} {t} に通知します（このページを開いている間）",
@@ -5073,6 +5453,11 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    notoName: "Noto",
+    notoRole: "English and settings helper",
+    notoPh: "e.g. switch to dark mode",
+    notoSend: "Send",
+    notoAskBtn: "Ask Noto",
     exUnit: "{n} sentences",
     remindOff: "Reminders are off.",
     remindSet: "\\u{1F514} You'll be notified at {t} while this page is open.",
@@ -5336,6 +5721,7 @@ function applyLang() {
   if (typeof renderColumnTab === "function" && document.getElementById("today-column")) renderColumnTab();
   if (typeof renderPhrases === "function" && document.getElementById("phrase-list")) renderPhrases();
   if (typeof syncAccentNote === "function") syncAccentNote();
+  if (typeof notoRenderChips === "function") { notoRenderChips(); notoPaintFaces(); }
 }
 
 // ==================== 設定 ====================
