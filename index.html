@@ -598,12 +598,12 @@
 
     <div class="card mt fl-add">
       <h2 data-i18n="addWord">➕ 単語を追加</h2>
-      <label data-i18n="enWord">英単語</label>
-        <input id="add-word" placeholder="例: appreciate">
+      <label data-i18n="enWord" for="add-word">英単語</label>
+        <input id="add-word" placeholder="例: appreciate" data-i18n-ph="phWordEn" aria-label="英単語">
       <label data-i18n="jaMeaning" for="add-meaning">意味（日本語）</label>
-        <input id="add-meaning" placeholder="例: 感謝する">
+        <input id="add-meaning" placeholder="例: 感謝する" aria-label="意味">
       <label data-i18n="exOpt" for="add-example">例文（任意）</label>
-        <input id="add-example" placeholder="例: I appreciate your help.">
+        <input id="add-example" placeholder="例: I appreciate your help." aria-label="例文">
       <button class="btn" onclick="addWord()" data-i18n="addBtn">追加する</button>
       <div id="add-msg" style="font-size:.8rem;color:var(--accent);margin-top:8px"></div>
     </div>
@@ -718,8 +718,8 @@
         <span data-i18n="listenD" data-i18n-html>英語の例文が読み上げられます。<br>意味として正しいものを選んでください（全5問）。</span>
       </p>
       <div style="max-width:260px;margin:8px auto 0;text-align:left">
-        <label data-i18n="levelT">📊 レベル</label>
-        <select id="listen-level">
+        <label data-i18n="levelT" for="listen-level">📊 レベル</label>
+        <select id="listen-level" aria-label="レベル" onchange="saveListenOpt()">
           <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
           <option value="初級" data-i18n="lvBeg">初級</option>
           <option value="中級" data-i18n="lvInt">中級</option>
@@ -728,14 +728,14 @@
       </div>
       <div style="max-width:260px;margin:8px auto 0;text-align:left">
         <label data-i18n="listenDiffT" for="listen-diff">🔥 難易度</label>
-        <select id="listen-diff">
+        <select id="listen-diff" onchange="saveListenOpt()">
           <option value="normal" selected data-i18n="lsNormal">ふつう（全レベル・聞き直し自由）</option>
           <option value="hard" data-i18n="lsHard">むずかしい（上級優先・聞き直し1回）</option>
         </select>
       </div>
       <div class="speed-row">
         <span data-i18n="rateLabel">読み上げ速度:</span>
-        <select id="listen-speed" style="width:auto;margin:0" aria-label="読み上げ速度">
+        <select id="listen-speed" style="width:auto;margin:0" aria-label="読み上げ速度" onchange="saveListenOpt()">
           <option value="0.7" data-i18n="rSlow">ゆっくり</option>
           <option value="0.9" selected data-i18n="rNormal">ふつう</option>
           <option value="1.1" data-i18n="rFast">はやい</option>
@@ -4504,6 +4504,7 @@ function switchTab(name) {
     document.getElementById("nav-" + t).classList.toggle("active", t === name);
   });
   if (name !== "quiz" && typeof clearQuizTimer === "function") clearQuizTimer();
+  if (name === "listen") loadListenOpt();
   if (name === "home") renderHome();
   if (name === "quiz") { loadQuizOpt(); syncQuickQuizNote(); }
 notoMood = notoBaseMood();
@@ -4900,7 +4901,13 @@ function loadFlashOpt() {
     if (catSel && [...catSel.options].some(x => x.value === o.cat)) catSel.value = o.cat;
     return;
   }
-  if (isNewLearner()) lvSel.value = "初級";
+  if (isNewLearner()) {
+    // 初回は身近な語から。日常カテゴリに初級語がなければレベルだけ絞る
+    lvSel.value = "初級";
+    populateCatSelect();
+    if (catSel && [...catSel.options].some(x => x.value === "日常")) catSel.value = "日常";
+    return;
+  }
   populateCatSelect();
 }
 function startFlash() {
@@ -5350,7 +5357,21 @@ function nextQuiz() {
 
 // ==================== リスニング ====================
 let listenSet = [], listenIdx = 0, listenScore = 0;
+function saveListenOpt() {
+  const v = id => (document.getElementById(id) || {}).value;
+  state.listenOpt = { lv: v("listen-level") || "ALL", diff: v("listen-diff") || "normal", rate: v("listen-speed") || "0.9" };
+  persist();
+}
+// 初回は「初級・ふつう・ふつう速度」。2回目以降は前回の選択に戻す
+function loadListenOpt() {
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = String(val); };
+  const o = state.listenOpt;
+  if (o) { set("listen-level", o.lv); set("listen-diff", o.diff); set("listen-speed", o.rate); return; }
+  if (isNewLearner()) { set("listen-level", "初級"); set("listen-diff", "normal"); set("listen-speed", "0.9"); }
+  else { set("listen-speed", state.rate || 0.9); }
+}
 function startListen() {
+  saveListenOpt();
   if (!("speechSynthesis" in window)) {
     document.getElementById("tts-warn").textContent = "このブラウザは音声読み上げに対応していません。";
     return;
@@ -6579,7 +6600,8 @@ function snapshot() {
       theme: state.theme || "light", lang: state.lang || "ja",
       dailyGoal: state.dailyGoal || 20, rate: state.rate || 0.9, batch: state.batch || 15,
       remindOn: !!state.remindOn, remindTime: state.remindTime || "20:00",
-      quizOpt: state.quizOpt || null, flashOpt: state.flashOpt || null, accent: state.accent || "us"
+      quizOpt: state.quizOpt || null, flashOpt: state.flashOpt || null,
+      listenOpt: state.listenOpt || null, accent: state.accent || "us"
     },
     stats: {
       streak: state.streak || 0, bestStreak: state.bestStreak || 0,
@@ -6652,6 +6674,7 @@ function mergeFromCloud(c, applySettings) {
     if (st.remindTime) state.remindTime = st.remindTime;
     if (st.quizOpt) state.quizOpt = st.quizOpt;
     if (st.flashOpt) state.flashOpt = st.flashOpt;
+    if (st.listenOpt) state.listenOpt = st.listenOpt;
     if (st.accent) state.accent = st.accent;
   }
   persist();
