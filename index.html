@@ -73,7 +73,9 @@
     color: #fff; padding: 22px 16px 20px; text-align: center;
     border-radius: 0 0 26px 26px; box-shadow: 0 8px 24px rgba(91,110,245,.25);
   }
-  header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: .3px; }
+  header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: .3px;
+    display: flex; align-items: center; justify-content: center; gap: 9px; }
+  header h1 span { flex: none; display: block }
   header p { font-size: .8rem; opacity: .9; margin-top: 4px; font-weight: 500; }
   main { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
 
@@ -203,8 +205,8 @@
   .cchip:active { transform: scale(.96); }
 
   /* ノトくん */
-  :root { --noto-body: #5b6ef5; --noto-ring: rgba(255,255,255,.5); --noto-face: #ffffff; --noto-pupil: #2b2f6b; }
-  body.dark { --noto-body: #7d8cf8; --noto-pupil: #1e2147; }
+  :root { --noto-body: #5b6ef5; --noto-ring: rgba(255,255,255,.5); --noto-face: #ffffff; --noto-pupil: #2b2f6b; --noto-card: #eef0ff; }
+  body.dark { --noto-body: #7d8cf8; --noto-pupil: #1e2147; --noto-card: #23283c; }
   .noto-fab {
     position: fixed; right: 14px; bottom: 78px; z-index: 850;
     width: 58px; height: 58px; border-radius: 50%; border: none; padding: 0;
@@ -387,7 +389,7 @@
 <header>
   <button class="theme-toggle" style="right:62px" onclick="openSettings()" title="設定">⚙️</button>
   <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="ダークモード切替">🌙</button>
-  <h1 onclick="switchTab('home')" style="cursor:pointer" title="ホームに戻る">🇬🇧 EigoNote</h1>
+  <h1 onclick="switchTab('home')" style="cursor:pointer" title="ホームに戻る"><span id="noto-header"></span>EigoNote</h1>
   <p data-i18n="tagline">毎日コツコツ、英語力アップ</p>
 </header>
 
@@ -395,6 +397,7 @@
   <!-- ============ HOME ============ -->
   <section id="tab-home">
     <div class="card hero">
+      <div id="noto-hero" style="display:flex;justify-content:center;margin-bottom:10px"></div>
       <h2 class="hero-title"><span data-i18n="heroA">英語は、</span><span class="hl" data-i18n="heroB">毎日の積み上げ</span><span data-i18n="heroC">。</span></h2>
       <p class="hero-sub" data-i18n="heroSub" data-i18n-html>2,710語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。</p>
       <button class="btn lg" onclick="startTodayReview()" data-i18n="cta">🎯 今日の学習をはじめる →</button>
@@ -541,6 +544,7 @@
 
     </div>
     <div id="flash-done" class="card center hidden">
+      <div id="noto-flashdone" style="display:flex;justify-content:center;margin-bottom:8px"></div>
       <h2 data-i18n="flashDone">🎉 今日の復習おわり！</h2>
       <p style="font-size:.85rem;color:var(--muted)" data-i18n="flashDoneD">全カードを確認しました。もう一周する？</p>
       <button class="btn mt" onclick="startFlash()" data-i18n="again">もう一周</button>
@@ -644,6 +648,7 @@
       </div>
     </div>
     <div id="quiz-result" class="card center hidden">
+      <div id="noto-quizresult" style="display:flex;justify-content:center;margin-bottom:6px"></div>
       <h2 data-i18n="resultT">結果発表</h2>
       <div class="result-big" id="quiz-score"></div>
       <div id="quiz-comment" style="font-size:.9rem;color:var(--muted)"></div>
@@ -3775,8 +3780,9 @@ function checkBadges() {
 
 // ==================== ノトくん（キャラクター） ====================
 // 表情つきのSVG。サイズを変えても崩れないよう 100x100 の座標系で描いている。
-function notoSvg(mood, size) {
+function notoSvg(mood, size, opt) {
   const S = size || 40;
+  opt = opt || {};
   let eyes, mouth;
   if (mood === "happy" || mood === "celebrate") {
     eyes = '<path d="M38 47 Q45 38 52 47" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>' +
@@ -3795,7 +3801,8 @@ function notoSvg(mood, size) {
         ? '<path d="M47 67 L67 67" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>'
         : '<path d="M46 65 Q57 76 68 65" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>';
   }
-  return '<svg viewBox="0 0 100 100" width="' + S + '" height="' + S + '" aria-hidden="true" style="display:block">' +
+  const card = opt.card ? '<rect x="0" y="0" width="100" height="100" rx="23" fill="' + (opt.card === true ? "var(--noto-card)" : opt.card) + '"/>' : "";
+  return '<svg viewBox="0 0 100 100" width="' + S + '" height="' + S + '" aria-hidden="true" style="display:block">' + card +
     '<rect x="14" y="9" width="72" height="82" rx="13" fill="var(--noto-body)"/>' +
     '<circle cx="25" cy="28" r="4" fill="var(--noto-ring)"/>' +
     '<circle cx="25" cy="50" r="4" fill="var(--noto-ring)"/>' +
@@ -3823,6 +3830,13 @@ function notoPaintFaces() {
   if (f) f.innerHTML = notoSvg(notoMood, 38);
   const a = document.getElementById("noto-avatar");
   if (a) a.innerHTML = notoSvg(notoMood, 40);
+  // ヘッダーは紫地なので、アプリアイコンと同じ白いカードごと置く
+  const h = document.getElementById("noto-header");
+  if (h) h.innerHTML = notoSvg(notoMood, 30, { card: "rgba(255,255,255,.95)" });
+  const hero = document.getElementById("noto-hero");
+  if (hero) hero.innerHTML = notoSvg(notoMood, 74, { card: true });
+  const fd = document.getElementById("noto-flashdone");
+  if (fd) fd.innerHTML = notoSvg("celebrate", 64, { card: true });
   document.querySelectorAll("[data-noto-face]").forEach(el => {
     el.innerHTML = notoSvg(notoMood, Number(el.getAttribute("data-noto-face")) || 44);
   });
@@ -4928,6 +4942,8 @@ function nextQuiz() {
     document.getElementById("quiz-score").textContent = `${quizScore} / ${quizSet.length}`;
     const pct = quizSet.length ? Math.round(quizScore / quizSet.length * 100) : 0;
     const comments = t(pct >= 90 ? "qc90" : pct >= 70 ? "qc70" : pct >= 40 ? "qc40" : "qc0").replace("{p}", pct);
+    const qrFace = document.getElementById("noto-quizresult");
+    if (qrFace) qrFace.innerHTML = notoSvg(pct >= 90 ? "celebrate" : pct >= 40 ? "happy" : "worry", 62, { card: true });
     document.getElementById("quiz-comment").textContent = comments;
     const rev = document.getElementById("quiz-review");
     if (rev) rev.innerHTML = quizWrong.length ? `
