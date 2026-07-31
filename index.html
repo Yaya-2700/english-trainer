@@ -4078,7 +4078,9 @@ function notoAnswer(raw) {
   }
 
   // 直前に出した単語への追加の質問
-  if (notoLastWord && has("例文", "もう一つ", "もういちど", "発音", "読んで", "another", "say it")) {
+  // 「イギリス英語の発音にして」のような設定の指示は、こちらで拾わない
+  const notoIsSetting = has("アメリカ", "イギリス", "american", "british", "アクセント", "accent", "にして", "に変え", "切り替え");
+  if (notoLastWord && !notoIsSetting && has("例文", "もう一つ", "もういちど", "発音", "読んで", "another", "say it")) {
     const w = notoLastWord;
     if (has("発音", "読んで", "say it")) {
       const safe = escapeHtml(w.w.replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
