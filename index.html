@@ -360,7 +360,7 @@
   <!-- ============ HOME ============ -->
   <section id="tab-home">
     <div class="card hero">
-      <h2 class="hero-title" data-i18n="heroTitle" data-i18n-html><span data-i18n="heroA">英語は、</span><span class="hl" data-i18n="heroB">毎日の積み上げ</span><span data-i18n="heroC">。</span></h2>
+      <h2 class="hero-title"><span data-i18n="heroA">英語は、</span><span class="hl" data-i18n="heroB">毎日の積み上げ</span><span data-i18n="heroC">。</span></h2>
       <p class="hero-sub" data-i18n="heroSub" data-i18n-html>2,710語の単語帳・クイズ・リスニング・例文集。<br>登録不要・完全無料で、今すぐ始められます。</p>
       <button class="btn lg" onclick="startTodayReview()" data-i18n="cta">🎯 今日の学習をはじめる →</button>
       <div id="due-hint" style="font-size:.78rem;color:var(--muted);margin-top:12px"></div>
@@ -5316,13 +5316,17 @@ function t(key) { return (I18N[state.lang] || I18N.ja)[key] ?? (I18N.ja[key] ?? 
 function setLang(v) { state.lang = v; persist(); applyLang(); }
 function applyLang() {
   document.documentElement.lang = state.lang === "en" ? "en" : "ja";
+  // 訳が用意されていないキーは書き換えない（キー名がそのまま画面に出るのを防ぐ）
+  const hasKey = k => Object.prototype.hasOwnProperty.call(I18N.ja, k);
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const k = el.getAttribute("data-i18n");
+    if (!hasKey(k)) return;
     const v = t(k);
     if (el.hasAttribute("data-i18n-html")) el.innerHTML = v; else el.textContent = v;
   });
   document.querySelectorAll("[data-i18n-ph]").forEach(el => {
-    el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
+    const k = el.getAttribute("data-i18n-ph");
+    if (hasKey(k)) el.setAttribute("placeholder", t(k));
   });
   // 動的に描画される部分も更新
   if (typeof renderHome === "function") renderHome();
