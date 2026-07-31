@@ -18,7 +18,7 @@
     --danger: #f2545b;
     --warn: #f5a623;
     --text: #1b2436;
-    --muted: #6b7690;
+    --muted: #5c6880;
     --border: #e6e9f2;
     --radius: 20px;
     --radius-sm: 14px;
@@ -37,7 +37,7 @@
     --accent-soft: #17332a;
     --danger: #f87171;
     --text: #e8ecf6;
-    --muted: #98a3bd;
+    --muted: #a7b1c9;
     --border: #2b3345;
     --shadow: 0 6px 22px rgba(0,0,0,.35);
     --shadow-sm: 0 2px 8px rgba(0,0,0,.3);
@@ -77,7 +77,13 @@
     display: flex; align-items: center; justify-content: center; gap: 9px; }
   header h1 span { flex: none; display: block }
   header p { font-size: .8rem; opacity: .9; margin-top: 4px; font-weight: 500; }
-  main { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
+  main { max-width: 640px; margin: 0 auto; padding: 20px 16px; }
+  @media (min-width: 1000px) {
+    main { max-width: 940px; }
+    #tab-home { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; align-items: start; }
+    #tab-home > .card.hero, #tab-home > .stats-grid { grid-column: 1 / -1; }
+    #tab-home > .card { margin-bottom: 16px; }
+  }
 
   /* Tab bar */
   nav {
@@ -177,6 +183,22 @@
     background: var(--bg2); border: 1px solid var(--border); font-family: inherit; cursor: pointer; vertical-align: 2px;
   }
   .lvl-chip:active { transform: scale(.94); }
+  /* 学習履歴ができるまでは、0が並ぶカードを出さない */
+  body.no-history .after-start { display: none !important; }
+  .seg { display: flex; gap: 6px; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 99px; padding: 4px; margin-bottom: 14px; }
+  .seg-btn { flex: 1; padding: 9px 6px; border: none; border-radius: 99px; background: transparent;
+    font-family: inherit; font-size: .84rem; font-weight: 700; color: var(--muted); cursor: pointer; }
+  .seg-btn.on { background: var(--card); color: var(--primary-dark); box-shadow: 0 1px 4px rgba(30,41,59,.10); }
+  body[data-fl="learn"] .fl-find, body[data-fl="learn"] .fl-add,
+  body[data-fl="find"]  .fl-learn, body[data-fl="find"] .fl-add,
+  body[data-fl="add"]   .fl-learn, body[data-fl="add"] .fl-find { display: none !important; }
+  .catshort { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 2px; }
+  .catshort button { padding: 6px 11px; border-radius: 99px; font-size: .74rem; font-weight: 700; font-family: inherit;
+    background: var(--primary-soft); color: var(--primary-dark); border: 1px solid var(--border); cursor: pointer; }
+  #quiz-detail summary::-webkit-details-marker { display: none }
+  #quiz-detail summary::after { content: " ▾" }
+  #quiz-detail[open] summary::after { content: " ▴" }
 
   /* 答え合わせのフィードバック */
   @keyframes qShake { 0%,100%{transform:translateX(0)} 18%{transform:translateX(-6px)} 38%{transform:translateX(6px)} 58%{transform:translateX(-4px)} 78%{transform:translateX(3px)} }
@@ -227,7 +249,15 @@
   .noto-fab:active { transform: scale(.94); }
   .noto-fab .nb { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%;
     background: var(--danger); border: 2px solid var(--card); display: none; }
-  .noto-fab.alert .nb { display: block; }
+  .noto-fab.alert .nb { display: none; }
+  .noto-tip {
+    position: fixed; right: 78px; bottom: 92px; z-index: 849; max-width: 190px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(30,41,59,.16); padding: 9px 12px;
+    font-size: .74rem; line-height: 1.6; color: var(--text);
+  }
+  .noto-tip button { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--card); color: var(--muted); font-size: .7rem; cursor: pointer; padding: 0 }
   .noto-msg { display: flex; gap: 9px; margin-bottom: 14px; align-items: flex-start; }
   .noto-msg.me { flex-direction: row-reverse; }
   .noto-bubble {
@@ -431,7 +461,7 @@
         <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt" data-i18n="mPhrase">例文集</span><span class="md" data-i18n="mPhraseD">2,710の例文</span></span></button>
       </div>
     </div>
-    <div class="card" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
+    <div class="card after-start" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
       <div style="font-size:.8rem;opacity:.9;font-weight:600" data-i18n="streakT">🔥 連続学習</div>
       <div style="font-size:2.6rem;font-weight:800;line-height:1.1;margin:2px 0"><span id="st-streak">0</span><span style="font-size:1.1rem;margin-left:4px">日</span></div>
       <div style="font-size:.75rem;opacity:.85"><span data-i18n="bestT">自己ベスト</span> <span id="st-beststreak">0</span> <span data-i18n="daysT">日</span></div>
@@ -440,24 +470,24 @@
       </div>
       <div style="font-size:.76rem;opacity:.95;margin-top:6px"><span data-i18n="goalT">今日の目標</span> <span id="goal-text">0 / 20</span></div>
     </div>
-    <div class="stats-grid">
+    <div class="stats-grid after-start">
       <div class="stat"><div class="num" id="st-total">0</div><div class="label" data-i18n="sTotal">登録単語数</div></div>
       <div class="stat"><div class="num" id="st-mastered">0</div><div class="label" data-i18n="sMastered">習得済み</div></div>
       <div class="stat"><div class="num" id="st-quizbest">-</div><div class="label" data-i18n="sQuiz">クイズ最高スコア</div></div>
       <div class="stat"><div class="num" id="st-today">0</div><div class="label" data-i18n="sToday">今日の学習回数</div></div>
     </div>
-    <div class="card mt">
+    <div class="card mt after-start">
       <h2 data-i18n="mastery">📈 習得度</h2>
       <div style="font-size:.8rem;color:var(--muted)" data-i18n="masteryNoteT">全単語のうち「習得済み（定着3）」の割合</div>
       <div class="progress-bar"><div id="mastery-bar" style="width:0%"></div></div>
       <div id="mastery-pct" style="text-align:right;font-size:.78rem;color:var(--muted);margin-top:4px">0%</div>
       <div id="level-progress" style="margin-top:16px"></div>
     </div>
-    <div class="card">
+    <div class="card after-start">
       <h2 data-i18n="history">📊 学習履歴（過去7日間）</h2>
       <div id="history-chart" style="display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:130px;margin-top:10px"></div>
     </div>
-    <div class="card">
+    <div class="card after-start">
       <h2><span data-i18n="badgesT">🏅 達成バッジ</span> <span id="badge-count" style="font-size:.8rem;color:var(--muted);font-weight:600"></span></h2>
       <div id="badge-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:10px"></div>
     </div>
@@ -476,11 +506,11 @@
         <button class="btn" onclick="document.getElementById('flash-weak').checked=true;switchTab('flash')" data-i18n="weakStart">😥 苦手から復習する</button>
       </div>
     </div>
-    <div class="card">
+    <div class="card after-start">
       <h2 data-i18n="weekly">📅 今週のレポート</h2>
       <div id="weekly-report"></div>
     </div>
-    <div class="card">
+    <div class="card after-start">
       <h2 data-i18n="catStats">🔎 カテゴリ別の弱点分析</h2>
       <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px" data-i18n="weakNote">習得率が低い順に表示しています。苦手なカテゴリから攻めましょう。</div>
       <div id="cat-stats"></div>
@@ -503,24 +533,30 @@
 
   <!-- ============ FLASHCARDS ============ -->
   <section id="tab-flash" class="hidden">
-    <div class="card" style="padding:14px 16px;margin-bottom:14px">
-      <label style="margin-bottom:6px" data-i18n="levelT">📊 レベル</label>
-      <select id="flash-level" onchange="startFlash()">
+    <div class="seg" role="tablist" aria-label="単語帳のモード">
+      <button class="seg-btn on" id="seg-learn" role="tab" aria-selected="true" onclick="setFlashMode('learn')" data-i18n="segLearn">学ぶ</button>
+      <button class="seg-btn" id="seg-find" role="tab" aria-selected="false" onclick="setFlashMode('find')" data-i18n="segFind">さがす</button>
+      <button class="seg-btn" id="seg-add" role="tab" aria-selected="false" onclick="setFlashMode('add')" data-i18n="segAdd">追加する</button>
+    </div>
+    <div class="card fl-learn" style="padding:14px 16px;margin-bottom:14px">
+      <label style="margin-bottom:6px" data-i18n="levelT" for="flash-level">📊 レベル</label>
+        <select id="flash-level" onchange="populateCatSelect();saveFlashOpt();startFlash()">
         <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
         <option value="初級" data-i18n="lvBeg">初級</option>
         <option value="中級" data-i18n="lvInt">中級</option>
         <option value="上級" data-i18n="lvAdv">上級</option>
       </select>
-      <label style="margin:10px 0 6px" data-i18n="catStudy">📂 学習するカテゴリ</label>
-      <select id="flash-cat" onchange="startFlash()"><option value="ALL" data-i18n="allT">すべて</option></select>
-      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)">
+      <label style="margin:10px 0 6px" data-i18n="catStudy" for="flash-cat">📂 学習するカテゴリ</label>
+        <select id="flash-cat" onchange="saveFlashOpt();startFlash()" aria-label="学習するカテゴリ"><option value="ALL" data-i18n="allT">すべて</option></select>
+      <div class="catshort" id="cat-short"></div>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)" for="add-word">
         <input type="checkbox" id="flash-due" onchange="startFlash()" style="width:auto;margin:0"> <span data-i18n="dueOnly">🗓️ 今日復習すべき単語だけ</span>
       </label>
       <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;font-size:.85rem;color:var(--text)">
         <input type="checkbox" id="flash-weak" onchange="startFlash()" style="width:auto;margin:0"> <span data-i18n="weakOnly">😥 苦手だけ復習（定着0〜1）</span>
       </label>
     </div>
-    <div id="flash-study">
+    <div id="flash-study" class="fl-learn">
       <div class="quiz-meta" id="flash-progress"></div>
       <div class="swipe-hint"><span data-i18n="swipeLeft">← まだ</span><span data-i18n="tapFlip">タップでめくる</span><span data-i18n="swipeRight">覚えた →</span></div>
       <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -554,37 +590,37 @@
       </p>
 
     </div>
-    <div id="flash-done" class="card center hidden">
+    <div id="flash-done" class="card center hidden fl-learn">
       <div id="noto-flashdone" style="display:flex;justify-content:center;margin-bottom:8px"></div>
       <h2 data-i18n="flashDone">🎉 今日の復習おわり！</h2>
       <p style="font-size:.85rem;color:var(--muted)" data-i18n="flashDoneD">全カードを確認しました。もう一周する？</p>
       <button class="btn mt" onclick="startFlash()" data-i18n="again">もう一周</button>
     </div>
 
-    <div class="card mt">
+    <div class="card mt fl-add">
       <h2 data-i18n="addWord">➕ 単語を追加</h2>
       <label data-i18n="enWord">英単語</label>
-      <input id="add-word" placeholder="例: appreciate">
-      <label data-i18n="jaMeaning">意味（日本語）</label>
-      <input id="add-meaning" placeholder="例: 感謝する">
-      <label data-i18n="exOpt">例文（任意）</label>
-      <input id="add-example" placeholder="例: I appreciate your help.">
+        <input id="add-word" placeholder="例: appreciate">
+      <label data-i18n="jaMeaning" for="add-meaning">意味（日本語）</label>
+        <input id="add-meaning" placeholder="例: 感謝する">
+      <label data-i18n="exOpt" for="add-example">例文（任意）</label>
+        <input id="add-example" placeholder="例: I appreciate your help.">
       <button class="btn" onclick="addWord()" data-i18n="addBtn">追加する</button>
       <div id="add-msg" style="font-size:.8rem;color:var(--accent);margin-top:8px"></div>
     </div>
 
-    <div class="card">
+    <div class="card fl-find">
       <h2 data-i18n="wordList">📖 単語リスト</h2>
-      <input id="wl-search" placeholder="🔍 英単語・意味で検索" oninput="renderWordList()" style="margin-bottom:8px" data-i18n-ph="phSearch">
+      <input id="wl-search" placeholder="🔍 英単語・意味で検索" oninput="renderWordList()" style="margin-bottom:8px" data-i18n-ph="phSearch" aria-label="単語を検索">
       <div style="display:flex;gap:8px">
-        <select id="wl-sort" onchange="renderWordList()" style="margin-bottom:8px">
+        <select id="wl-sort" onchange="renderWordList()" style="margin-bottom:8px" aria-label="並び順">
           <option value="default" data-i18n="sortDefault">登録順</option>
           <option value="az" data-i18n="sortAZ">A→Z順</option>
           <option value="za" data-i18n="sortZA">Z→A順</option>
           <option value="weak" data-i18n="sortWeak">苦手な順</option>
           <option value="strong" data-i18n="sortStrong">習得した順</option>
         </select>
-        <select id="wl-filter" onchange="renderWordList()" style="margin-bottom:8px">
+        <select id="wl-filter" onchange="renderWordList()" style="margin-bottom:8px" aria-label="レベルで絞り込み">
           <option value="ALL" data-i18n="allT">すべて</option>
           <option value="初級" data-i18n="lvBeg">初級</option>
           <option value="中級" data-i18n="lvInt">中級</option>
@@ -604,44 +640,50 @@
       <p style="font-size:.85rem;color:var(--muted);line-height:1.7">
         <span data-i18n="quizD" data-i18n-html>英→日と日→英が混ざって出ます。<br>難易度や問題数は下で変えられます。</span>
       </p>
-      <div style="max-width:280px;margin:14px auto 0;text-align:left">
-        <label data-i18n="quizDiffT">🎚️ 難易度（選択肢の紛らわしさ）</label>
+      <button class="btn lg" style="width:100%;max-width:320px;margin-top:6px" onclick="quickQuiz()" data-i18n="quickQuiz">⚡ おすすめ設定で5問スタート</button>
+      <div style="font-size:.74rem;color:var(--muted);margin-top:8px" id="quick-quiz-note"></div>
+
+      <details id="quiz-detail" style="max-width:280px;margin:16px auto 0;text-align:left">
+        <summary style="cursor:pointer;font-size:.84rem;font-weight:700;color:var(--primary-dark);padding:8px 0;list-style:none" data-i18n="quizDetail">⚙️ 詳細設定を開く</summary>
+        <label data-i18n="quizDiffT" for="quiz-diff">🎚️ 難易度（選択肢の紛らわしさ）</label>
         <select id="quiz-diff" onchange="saveQuizOpt()">
           <option value="easy" data-i18n="diffEasy">やさしい（選択肢が大きく違う）</option>
           <option value="normal" selected data-i18n="diffNormal">ふつう（ランダム）</option>
           <option value="hard" data-i18n="diffHard">むずかしい（似た語が混ざる）</option>
         </select>
-        <label style="margin-top:10px" data-i18n="quizCountT">🔢 問題数</label>
+        <label style="margin-top:10px" data-i18n="quizCountT" for="quiz-count">🔢 問題数</label>
         <select id="quiz-count" onchange="saveQuizOpt()">
           <option value="5" data-i18n="cnt5">5問（さくっと）</option>
           <option value="10" selected data-i18n="cnt10">10問（標準）</option>
           <option value="20" data-i18n="cnt20">20問</option>
           <option value="30" data-i18n="cnt30">30問（がっつり）</option>
         </select>
-        <label style="margin-top:10px" data-i18n="quizTimerT">⏱️ 制限時間</label>
+        <label style="margin-top:10px" data-i18n="quizTimerT" for="quiz-timer">⏱️ 制限時間</label>
         <select id="quiz-timer" onchange="saveQuizOpt()">
           <option value="0" selected data-i18n="tlOff">なし</option>
           <option value="20" data-i18n="tl20">20秒／問</option>
           <option value="10" data-i18n="tl10">10秒／問</option>
           <option value="5" data-i18n="tl5">5秒／問（上級者向け）</option>
         </select>
-        <label style="margin-top:10px" data-i18n="levelT">📊 レベル</label>
+        <label style="margin-top:10px" data-i18n="levelT" for="quiz-level">📊 レベル</label>
         <select id="quiz-level" onchange="populateQuizCat();saveQuizOpt()">
           <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
           <option value="初級" data-i18n="lvBeg">初級</option>
           <option value="中級" data-i18n="lvInt">中級</option>
           <option value="上級" data-i18n="lvAdv">上級</option>
         </select>
-        <label style="margin-top:10px" data-i18n="catT">📂 カテゴリ</label>
-        <select id="quiz-cat" onchange="saveQuizOpt()"><option value="ALL" data-i18n="allT">すべて</option></select>
-        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)">
+        <label style="margin-top:10px" data-i18n="catT" for="quiz-cat">📂 カテゴリ</label>
+        <select id="quiz-cat" onchange="saveQuizOpt()" aria-label="出題カテゴリ"><option value="ALL" data-i18n="allT">すべて</option></select>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;font-size:.85rem;color:var(--text)" for="listen-level">
           <input type="checkbox" id="quiz-weak" style="width:auto;margin:0" onchange="saveQuizOpt()"> <span data-i18n="weakOnly2">😥 苦手だけ（定着0〜1）</span>
         </label>
         <label style="display:flex;align-items:center;gap:8px;margin-top:6px;cursor:pointer;font-size:.85rem;color:var(--text)">
           <input type="checkbox" id="quiz-due" style="width:auto;margin:0" onchange="saveQuizOpt()"> <span data-i18n="dueOnly2">📅 今日の復習ぶんだけ</span>
         </label>
-      </div>
-      <button class="btn mt" onclick="startQuiz()" data-i18n="startT">スタート</button>
+        <div class="center" style="margin-top:14px">
+          <button class="btn" style="width:100%" onclick="startQuiz()" data-i18n="startT">スタート</button>
+        </div>
+      </details>
       <div id="quiz-warn" style="font-size:.78rem;color:var(--danger);margin-top:8px"></div>
     </div>
     <div id="quiz-play" class="hidden">
@@ -686,15 +728,15 @@
         </select>
       </div>
       <div style="max-width:260px;margin:8px auto 0;text-align:left">
-        <label data-i18n="listenDiffT">🔥 難易度</label>
+        <label data-i18n="listenDiffT" for="listen-diff">🔥 難易度</label>
         <select id="listen-diff">
-          <option value="hard" selected data-i18n="lsHard">むずかしい（上級優先・聞き直し1回）</option>
-          <option value="normal" data-i18n="lsNormal">ふつう（全レベル・聞き直し自由）</option>
+          <option value="normal" selected data-i18n="lsNormal">ふつう（全レベル・聞き直し自由）</option>
+          <option value="hard" data-i18n="lsHard">むずかしい（上級優先・聞き直し1回）</option>
         </select>
       </div>
       <div class="speed-row">
         <span data-i18n="rateLabel">読み上げ速度:</span>
-        <select id="listen-speed" style="width:auto;margin:0">
+        <select id="listen-speed" style="width:auto;margin:0" aria-label="読み上げ速度">
           <option value="0.7" data-i18n="rSlow">ゆっくり</option>
           <option value="0.9" selected data-i18n="rNormal">ふつう</option>
           <option value="1.1" data-i18n="rFast">はやい</option>
@@ -732,7 +774,7 @@
     </div>
     <div class="card">
       <h2 data-i18n="colAllT">📚 すべてのコラム（45記事）</h2>
-      <input type="search" id="col-search" placeholder="キーワードで探す（例：TOEIC、シャドーイング、習慣）" oninput="renderColumnList()" style="margin-bottom:10px" data-i18n-ph="phColSearch">
+      <input type="search" id="col-search" placeholder="キーワードで探す（例：TOEIC、シャドーイング、習慣）" oninput="renderColumnList()" style="margin-bottom:10px" data-i18n-ph="phColSearch" aria-label="コラムを検索">
       <div id="col-chips"></div>
       <div id="col-count" style="font-size:.74rem;color:var(--muted);margin:2px 0 4px;font-weight:600"></div>
       <div id="column-list"></div>
@@ -741,16 +783,16 @@
 
   <section id="tab-phrase" class="hidden">
     <div class="card" style="padding:14px 16px">
-      <label data-i18n="levelT">📊 レベル</label>
-      <select id="ph-level" onchange="renderPhrases()">
+      <label data-i18n="levelT" for="ph-level">📊 レベル</label>
+        <select id="ph-level" onchange="renderPhrases()">
         <option value="ALL" data-i18n="allLevelsT">すべてのレベル</option>
         <option value="初級" data-i18n="lvBeg">初級</option>
         <option value="中級" data-i18n="lvInt">中級</option>
         <option value="上級" data-i18n="lvAdv">上級</option>
       </select>
-      <label style="margin-top:8px" data-i18n="catT">📂 カテゴリ</label>
-      <select id="ph-cat" onchange="renderPhrases()"><option value="ALL" data-i18n="allT">すべて</option></select>
-      <input id="ph-search" placeholder="🔍 英文・日本語で検索" oninput="renderPhrases()" style="margin-top:8px" data-i18n-ph="phSearch">
+      <label style="margin-top:8px" data-i18n="catT" for="ph-cat">📂 カテゴリ</label>
+        <select id="ph-cat" onchange="renderPhrases()"><option value="ALL" data-i18n="allT">すべて</option></select>
+      <input id="ph-search" placeholder="🔍 英文・日本語で検索" oninput="renderPhrases()" style="margin-top:8px" data-i18n-ph="phSearch" aria-label="例文を検索">
       <div id="ph-count" style="font-size:.76rem;color:var(--muted);font-weight:600"></div>
     </div>
     <div id="phrase-list"></div>
@@ -789,13 +831,13 @@
       </div>
       <div class="card plain">
         <h2 data-i18n="display">🎨 表示設定</h2>
-        <label data-i18n="themeT">テーマ</label>
+        <label data-i18n="themeT" for="set-theme">テーマ</label>
         <select id="set-theme" onchange="setTheme(this.value)">
           <option value="light" data-i18n="thLight">☀️ ライト</option>
           <option value="dark" data-i18n="thDark">🌙 ダーク</option>
           <option value="auto" data-i18n="thAuto">📱 端末の設定に合わせる</option>
         </select>
-        <label style="margin-top:10px">言語 / Language</label>
+        <label style="margin-top:10px" for="set-lang">言語 / Language</label>
         <select id="set-lang" onchange="setLang(this.value)">
           <option value="ja" data-i18n="langJa">🇯🇵 日本語</option>
           <option value="en">🇺🇸 English</option>
@@ -803,26 +845,26 @@
       </div>
       <div class="card plain">
         <h2 data-i18n="learnSet">🎯 学習設定</h2>
-        <label data-i18n="goalSetT">1日の目標問題数</label>
+        <label data-i18n="goalSetT" for="set-goal">1日の目標問題数</label>
         <select id="set-goal" onchange="setGoal(this.value)">
           <option value="10" data-i18n="g10">10問（軽め）</option>
           <option value="20" data-i18n="g20">20問（標準）</option>
           <option value="30" data-i18n="g30">30問</option>
           <option value="50" data-i18n="g50">50問（がっつり）</option>
         </select>
-        <label style="margin-top:10px" data-i18n="accentSet">🗣️ 発音（アクセント）</label>
+        <label style="margin-top:10px" data-i18n="accentSet" for="set-accent">🗣️ 発音（アクセント）</label>
         <select id="set-accent" onchange="setAccent(this.value)">
           <option value="us" data-i18n="accentUS">🇺🇸 アメリカ英語</option>
           <option value="uk" data-i18n="accentUK">🇬🇧 イギリス英語</option>
         </select>
         <div id="accent-note" style="font-size:.74rem;color:var(--muted);line-height:1.6;margin:6px 0 0"></div>
-        <label style="margin-top:10px" data-i18n="rateSet">読み上げ速度（既定）</label>
+        <label style="margin-top:10px" data-i18n="rateSet" for="set-rate">読み上げ速度（既定）</label>
         <select id="set-rate" onchange="setRate(this.value)">
           <option value="0.7" data-i18n="rSlow">ゆっくり</option>
           <option value="0.9" data-i18n="rNormal">ふつう</option>
           <option value="1.1" data-i18n="rFast">はやい</option>
         </select>
-        <label style="margin-top:10px" data-i18n="batchSetT">1回に出す単語数（単語帳）</label>
+        <label style="margin-top:10px" data-i18n="batchSetT" for="set-batch">1回に出す単語数（単語帳）</label>
         <select id="set-batch" onchange="setBatch(this.value)">
           <option value="10" data-i18n="b10">10語</option>
           <option value="15" data-i18n="b15">15語</option>
@@ -836,7 +878,7 @@
         このページを開いている間、指定時刻にブラウザ通知でお知らせします。
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <input type="time" id="remind-time" style="width:auto;margin:0" onchange="saveReminder()">
+        <input type="time" id="remind-time" style="width:auto;margin:0" onchange="saveReminder()" aria-label="通知する時刻">
         <button class="btn small" onclick="enableReminder()" data-i18n="remindOn">🔔 通知をON</button>
         <button class="btn small gray" onclick="disableReminder()">OFF</button>
       </div>
@@ -847,8 +889,8 @@
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:8px">
         <span data-i18n="csvD1" data-i18n-html>1行につき「英単語,意味,例文,例文和訳,レベル」の形式で貼り付けてください（例文以降は省略可）。<br>レベル欄に「初級／中級／上級」と書くとその通りに登録されます。省略した場合は下の設定に従います。</span>
       </div>
-      <label data-i18n="csvLvT">📊 レベルの割り当て</label>
-      <select id="csv-level">
+      <label data-i18n="csvLvT" for="csv-level">📊 レベルの割り当て</label>
+        <select id="csv-level">
         <option value="auto" data-i18n="csvAuto">自動で判定する（おすすめ）</option>
         <option value="初級" data-i18n="csvBeg">すべて初級にする</option>
         <option value="中級" data-i18n="csvInt">すべて中級にする</option>
@@ -857,7 +899,7 @@
       <div style="font-size:.76rem;color:var(--muted);line-height:1.6;margin:6px 0 10px">
         <span data-i18n="csvD2">自動判定は、収録済みの2,710語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。</span>
       </div>
-      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本&#10;ubiquitous,どこにでもある,,,上級" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical" data-i18n-ph="phCsv"></textarea>
+      <textarea id="csv-input" rows="4" placeholder="apple,りんご,I ate an apple.,りんごを食べた。&#10;book,本&#10;ubiquitous,どこにでもある,,,上級" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical" data-i18n-ph="phCsv" aria-label="CSVの内容"></textarea>
       <div class="btn-row mt"><button class="btn small" onclick="importCsv()" data-i18n="csvBtn">一括登録する</button></div>
       <div id="csv-msg" style="font-size:.8rem;margin-top:10px"></div>
     </div>
@@ -876,8 +918,8 @@
     <div class="card plain">
       <h2 data-i18n="fbTitle">💬 ご意見・ご要望</h2>
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px" data-i18n="fbDesc">使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。</div>
-      <textarea id="fb-text" rows="4" maxlength="1000" placeholder="例：リスニングの速度をもっと細かく変えたい" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical" data-i18n-ph="phFb"></textarea>
-      <input type="email" id="fb-mail" maxlength="200" placeholder="返信がほしい方はメールアドレス（任意）" style="margin-top:8px" data-i18n-ph="phFbMail">
+      <textarea id="fb-text" rows="4" maxlength="1000" placeholder="例：リスニングの速度をもっと細かく変えたい" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:.88rem;background:#fff;color:var(--text);resize:vertical" data-i18n-ph="phFb" aria-label="ご意見の内容"></textarea>
+      <input type="email" id="fb-mail" maxlength="200" placeholder="返信がほしい方はメールアドレス（任意）" style="margin-top:8px" data-i18n-ph="phFbMail" aria-label="メールアドレス（任意）">
       <div class="btn-row mt"><button class="btn small" onclick="sendFeedback()" data-i18n="fbSend">送信する</button></div>
       <div id="fb-msg" style="font-size:.8rem;margin-top:10px;color:var(--muted)"></div>
     </div>
@@ -907,7 +949,7 @@
     <div class="noto-foot">
       <div class="noto-chips" id="noto-chips"></div>
       <div class="noto-row">
-        <input id="noto-text" data-i18n-ph="notoPh" placeholder="例：ダークモードにして" onkeydown="if(event.key==='Enter'){event.preventDefault();notoSend();}">
+        <input id="noto-text" data-i18n-ph="notoPh" placeholder="例：ダークモードにして" onkeydown="if(event.key==='Enter'){event.preventDefault();notoSend();}" aria-label="ノトくんへの質問">
         <button class="btn small" onclick="notoSend()" data-i18n="notoSend">送る</button>
       </div>
     </div>
@@ -3855,13 +3897,35 @@ function notoPaintFaces() {
   });
   const fab = document.getElementById("noto-fab");
   if (fab) fab.classList.toggle("alert", notoMood === "worry");
+  maybeNotoTip();
 }
 
 // ==================== ノトくんとの会話 ====================
 let notoOpen = false, notoGreeted = false;
+// 何のボタンか分からないままだと押されないので、初回だけ役割を短く添える
+function maybeNotoTip() {
+  if (state.notoTipSeen) return;
+  if (document.getElementById("noto-tip")) return;
+  if (!document.getElementById("noto-fab")) return;
+  const d = document.createElement("div");
+  d.className = "noto-tip";
+  d.id = "noto-tip";
+  d.innerHTML = escapeHtml(t("notoTip")) +
+    '<button onclick="dismissNotoTip()" aria-label="' + escapeHtml(t("close")) + '">✕</button>';
+  document.body.appendChild(d);
+}
+function dismissNotoTip() {
+  state.notoTipSeen = true;
+  persist();
+  const d = document.getElementById("noto-tip");
+  if (d && d.parentNode) d.parentNode.removeChild(d);
+}
 function nt(ja, en) { return (state.lang === "en") ? en : ja; }
 
 function openNoto() {
+  if (!state.notoTipSeen) { state.notoTipSeen = true; persist(); }
+  const tip = document.getElementById("noto-tip");
+  if (tip && tip.parentNode) tip.parentNode.removeChild(tip);
   document.getElementById("noto-modal").classList.remove("hidden");
   document.body.style.overflow = "hidden";
   notoOpen = true;
@@ -4300,17 +4364,25 @@ function switchTab(name) {
   });
   if (name !== "quiz" && typeof clearQuizTimer === "function") clearQuizTimer();
   if (name === "home") renderHome();
-  if (name === "quiz") loadQuizOpt();
+  if (name === "quiz") { loadQuizOpt(); syncQuickQuizNote(); }
 notoMood = notoBaseMood();
 notoPaintFaces();
-  if (name === "flash") { startFlash(); renderWordList(); }
+  if (name === "flash") { setFlashMode(state.flashMode || "learn"); loadFlashOpt(); renderCatShortcuts(); startFlash(); renderWordList(); }
   if (name === "phrase") renderPhrases();
   if (name === "column") renderColumnTab();
   window.scrollTo(0, 0);
 }
 
 // ==================== ホーム ====================
+// 学習履歴の有無で、ホームに出す情報量を変える
+function applyHomeMode() {
+  const fresh = (typeof isNewLearner === "function") && isNewLearner();
+  document.body.classList.toggle("no-history", fresh);
+  const weak = document.querySelector('[data-i18n="weakStart"]');
+  if (weak) weak.classList.toggle("hidden", fresh);
+}
 function renderHome() {
+  applyHomeMode();
   const total = state.words.length;
   const mastered = state.words.filter(w => w.box >= 3).length;
   document.getElementById("st-total").textContent = total;
@@ -4372,7 +4444,7 @@ function renderHome() {
   const learned = state.words.filter(w => w.due).length;
   const hint = document.getElementById("due-hint");
   if (hint) hint.textContent = learned === 0
-    ? t("dueHintNew")
+    ? t("dueHintNew").replace("{n}", state.batch || 15)
     : t("dueHint").replace("{n}", due);
   const weak = state.words.filter(w => w.box <= 1 && w.due).length;
   const nf = document.getElementById("noto-home");
@@ -4635,6 +4707,61 @@ function populateCatSelect() {
     }).join("");
   sel.value = cats.includes(cur) || cur === "ALL" ? cur : "ALL";
 }
+// 学ぶ／さがす／追加する を切り替える
+function setFlashMode(mode) {
+  document.body.setAttribute("data-fl", mode);
+  [["learn", "seg-learn"], ["find", "seg-find"], ["add", "seg-add"]].forEach(([m, id]) => {
+    const b = document.getElementById(id);
+    if (b) { b.classList.toggle("on", m === mode); b.setAttribute("aria-selected", String(m === mode)); }
+  });
+  state.flashMode = mode;
+  persist();
+  if (mode === "find") renderWordList();
+  window.scrollTo(0, 0);
+}
+// よく使うカテゴリをすぐ選べるようにする
+function renderCatShortcuts() {
+  const el = document.getElementById("cat-short");
+  if (!el) return;
+  const picks = ["日常", "旅行", "ビジネス", "TOEIC頻出", "学校・学び", "食べ物・料理"];
+  const have = new Set(state.words.map(w => w.cat));
+  el.innerHTML = picks.filter(c => have.has(c))
+    .map((c, i) => '<button onclick="pickFlashCat(' + i + ')">' + escapeHtml(catLabel(c)) + "</button>").join("");
+  el._picks = picks.filter(c => have.has(c));
+}
+function pickFlashCat(i) {
+  const el = document.getElementById("cat-short");
+  const cat = el && el._picks ? el._picks[i] : null;
+  if (!cat) return;
+  const lv = document.getElementById("flash-level");
+  if (lv) lv.value = "ALL";
+  populateCatSelect();
+  const sel = document.getElementById("flash-cat");
+  if (sel && [...sel.options].some(o => o.value === cat)) sel.value = cat;
+  saveFlashOpt();
+  startFlash();
+}
+function saveFlashOpt() {
+  state.flashOpt = {
+    lv: (document.getElementById("flash-level") || {}).value || "ALL",
+    cat: (document.getElementById("flash-cat") || {}).value || "ALL"
+  };
+  persist();
+}
+// 初回は初級から。2回目以降は前回の選択を復元する
+function loadFlashOpt() {
+  const lvSel = document.getElementById("flash-level"), catSel = document.getElementById("flash-cat");
+  if (!lvSel) return;
+  const o = state.flashOpt;
+  if (o) {
+    lvSel.value = o.lv || "ALL";
+    populateCatSelect();
+    if (catSel && [...catSel.options].some(x => x.value === o.cat)) catSel.value = o.cat;
+    return;
+  }
+  if (isNewLearner()) lvSel.value = "初級";
+  populateCatSelect();
+}
 function startFlash() {
   populateCatSelect();
   const sel = document.getElementById("flash-cat");
@@ -4804,9 +4931,20 @@ function saveQuizOpt() {
   };
   persist();
 }
+// まだ一度も学習していない人には、やさしい設定から始めてもらう
+function isNewLearner() {
+  try { return totalStudied() === 0 && !state.words.some(w => (w.box || 0) > 0); }
+  catch (e) { return false; }
+}
 function loadQuizOpt() {
   const o = state.quizOpt;
-  if (!o) { populateQuizCat(); return; }
+  if (!o) {
+    // 初回は「初級・5問・ふつう」から。既存ユーザーの設定には触れない
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+    if (isNewLearner()) { set("quiz-level", "初級"); set("quiz-count", "5"); }
+    populateQuizCat();
+    return;
+  }
   const set = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined && v !== null) el.value = String(v); };
   set("quiz-diff", o.diff); set("quiz-count", o.count); set("quiz-timer", o.tl); set("quiz-level", o.lv);
   populateQuizCat();
@@ -4830,6 +4968,34 @@ function populateQuizCat() {
   sel.value = (cur === "ALL" || cats.includes(cur)) ? cur : "ALL";
 }
 
+// 迷わず始められる入口。初心者には初級5問、続けている人には今の実力に合う設定で出す
+function quickQuiz() {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = String(v); };
+  const chk = (id, v) => { const el = document.getElementById(id); if (el) el.checked = !!v; };
+  const fresh = isNewLearner();
+  set("quiz-count", 5);
+  set("quiz-timer", 0);
+  set("quiz-diff", "normal");
+  set("quiz-cat", "ALL");
+  chk("quiz-weak", false);
+  chk("quiz-due", false);
+  if (fresh) { set("quiz-level", "初級"); }
+  else {
+    // 苦手が溜まっていればそこから、なければ全レベルから
+    const weak = state.words.filter(w => (w.box || 0) <= 1 && w.due).length;
+    set("quiz-level", "ALL");
+    chk("quiz-weak", weak >= 4);
+  }
+  populateQuizCat();
+  startQuiz();
+}
+function syncQuickQuizNote() {
+  const el = document.getElementById("quick-quiz-note");
+  if (!el) return;
+  const fresh = isNewLearner();
+  const weak = state.words.filter(w => (w.box || 0) <= 1 && w.due).length;
+  el.textContent = fresh ? t("qqNew") : (weak >= 4 ? t("qqWeak").replace("{n}", weak) : t("qqNormal"));
+}
 function startQuiz() {
   saveQuizOpt();
   const lv = qVal("quiz-level", "ALL"), cat = qVal("quiz-cat", "ALL");
@@ -5280,6 +5446,15 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    notoTip: "英語のことも設定も、ここから聞けるよ",
+    segLearn: "学ぶ",
+    segFind: "さがす",
+    segAdd: "追加する",
+    quickQuiz: "⚡ おすすめ設定で5問スタート",
+    quizDetail: "⚙️ 詳細設定を開く",
+    qqNew: "初級の単語から5問。まずは軽く試してみて。",
+    qqWeak: "苦手な {n}語 から5問出します。",
+    qqNormal: "全レベルから5問。時間制限なし。",
     nextRead: "📖 つぎはこれを読んでみる？",
     lpStreak: "連続学習 {n}日達成",
     lpBadge: "はじめてのバッジ獲得",
@@ -5299,9 +5474,9 @@ const I18N = {
     remindBody: "通知をオンにしました。毎日この時刻にお知らせします。",
     csvD1: "1行につき「英単語,意味,例文,例文和訳,レベル」の形式で貼り付けてください（例文以降は省略可）。<br>レベル欄に「初級／中級／上級」と書くとその通りに登録されます。省略した場合は下の設定に従います。",
     csvD2: "自動判定は、収録済みの2,710語に同じ単語があればそのレベルを使い、無ければ語の長さ・音節数・語尾（-tion / -ous など）から推定します。あくまで目安なので、登録後に単語一覧のレベル表示をタップすれば変更できます。",
-    dueHintNew: "まずは15語からスタートしましょう",
+    dueHintNew: "まずは{n}語からスタートしましょう",
     dueHint: "今日の復習対象：{n}語",
-    recNew: "まだ学習履歴がありません。<b>今日の学習をはじめる</b>から15語ずつ進めましょう。",
+    recNew: "まだ学習履歴がありません。<b>今日の学習をはじめる</b>から少しずつ進めましょう。",
     recDue: "忘却曲線にもとづく<b>今日の復習は {n}語</b>です。{w}まず復習を終えてからクイズに挑戦しましょう！",
     recWeak: "うち苦手が <b>{n}語</b>。",
     weekUp: "先週より増加中",
@@ -5555,6 +5730,15 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    notoTip: "Ask me about English or your settings",
+    segLearn: "Learn",
+    segFind: "Browse",
+    segAdd: "Add",
+    quickQuiz: "⚡ Quick start — 5 questions",
+    quizDetail: "⚙️ More options",
+    qqNew: "5 beginner words. Just to get a feel for it.",
+    qqWeak: "5 questions from the {n} words you keep missing.",
+    qqNormal: "5 questions, all levels, no time limit.",
     nextRead: "📖 Read this next",
     lpStreak: "{n}-day streak",
     lpBadge: "Your first badge",
@@ -5574,9 +5758,9 @@ const I18N = {
     remindBody: "Reminders are on. You'll hear from us at this time each day.",
     csvD1: "Paste one word per line as: word, meaning, example, example translation, level (everything after the meaning is optional).<br>Write 初級 / 中級 / 上級 in the level column to set it directly. Leave it out and the setting below applies.",
     csvD2: "Automatic detection reuses the level if the word is already among the 2,710 built-in words; otherwise it estimates from length, syllable count and endings such as -tion or -ous. It is only a rough guess, so tap the level chip in the word list to change it.",
-    dueHintNew: "Start with your first 15 words",
+    dueHintNew: "Start with your first {n} words",
     dueHint: "Due for review today: {n} words",
-    recNew: "No study history yet. Tap <b>Start today's session</b> and work through 15 words at a time.",
+    recNew: "No study history yet. Tap <b>Start today's session</b> and work through a few words at a time.",
     recDue: "Based on the forgetting curve, <b>{n} words are due today</b>. {w}Finish your review first, then try a quiz.",
     recWeak: "<b>{n}</b> of them are weak spots. ",
     weekUp: "Up from last week",
@@ -6254,7 +6438,7 @@ function snapshot() {
       theme: state.theme || "light", lang: state.lang || "ja",
       dailyGoal: state.dailyGoal || 20, rate: state.rate || 0.9, batch: state.batch || 15,
       remindOn: !!state.remindOn, remindTime: state.remindTime || "20:00",
-      quizOpt: state.quizOpt || null, accent: state.accent || "us"
+      quizOpt: state.quizOpt || null, flashOpt: state.flashOpt || null, accent: state.accent || "us"
     },
     stats: {
       streak: state.streak || 0, bestStreak: state.bestStreak || 0,
@@ -6326,6 +6510,7 @@ function mergeFromCloud(c, applySettings) {
     if (st.batch) state.batch = st.batch;
     if (st.remindTime) state.remindTime = st.remindTime;
     if (st.quizOpt) state.quizOpt = st.quizOpt;
+    if (st.flashOpt) state.flashOpt = st.flashOpt;
     if (st.accent) state.accent = st.accent;
   }
   persist();
