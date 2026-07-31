@@ -375,11 +375,11 @@
     <div class="card">
       <h2 data-i18n="modesTitle">🎯 学習モードを選ぶ</h2>
       <div class="modes">
-        <button class="mode-chip" onclick="switchTab('flash')"><span class="mi">🗂️</span><span><span class="mt">単語帳</span><span class="md">めくって覚える</span></span></button>
-        <button class="mode-chip" onclick="switchTab('quiz')"><span class="mi">📝</span><span><span class="mt">4択クイズ</span><span class="md">意味を確認</span></span></button>
-        <button class="mode-chip" onclick="switchTab('listen')"><span class="mi">🎧</span><span><span class="mt">リスニング</span><span class="md">耳で鍛える</span></span></button>
-        <button class="mode-chip" onclick="switchTab('column')"><span class="mi">📖</span><span><span class="mt">今日のコラム</span><span class="md">読んで学ぶ</span></span></button>
-        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt">例文集</span><span class="md">1,694の例文</span></span></button>
+        <button class="mode-chip" onclick="switchTab('flash')"><span class="mi">🗂️</span><span><span class="mt" data-i18n="mFlash">単語帳</span><span class="md" data-i18n="mFlashD">めくって覚える</span></span></button>
+        <button class="mode-chip" onclick="switchTab('quiz')"><span class="mi">📝</span><span><span class="mt" data-i18n="mQuiz">4択クイズ</span><span class="md" data-i18n="mQuizD">意味を確認</span></span></button>
+        <button class="mode-chip" onclick="switchTab('listen')"><span class="mi">🎧</span><span><span class="mt" data-i18n="mListen">リスニング</span><span class="md" data-i18n="mListenD">耳で鍛える</span></span></button>
+        <button class="mode-chip" onclick="switchTab('column')"><span class="mi">📖</span><span><span class="mt" data-i18n="mColumn">今日のコラム</span><span class="md" data-i18n="mColumnD">読んで学ぶ</span></span></button>
+        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt" data-i18n="mPhrase">例文集</span><span class="md" data-i18n="mPhraseD">1,694の例文</span></span></button>
       </div>
     </div>
     <div class="card" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
@@ -2890,7 +2890,7 @@ function renderHome() {
       `<div style="font-size:1.7rem;font-weight:800">${escapeHtml(w.w)}</div>
        <div style="font-size:1rem;color:var(--primary-dark);font-weight:700;margin:4px 0 8px">${escapeHtml(w.m)}</div>
        ${w.ex ? `<div style="font-size:.85rem;color:var(--muted);line-height:1.6">${highlightWord(w.ex, w.w)}<br>${escapeHtml(w.exJa || "")}</div>` : ""}
-       <button class="btn small outline mt" onclick="speak('${w.w.replace(/'/g, "\\'")}')">🔊 発音を聞く</button>`;
+       <button class="btn small outline mt" onclick="speak('${w.w.replace(/'/g, "\\'")}')">${t("speakBtnT")}</button>`;
   }
 
   renderHistoryChart();
@@ -2903,13 +2903,13 @@ function renderHome() {
   const learned = state.words.filter(w => w.due).length;
   const hint = document.getElementById("due-hint");
   if (hint) hint.textContent = learned === 0
-    ? "まずは15語からスタートしましょう"
-    : `今日の復習対象：${due}語`;
+    ? t("dueHintNew")
+    : t("dueHint").replace("{n}", due);
   const weak = state.words.filter(w => w.box <= 1 && w.due).length;
   document.getElementById("recommend").innerHTML = learned === 0
-    ? `まだ学習履歴がありません。<b>今日の学習をはじめる</b>から15語ずつ進めましょう。`
+    ? t("recNew")
     : due > 0
-      ? `忘却曲線にもとづく<b>今日の復習は ${due}語</b>です。${weak > 0 ? `うち苦手が <b>${weak}語</b>。` : ""}まず復習を終えてからクイズに挑戦しましょう！`
+      ? t("recDue").replace("{n}", due).replace("{w}", weak > 0 ? t("recWeak").replace("{n}", weak) : "")
       : `🎉 今日の復習はすべて完了しました！クイズやリスニングで力を試しましょう。`;
 }
 
@@ -2928,25 +2928,25 @@ function renderWeeklyReport() {
     lastWeek += state.history[dayKey(d)] || 0;
   }
   const diff = thisWeek - lastWeek;
-  const diffTxt = lastWeek === 0 ? (thisWeek > 0 ? "先週より増加中" : "まだ記録がありません")
-    : (diff > 0 ? `先週より <b style="color:var(--accent)">+${diff}問</b>` :
-       diff < 0 ? `先週より <b style="color:var(--danger)">${diff}問</b>` : "先週と同じペース");
+  const diffTxt = lastWeek === 0 ? t(thisWeek > 0 ? "weekUp" : "weekNone")
+    : (diff > 0 ? t("weekPlus").replace("{n}", diff) :
+       diff < 0 ? t("weekMinus").replace("{n}", diff) : t("weekSame"));
   const mastered = state.words.filter(w => w.box >= 3).length;
   const comment = activeDays >= 6 ? t("weekGreat")
-    : activeDays >= 4 ? "\u{1F44D} いいペースです。この調子！"
-    : activeDays >= 1 ? "\u{1F331} まずは週4日を目指しましょう。"
-    : "\u{1F4AA} 今日から始めてみましょう！";
+    : activeDays >= 4 ? t("weekGood")
+    : activeDays >= 1 ? t("weekStart4")
+    : t("weekBegin");
   el.innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
       <div style="text-align:center;padding:12px 6px;background:var(--bg2);border-radius:12px">
         <div style="font-size:1.4rem;font-weight:800;color:var(--primary)">${thisWeek}</div>
-        <div style="font-size:.68rem;color:var(--muted);font-weight:600">今週の問題数</div></div>
+        <div style="font-size:.68rem;color:var(--muted);font-weight:600">${t("weekQs")}</div></div>
       <div style="text-align:center;padding:12px 6px;background:var(--bg2);border-radius:12px">
         <div style="font-size:1.4rem;font-weight:800;color:var(--primary)">${activeDays}</div>
-        <div style="font-size:.68rem;color:var(--muted);font-weight:600">学習した日数</div></div>
+        <div style="font-size:.68rem;color:var(--muted);font-weight:600">${t("weekDays")}</div></div>
       <div style="text-align:center;padding:12px 6px;background:var(--bg2);border-radius:12px">
         <div style="font-size:1.4rem;font-weight:800;color:var(--accent)">${mastered}</div>
-        <div style="font-size:.68rem;color:var(--muted);font-weight:600">習得済み語</div></div>
+        <div style="font-size:.68rem;color:var(--muted);font-weight:600">${t("weekMastered")}</div></div>
     </div>
     <div style="font-size:.85rem;line-height:1.8">${diffTxt}<br>${comment}</div>`;
 }
@@ -2981,7 +2981,7 @@ function renderCatStats() {
       </div>
     </div>`).join("");
   const btn = document.getElementById("cat-more-btn");
-  if (btn) btn.textContent = catStatsAll ? "上位のみ表示" : `すべて表示（${rows.length}カテゴリ）`;
+  if (btn) btn.textContent = catStatsAll ? t("showTop") : t("showAllCats").replace("{n}", rows.length);
 }
 
 // ==================== リマインダー ====================
@@ -3771,6 +3771,24 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    dueHintNew: "まずは15語からスタートしましょう",
+    dueHint: "今日の復習対象：{n}語",
+    recNew: "まだ学習履歴がありません。<b>今日の学習をはじめる</b>から15語ずつ進めましょう。",
+    recDue: "忘却曲線にもとづく<b>今日の復習は {n}語</b>です。{w}まず復習を終えてからクイズに挑戦しましょう！",
+    recWeak: "うち苦手が <b>{n}語</b>。",
+    weekUp: "先週より増加中",
+    weekNone: "まだ記録がありません",
+    weekPlus: "先週より <b style=\"color:var(--accent)\">+{n}問</b>",
+    weekMinus: "先週より <b style=\"color:var(--danger)\">{n}問</b>",
+    weekSame: "先週と同じペース",
+    weekGood: "\\u{1F44D} いいペースです。この調子！",
+    weekStart4: "\\u{1F331} まずは週4日を目指しましょう。",
+    weekBegin: "\\u{1F4AA} 今日から始めてみましょう！",
+    weekQs: "今週の問題数",
+    weekDays: "学習した日数",
+    weekMastered: "習得済み語",
+    showTop: "上位のみ表示",
+    showAllCats: "すべて表示（{n}カテゴリ）",
     bN_first: "はじめの一歩",
     bD_first: "初めて学習した",
     bN_study50: "50問クリア",
@@ -4009,6 +4027,24 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    dueHintNew: "Start with your first 15 words",
+    dueHint: "Due for review today: {n} words",
+    recNew: "No study history yet. Tap <b>Start today's session</b> and work through 15 words at a time.",
+    recDue: "Based on the forgetting curve, <b>{n} words are due today</b>. {w}Finish your review first, then try a quiz.",
+    recWeak: "<b>{n}</b> of them are weak spots. ",
+    weekUp: "Up from last week",
+    weekNone: "No record yet",
+    weekPlus: "<b style=\"color:var(--accent)\">+{n}</b> more than last week",
+    weekMinus: "<b style=\"color:var(--danger)\">{n}</b> compared with last week",
+    weekSame: "Same pace as last week",
+    weekGood: "\\u{1F44D} Nice pace. Keep it up!",
+    weekStart4: "\\u{1F331} Aim for four days a week to begin with.",
+    weekBegin: "\\u{1F4AA} Why not start today?",
+    weekQs: "Questions this week",
+    weekDays: "Days studied",
+    weekMastered: "Words mastered",
+    showTop: "Show top only",
+    showAllCats: "Show all ({n} categories)",
     bN_first: "Getting started",
     bD_first: "Studied for the first time",
     bN_study50: "50 questions",
@@ -4502,7 +4538,7 @@ function renderPhrases(more) {
     const cur = catSel.value || "ALL";
     const pool = state.words.filter(w => w.ex && (lv === "ALL" || (w.level || "中級") === lv));
     const cats = [...new Set(pool.map(w => w.cat || "その他"))];
-    catSel.innerHTML = '<option value="ALL">すべて</option>' +
+    catSel.innerHTML = '<option value="ALL">' + escapeHtml(t("allT")) + '</option>' +
       cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
     catSel.value = (cur === "ALL" || cats.includes(cur)) ? cur : "ALL";
   }
