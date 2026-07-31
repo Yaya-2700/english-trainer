@@ -428,8 +428,7 @@
 <body>
 
 <header>
-  <button class="theme-toggle" style="right:62px" onclick="openSettings()" title="設定">⚙️</button>
-  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="ダークモード切替">🌙</button>
+  <button class="theme-toggle" onclick="openSettings()" title="設定" aria-label="設定を開く">⚙️</button>
   <h1 onclick="switchTab('home')" style="cursor:pointer" title="ホームに戻る"><span id="noto-header"></span>EigoNote</h1>
   <p data-i18n="tagline">毎日コツコツ、英語力アップ</p>
 </header>
@@ -3974,8 +3973,8 @@ function notoRenderChips() {
   const el = document.getElementById("noto-chips");
   if (!el) return;
   const chips = state.lang === "en"
-    ? ["What can you do?", "How am I doing?", "Dark mode", "Recording doesn't work", "Move to a new phone"]
-    : ["何ができるの？", "今日の進捗は？", "ダークモードにして", "録音ができない", "機種変したい"];
+    ? ["What can you do?", "How am I doing?", "What am I weak at?", "Recommend an article", "Dark mode", "Move to a new phone"]
+    : ["何ができるの？", "今日の進捗は？", "苦手なカテゴリは？", "おすすめの記事は？", "ダークモードにして", "機種変したい"];
   el.innerHTML = chips.map(c => '<button class="noto-chip" onclick="notoAsk(' + JSON.stringify(c).replace(/"/g, "&quot;") + ')">' + escapeHtml(c) + "</button>").join("");
 }
 function notoAsk(text) {
@@ -3997,11 +3996,75 @@ function notoSend() {
   }, 260);
 }
 
+// ---------- 入力のゆらぎを吸収する ----------
+// 全角英数を半角に、余計な助詞や記号を落として比べやすくする
+function notoNorm(str) {
+  return String(str || "")
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0))
+    .replace(/[　\s]+/g, " ")
+    .trim();
+}
+function notoStrip(str) {
+  return notoNorm(str)
+    .replace(/[?？。、！!．]/g, "")
+    .replace(/^(ねえ|ねぇ|あの|えっと|ちょっと)\s*/g, "")
+    .replace(/(って|とは|ってどういう意味|の意味|の意味は|ってなに|って何|ってどんな意味)$/g, "")
+    .trim();
+}
+// 1文字違いまで許して単語を探す（打ち間違い対策）
+function notoEditNear(key, list) {
+  const within1 = (a, b) => {
+    if (Math.abs(a.length - b.length) > 1) return false;
+    let i = 0, j = 0, diff = 0;
+    while (i < a.length && j < b.length) {
+      if (a[i] === b[j]) { i++; j++; continue; }
+      if (++diff > 1) return false;
+      if (a.length > b.length) i++;
+      else if (a.length < b.length) j++;
+      else { i++; j++; }
+    }
+    return diff + (a.length - i) + (b.length - j) <= 1;
+  };
+  return list.find(w => within1(key, w.w.toLowerCase()));
+}
+// 直前に話題にした単語を覚えておく
+let notoLastWord = null;
+
+// ---------- 単語カードを組み立てる ----------
+function notoWordCard(hit) {
+  const safe = escapeHtml(hit.w.replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
+  const opp = (hit.m.match(/⇔\s*([A-Za-z][A-Za-z' -]*)/) || [])[1];
+  const oppHit = opp ? state.words.find(x => x.w.toLowerCase() === opp.toLowerCase().trim()) : null;
+  notoLastWord = hit;
+  return {
+    mood: "happy",
+    html:
+      '<div style="font-size:1.05rem;font-weight:800">' + escapeHtml(hit.w) + "</div>" +
+      '<div style="font-weight:700;color:var(--primary-dark)">' + escapeHtml(hit.m) + "</div>" +
+      '<div style="font-size:.72rem;color:var(--muted);margin-top:4px">' +
+        escapeHtml(lvLabel(hit.level)) + " ・ " + escapeHtml(catLabel(hit.cat)) + " ・ " + escapeHtml(masteryLabel(hit.box)) + "</div>" +
+      (hit.ex ? '<div style="margin-top:8px;line-height:1.75">' + highlightWord(hit.ex, hit.w) + "<br>" + escapeHtml(hit.exJa || "") + "</div>" : ""),
+    actions: notoBtn("🔊 " + nt("発音", "Listen"), "speak('" + safe + "')") +
+      (oppHit ? notoBtn(nt("反対語 ", "Opposite: ") + oppHit.w, "notoAsk(" + JSON.stringify(oppHit.w).replace(/"/g, "&quot;") + ")") : "") +
+      notoBtn(nt("この語でクイズ", "Quiz this level"), "notoQuizLevel(" + JSON.stringify(hit.level).replace(/"/g, "&quot;") + ")")
+  };
+}
+function notoQuizLevel(lv) {
+  closeNoto();
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = String(v); };
+  switchTab("quiz");
+  set("quiz-level", lv); set("quiz-count", 10); set("quiz-timer", 0); set("quiz-diff", "normal"); set("quiz-cat", "ALL");
+  const w = document.getElementById("quiz-weak"); if (w) w.checked = false;
+  const d = document.getElementById("quiz-due"); if (d) d.checked = false;
+  populateQuizCat();
+  startQuiz();
+}
+
 // ---------- 受け答えの本体 ----------
 // 具体的な指示から先に判定し、最後に単語検索へ落とす
 function notoAnswer(raw) {
-  const q = raw.trim();
-  const t0 = q.toLowerCase().replace(/[　]/g, " ");
+  const q = notoStrip(raw);
+  const t0 = notoNorm(raw).toLowerCase();
   const has = (...ws) => ws.some(w => t0.includes(w));
 
   // 1) あいさつ・できること
@@ -4010,8 +4073,8 @@ function notoAnswer(raw) {
   }
   if (has("何ができ", "なにができ", "使い方", "ヘルプ", "what can you", "help", "how do i use")) {
     return { mood: "normal", html: nt(
-      "こんなことができるよ。<br>・<b>設定を変える</b>「ダークモードにして」「目標を30問に」<br>・<b>単語を調べる</b>「invoice ってどういう意味？」<br>・<b>画面を移動</b>「クイズやりたい」<br>・<b>進捗を見る</b>「今日どれくらい？」<br>・<b>困ったとき</b>「録音ができない」<br>・<b>要望を届ける</b>「こんな機能がほしい」",
-      "Here is what I can do.<br>・<b>Change settings</b> — \"dark mode\", \"make my goal 30\"<br>・<b>Look up words</b> — \"what does invoice mean?\"<br>・<b>Jump around</b> — \"open the quiz\"<br>・<b>Check progress</b> — \"how am I doing?\"<br>・<b>Fix problems</b> — \"recording does not work\"<br>・<b>Pass on ideas</b> — \"I would love a feature that…\"") };
+      "こんなことができるよ。<br>・<b>単語を調べる</b>「invoice ってどういう意味？」<br>・<b>苦手を教える</b>「苦手なカテゴリは？」<br>・<b>設定を変える</b>「ダークモードにして」「目標を30問に」<br>・<b>進捗を見る</b>「今日どれくらい？」<br>・<b>記事をすすめる</b>「おすすめの記事は？」<br>・<b>困ったとき</b>「録音ができない」<br>・<b>要望を届ける</b>「こんな機能がほしい」<br>単語を出したあとは「例文は？」「発音して」とだけ言えば続きが出るよ。",
+      "Here is what I can do.<br>・<b>Look up words</b> — \"what does invoice mean?\"<br>・<b>Spot your gaps</b> — \"what am I weak at?\"<br>・<b>Change settings</b> — \"dark mode\", \"make my goal 30\"<br>・<b>Check progress</b> — \"how am I doing?\"<br>・<b>Suggest reading</b> — \"recommend an article\"<br>・<b>Fix problems</b> — \"recording does not work\"<br>・<b>Pass on ideas</b> — \"I would love a feature that…\"<br>After I show a word, just say \"example\" or \"say it\" to keep going.") };
   }
 
   // 2) 設定の変更
@@ -4109,6 +4172,86 @@ function notoAnswer(raw) {
       actions: notoBtn(nt("書いてみる","Write it"), "notoToFeedback()") };
   }
 
+// 直前に出した単語への追加の質問
+  if (notoLastWord && has("例文", "もう一つ", "もういちど", "発音", "読んで", "another", "say it")) {
+    const w = notoLastWord;
+    if (has("発音", "読んで", "say it")) {
+      const safe = escapeHtml(w.w.replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
+      return { mood: "happy", html: nt("「" + escapeHtml(w.w) + "」だね。", "Here's " + escapeHtml(w.w) + "."),
+        actions: notoBtn("🔊 " + nt("もう一度きく", "Play again"), "speak('" + safe + "')") };
+    }
+    if (w.ex) return { mood: "happy", html: highlightWord(w.ex, w.w) + "<br>" + escapeHtml(w.exJa || "") };
+  }
+
+  // 苦手なカテゴリ
+  if (has("苦手", "弱点", "weak", "struggl")) {
+    const map = {};
+    state.words.forEach(x => {
+      const c = x.cat || "その他";
+      if (!map[c]) map[c] = { t: 0, d: 0 };
+      map[c].t++; if (x.box >= 3) map[c].d++;
+    });
+    const rows = Object.keys(map).filter(c => map[c].t >= 8)
+      .map(c => ({ c, p: Math.round(map[c].d / map[c].t * 100), t: map[c].t }))
+      .sort((a, b) => a.p - b.p).slice(0, 3);
+    if (!totalStudied()) return { mood: "normal", html: nt("まだ学習の記録がないから、苦手も分からないんだ。まずは何問か解いてみて。","No study history yet, so I can't tell. Try a few questions first.") };
+    return { mood: "thinking", html: nt("いま手薄なのはこのあたり。","These look thinnest right now:") + "<br>" +
+      rows.map(r => "・<b>" + escapeHtml(catLabel(r.c)) + "</b> " + r.p + "%（" + r.t + nt("語", " words") + "）").join("<br>"),
+      actions: notoBtn(nt("苦手から復習", "Review weak words"), "closeNoto();document.getElementById('flash-weak').checked=true;switchTab('flash')") };
+  }
+
+  // おすすめの記事
+  if (has("記事", "コラム", "読み物", "article", "read something", "おすすめ")) {
+    const c = pickColumn(null);
+    if (c) return { mood: "happy", html: nt("これなんてどう？","How about this one?") + "<br><b>" + escapeHtml(c.t) + "</b><br>" +
+      '<span style="font-size:.8rem;color:var(--muted)">' + escapeHtml(c.d) + "</span>",
+      actions: notoBtn(nt("読む", "Read it"), "location.href='" + c.s + ".html'") +
+               notoBtn(nt("一覧を見る", "See all"), "closeNoto();switchTab('column')") };
+  }
+
+  // カテゴリの単語をのぞく
+  const catHit = state.words.length ? [...new Set(state.words.map(x => x.cat))].find(c => c && t0.indexOf(c.toLowerCase()) > -1) : null;
+  if (catHit && has("単語", "語", "words", "見せ", "教え")) {
+    const list = shuffle(state.words.filter(x => x.cat === catHit)).slice(0, 5);
+    return { mood: "normal", html: nt("「" + escapeHtml(catLabel(catHit)) + "」からいくつか。","A few from " + escapeHtml(catLabel(catHit)) + ":") + "<br>" +
+      list.map(x => "・<b>" + escapeHtml(x.w) + "</b> " + escapeHtml(x.m)).join("<br>"),
+      actions: list.slice(0, 3).map(x => notoBtn(x.w, "notoAsk(" + JSON.stringify(x.w).replace(/"/g, "&quot;") + ")")).join("") };
+  }
+
+  // 単語の総数
+  if (has("何語", "いくつ", "単語数", "how many words")) {
+    const lv = {};
+    state.words.forEach(x => { lv[x.level] = (lv[x.level] || 0) + 1; });
+    return { mood: "happy", html: nt("いま <b>" + state.words.length + "語</b> 入ってるよ。","There are <b>" + state.words.length + " words</b> right now.") + "<br>" +
+      Object.keys(lv).map(k => escapeHtml(lvLabel(k)) + " " + lv[k]).join(" ・ ") };
+  }
+
+  // 今日の1語
+  if (has("今日の1語", "今日の一語", "word of the day", "word of day")) {
+    const seed = new Date().toDateString().split("").reduce((a, ch) => a + ch.charCodeAt(0), 0);
+    return notoWordCard(state.words[seed % state.words.length]);
+  }
+
+  // バックアップ・ログイン
+  if (has("バックアップ", "書き出", "export", "保存して")) {
+    return { mood: "normal", html: nt("学習データをファイルに書き出せるよ。","I can export your progress to a file."),
+      actions: notoBtn(nt("書き出す", "Export"), "exportData()") };
+  }
+  if (has("ログイン", "sign in", "log in", "アカウント")) {
+    if (window.eigoSignedIn) return { mood: "happy", html: nt("もうログイン済みだよ。記録は自動でクラウドに入ってる。","You're already signed in — everything syncs automatically.") };
+    return { mood: "normal", html: nt("Googleでログインすると、記録が自動でクラウドに保存されるよ。","Sign in with Google and your progress backs up automatically."),
+      actions: notoBtn(nt("ログインする", "Sign in"), "closeNoto();openSettings();if(window.eigoSignIn)eigoSignIn()") };
+  }
+
+  // バッジ
+  if (has("バッジ", "badge", "実績")) {
+    const got = (state.badges || []).length;
+    return { mood: got ? "happy" : "normal", html: nt(
+      "いま <b>" + got + "個</b> / 全" + BADGES.length + "個 だよ。" + (got ? "" : "まずは1問解けば最初のバッジが取れる。"),
+      "You have <b>" + got + "</b> of " + BADGES.length + " badges." + (got ? "" : " Answer one question and the first is yours.")),
+      actions: notoBtn(nt("ホームで見る", "See them"), "closeNoto();switchTab('home')") };
+  }
+
   // 6) 単語をしらべる
   const w = notoLookup(q);
   if (w) return w;
@@ -4143,15 +4286,9 @@ function notoLookup(q) {
         actions: byMeaning.map(x => notoBtn(x.w, "notoAsk(" + JSON.stringify(x.w).replace(/"/g, "&quot;") + ")")).join("") };
     }
   }
+  if (!hit && key.length >= 4) hit = notoEditNear(key, state.words);
   if (!hit) return null;
-  const safe = escapeHtml(hit.w.replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
-  const box = masteryLabel(hit.box);
-  return { mood: "happy", html:
-    '<div style="font-size:1.05rem;font-weight:800">' + escapeHtml(hit.w) + "</div>" +
-    '<div style="font-weight:700;color:var(--primary-dark)">' + escapeHtml(hit.m) + "</div>" +
-    '<div style="font-size:.72rem;color:var(--muted);margin-top:4px">' + escapeHtml(lvLabel(hit.level)) + " ・ " + escapeHtml(catLabel(hit.cat)) + " ・ " + escapeHtml(box) + "</div>" +
-    (hit.ex ? '<div style="margin-top:8px;line-height:1.75">' + highlightWord(hit.ex, hit.w) + "<br>" + escapeHtml(hit.exJa || "") + "</div>" : ""),
-    actions: notoBtn("🔊 " + nt("発音", "Listen"), "speak('" + safe + "')") };
+  return notoWordCard(hit);
 }
 
 function notoToFeedback() {
