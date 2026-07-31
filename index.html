@@ -178,6 +178,17 @@
   }
   .lvl-chip:active { transform: scale(.94); }
 
+  /* 答え合わせのフィードバック */
+  @keyframes qShake { 0%,100%{transform:translateX(0)} 18%{transform:translateX(-6px)} 38%{transform:translateX(6px)} 58%{transform:translateX(-4px)} 78%{transform:translateX(3px)} }
+  @keyframes qPulse { from { box-shadow: 0 0 0 0 rgba(18,185,129,.5) } to { box-shadow: 0 0 0 13px rgba(18,185,129,0) } }
+  @keyframes qRise  { from { opacity: 0; transform: translateY(7px) } to { opacity: 1; transform: none } }
+  .q-shake { animation: qShake .4s ease }
+  .choice.correct { animation: qPulse .65s ease-out }
+  .explain { animation: qRise .24s ease-out }
+  @media (prefers-reduced-motion: reduce) {
+    .q-shake, .choice.correct, .explain { animation: none }
+  }
+
   /* クイズの解説パネル */
   .explain { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 13px 15px; margin: 2px 0 12px; text-align: left; }
   .explain .ew { font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; }
@@ -654,6 +665,7 @@
       <div id="quiz-comment" style="font-size:.9rem;color:var(--muted)"></div>
       <div id="quiz-review" style="text-align:left;margin-top:16px"></div>
       <button class="btn mt" onclick="startQuiz()" data-i18n="retryT">もう一回</button>
+      <div id="quiz-result-column"></div>
     </div>
   </section>
 
@@ -706,6 +718,7 @@
       <h2 data-i18n="resultT">結果発表</h2>
       <div class="result-big" id="listen-score"></div>
       <button class="btn mt" onclick="startListen()" data-i18n="retryT">もう一回</button>
+      <div id="listen-result-column"></div>
     </div>
   </section>
 
@@ -4086,6 +4099,55 @@ function notoToFeedback() {
   }, 200);
 }
 
+// ==================== 結果画面のおすすめコラム ====================
+// 単語のカテゴリ → コラムのカテゴリ の対応表。載っていないものは学習法へ寄せる。
+const COL_HINT = {
+  "TOEIC頻出": "TOEIC", "ビジネス": "英会話", "ビジネス上級": "英会話", "職場コミュニケーション": "英会話",
+  "電話・接客": "英会話", "レストラン": "英会話", "買い物・お金": "英会話", "旅行": "英会話", "旅・地理": "英会話",
+  "日常": "英会話", "コミュニケーション": "英会話", "イディオム": "英会話", "上級イディオム": "英会話",
+  "フォーマル表現": "英会話", "契約・手続き": "英会話",
+  "句動詞": "文法", "上級句動詞": "文法", "つなぎ言葉": "文法", "反対語ペア": "文法",
+  "動詞（基本）": "文法", "性質・状態": "文法",
+  "アカデミック": "学習法", "学問分野": "学習法", "抽象概念": "学習法", "描写・文学": "学習法",
+  "上級語彙": "学習法", "上級動詞": "学習法", "上級形容詞": "学習法", "上級名詞": "学習法",
+  "感覚・様子": "発音", "動作・身体": "発音",
+  "資格試験": "資格試験"
+};
+
+// 苦手だったカテゴリに近いコラムを1本選ぶ。同じものが続かないよう日替わりでずらす。
+function pickColumn(hintCat) {
+  if (!Array.isArray(COLUMNS) || !COLUMNS.length) return null;
+  const want = (hintCat && COL_HINT[hintCat]) || hintCat || null;
+  let pool = want ? COLUMNS.filter(c => c.c === want) : [];
+  if (!pool.length) pool = COLUMNS.filter(c => c.c === "学習法" || c.c === "学習習慣");
+  if (!pool.length) pool = COLUMNS;
+  const seed = new Date().toDateString().split("").reduce((a, ch) => a + ch.charCodeAt(0), 0);
+  return pool[(seed + (state.todayCount || 0)) % pool.length];
+}
+
+// 間違えた単語から、いちばん多かったカテゴリを取る
+function weakestCat(words) {
+  if (!words || !words.length) return null;
+  const n = {};
+  words.forEach(w => { const c = w.cat || "その他"; n[c] = (n[c] || 0) + 1; });
+  return Object.keys(n).sort((a, b) => n[b] - n[a])[0];
+}
+
+function renderResultColumn(elId, hintCat) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const c = pickColumn(hintCat);
+  if (!c) { el.innerHTML = ""; return; }
+  el.innerHTML =
+    '<div style="font-size:.72rem;color:var(--muted);font-weight:700;margin:18px 0 8px;text-align:left">' + t("nextRead") + "</div>" +
+    '<a href="' + c.s + '.html" style="display:block;text-align:left;text-decoration:none;color:inherit;' +
+    'border:1px solid var(--border);border-radius:14px;padding:14px 16px;background:var(--bg2)">' +
+    '<div style="font-size:.66rem;color:var(--primary);font-weight:700">' + escapeHtml(colCatLabel(c.c)) + "</div>" +
+    '<div style="font-size:.9rem;font-weight:700;line-height:1.5;margin-top:3px">' + escapeHtml(c.t) + "</div>" +
+    '<div style="font-size:.75rem;color:var(--muted);line-height:1.6;margin-top:4px">' + escapeHtml(c.d) + "</div>" +
+    '<div style="font-size:.78rem;font-weight:700;color:var(--primary);margin-top:8px">' + t("readArticle") + "</div></a>";
+}
+
 // ==================== 画面下部のお知らせ（トースト） ====================
 let toastEl = null, toastTimer = null;
 function hideToast() {
@@ -4111,9 +4173,12 @@ function loginPromptState() {
   return state.loginPrompt;
 }
 function loginPromptReason() {
-  if ((state.streak || 0) >= 3) return `連続学習 ${state.streak}日達成`;
-  if ((state.badges || []).length >= 2) return `バッジを${state.badges.length}個獲得`;
-  if (totalStudied() >= 50) return `累計${totalStudied()}問クリア`;
+  if ((state.streak || 0) >= 3) return t("lpStreak").replace("{n}", state.streak);
+  if ((state.badges || []).length >= 1) {
+    return (state.badges.length === 1) ? t("lpBadge") : t("lpBadges").replace("{n}", state.badges.length);
+  }
+  if ((state.quizDone || 0) >= 1) return t("lpQuiz");
+  if (totalStudied() >= 50) return t("lpTotal").replace("{n}", totalStudied());
   return null;
 }
 function maybeLoginPrompt() {
@@ -4850,6 +4915,16 @@ function startQuizTimer() {
 function timeUpQuiz() {
   if (quizAnswered) return;
   revealQuiz(null, false, t("fbTimeUp"));
+  // 時間切れは見落としやすいので、カードを一度だけ小さく揺らす
+  const card = document.querySelector("#quiz-play .card");
+  if (card) {
+    card.classList.remove("q-shake");
+    void card.offsetWidth;
+    card.classList.add("q-shake");
+    setTimeout(() => card.classList.remove("q-shake"), 500);
+  }
+  const fill = document.getElementById("quiz-timer-fill");
+  if (fill) fill.style.background = "var(--danger)";
 }
 
 function showQuiz() {
@@ -4957,6 +5032,8 @@ function nextQuiz() {
     if ((state.quizBestPct || 0) < pct) state.quizBestPct = pct;
     if (quizSet.length >= 10 && (state.quizBest === null || quizScore > state.quizBest)) state.quizBest = quizScore;
     if (quizSet.length >= 10 && quizScore === quizSet.length) state.quizPerfect = true;
+    if (quizSet.length >= 10) state.quizDone = (state.quizDone || 0) + 1;
+    renderResultColumn("quiz-result-column", weakestCat(quizWrong));
     persist();
     maybeLoginPrompt();
   } else {
@@ -5079,6 +5156,7 @@ function nextListen() {
     document.getElementById("listen-play").classList.add("hidden");
     document.getElementById("listen-result").classList.remove("hidden");
     document.getElementById("listen-score").textContent = `${listenScore} / ${listenSet.length}`;
+    renderResultColumn("listen-result-column", "リスニング");
     persist();
   } else {
     showListen();
@@ -5202,6 +5280,12 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    nextRead: "📖 つぎはこれを読んでみる？",
+    lpStreak: "連続学習 {n}日達成",
+    lpBadge: "はじめてのバッジ獲得",
+    lpBadges: "バッジを{n}個獲得",
+    lpQuiz: "10問クイズ完走",
+    lpTotal: "累計{n}問クリア",
     notoName: "ノトくん",
     notoRole: "なんでも聞いてね",
     notoPh: "例：ダークモードにして",
@@ -5471,6 +5555,12 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    nextRead: "📖 Read this next",
+    lpStreak: "{n}-day streak",
+    lpBadge: "Your first badge",
+    lpBadges: "{n} badges earned",
+    lpQuiz: "You finished a 10-question quiz",
+    lpTotal: "{n} questions answered",
     notoName: "Noto",
     notoRole: "Ask me anything",
     notoPh: "e.g. switch to dark mode",
@@ -6172,7 +6262,8 @@ function snapshot() {
       todayCount: state.todayCount || 0, todayDate: state.todayDate || null,
       quizBest: (state.quizBest === null || state.quizBest === undefined) ? null : state.quizBest,
       quizBestPct: (state.quizBestPct === null || state.quizBestPct === undefined) ? null : state.quizBestPct,
-      quizPerfect: !!state.quizPerfect
+      quizPerfect: !!state.quizPerfect,
+      quizDone: state.quizDone || 0
     },
     history: state.history || {},
     badges: state.badges || []
@@ -6213,6 +6304,7 @@ function mergeFromCloud(c, applySettings) {
     state.quizBestPct = Math.max(state.quizBestPct || 0, s.quizBestPct);
   }
   if (s.quizPerfect) state.quizPerfect = true;
+  if (s.quizDone) state.quizDone = Math.max(state.quizDone || 0, s.quizDone);
   // 連続学習は「より新しい記録」を採用
   const lt = state.lastStudyDate ? Date.parse(state.lastStudyDate) : 0;
   const ct = s.lastStudyDate ? Date.parse(s.lastStudyDate) : 0;
