@@ -538,6 +538,7 @@
       <button class="seg-btn" id="seg-find" role="tab" aria-selected="false" onclick="setFlashMode('find')" data-i18n="segFind">さがす</button>
       <button class="seg-btn" id="seg-add" role="tab" aria-selected="false" onclick="setFlashMode('add')" data-i18n="segAdd">追加する</button>
     </div>
+    <div id="course-bar" class="fl-learn hidden"></div>
     <div class="card fl-learn" style="padding:14px 16px;margin-bottom:14px">
       <label style="margin-bottom:6px" data-i18n="levelT" for="flash-level">📊 レベル</label>
         <select id="flash-level" onchange="populateCatSelect();saveFlashOpt();startFlash()">
@@ -3795,16 +3796,42 @@ function scheduleNext(word) {
   word.due = dayKey(d);
 }
 // 今日復習すべき単語（期限切れ or 未学習）
+// 復習対象は「一度でも答えた単語」だけ。まだ触れていない語は復習ではなく新規学習にあたる
+const DUE_CAP = 20;
 function dueWords() {
   const today = dayKey(new Date());
-  return state.words.filter(w => !w.due || w.due <= today);
+  return state.words.filter(w => w.due && w.due <= today);
 }
+// 1日に出す復習はここで頭打ちにする。終えられる量にしないと続かない
+function dueToday() {
+  const cap = Math.max(5, Math.min(DUE_CAP, state.batch || 15));
+  return dueWords()
+    .slice()
+    .sort((a, b) => (a.box || 0) - (b.box || 0) || String(a.due).localeCompare(String(b.due)))
+    .slice(0, cap);
+}
+// コース中はその日の語数、それ以外は設定の目標を使う
+function todayGoal() {
+  const st = (typeof courseState === "function") ? courseState() : null;
+  if (st && (st.done || 0) < st.c.days) return st.c.per;
+  return state.dailyGoal || 20;
+}
+// 「今日の学習をはじめる」の行き先は状況で変える。
+// コース中ならその日の分、復習が溜まっていれば復習、どちらもなければ普通に新しい語から。
 function startTodayReview() {
-  const lv = document.getElementById("flash-level"); if (lv) lv.value = "ALL";
-  const ct = document.getElementById("flash-cat"); if (ct) ct.value = "ALL";
-  const wk = document.getElementById("flash-weak"); if (wk) wk.checked = false;
-  const dueOnly = document.getElementById("flash-due"); if (dueOnly) dueOnly.checked = true;
+  const st = (typeof courseState === "function") ? courseState() : null;
+  if (st && (st.done || 0) < st.c.days) { startCourseDay(); return; }
+  const hasDue = dueToday().length > 0;
   switchTab("flash");
+  setFlashMode("learn");
+  const wk = document.getElementById("flash-weak"); if (wk) wk.checked = false;
+  const dueOnly = document.getElementById("flash-due"); if (dueOnly) dueOnly.checked = hasDue;
+  if (!hasDue) loadFlashOpt();
+  else {
+    const lv = document.getElementById("flash-level"); if (lv) lv.value = "ALL";
+    const ct = document.getElementById("flash-cat"); if (ct) { populateCatSelect(); ct.value = "ALL"; }
+  }
+  startFlash();
 }
 
 // 正誤に応じて定着度と復習日を更新（クイズ・スペル・リスニング共通）
@@ -3829,7 +3856,7 @@ const BADGES = [
   { id: "streak7",    icon: "\u{1F4AA}", name: "", desc: "",      check: () => (state.bestStreak || 0) >= 7 },
   { id: "streak30",   icon: "\u{1F451}", name: "", desc: "",     check: () => (state.bestStreak || 0) >= 30 },
   { id: "quizPerfect",icon: "\u{1F3AF}", name: "", desc: "",  check: () => !!state.quizPerfect || (state.quizBest || 0) >= 10 },
-  { id: "goal",       icon: "\u{1F389}", name: "", desc: "",    check: () => state.todayCount >= (state.dailyGoal || 20) }
+  { id: "goal",       icon: "\u{1F389}", name: "", desc: "",    check: () => state.todayCount >= todayGoal() }
 ];
 function badgeName(id) { return t("bN_" + id); }
 function badgeDesc(id) { return t("bD_" + id); }
@@ -3886,7 +3913,7 @@ function notoSetMood(mood, ms) {
 function notoBaseMood() {
   try {
     if ((state.todayCount || 0) >= (state.dailyGoal || 20)) return "happy";
-    if (dueWords().length > 0 && (state.todayCount || 0) === 0) return "worry";
+    if (dueToday().length > 0 && (state.todayCount || 0) === 0) return "worry";
   } catch (e) {}
   return "normal";
 }
@@ -3915,6 +3942,11 @@ let notoOpen = false, notoGreeted = false;
 // 何のボタンか分からないままだと押されないので、初回だけ役割を短く添える
 function maybeNotoTip() {
   if (state.notoTipSeen) return;
+  // 学習中は操作の邪魔になるので出さない
+  const studying = document.getElementById("flash-study");
+  const home = document.getElementById("tab-home");
+  if (!home || home.classList.contains("hidden")) return;
+  if (studying && !studying.classList.contains("hidden") && !document.getElementById("tab-flash").classList.contains("hidden")) return;
   if (document.getElementById("noto-tip")) return;
   if (!document.getElementById("noto-fab")) return;
   const d = document.createElement("div");
@@ -3952,7 +3984,7 @@ function closeNoto(fromPop) {
   notoOpen = false;
 }
 function notoGreeting() {
-  const due = dueWords().length, left = Math.max(0, (state.dailyGoal || 20) - (state.todayCount || 0));
+  const due = dueToday().length, left = Math.max(0, todayGoal() - (state.todayCount || 0));
   return nt(
     "やあ、ノトくんだよ。<br>今日の復習は <b>" + due + "語</b>、目標まであと <b>" + left + "問</b>。<br>英語のことでも設定でも、気軽に聞いてね。",
     "Hey, I'm Noto.<br>You've got <b>" + due + " words</b> due today and <b>" + left + "</b> to go.<br>Ask me anything — English, settings, whatever."
@@ -4209,7 +4241,7 @@ function notoAnswer(raw) {
   if (has("コラム", "記事", "article", "column")) return { mood: "happy", html: nt("コラムだね。45本あるよ。","Articles — 45 of them."), actions: notoBtn(nt("コラムへ","Go to articles"), "closeNoto();switchTab('column')") };
   if (has("例文集", "例文一覧", "sentences")) return { mood: "happy", html: nt("例文集だね。","Sentences, coming up."), actions: notoBtn(nt("例文集へ","Go to sentences"), "closeNoto();switchTab('phrase')") };
   if (has("復習", "今日の学習", "review", "start studying")) {
-    const due = dueWords().length;
+    const due = dueToday().length;
     return { mood: "happy", html: nt("今日の復習は <b>" + due + "語</b>。さくっと終わらせよう。","<b>" + due + " words</b> due today. Let's knock them out."),
       actions: notoBtn(nt("復習をはじめる","Start review"), "closeNoto();startTodayReview()") };
   }
@@ -4219,8 +4251,8 @@ function notoAnswer(raw) {
     const mastered = state.words.filter(w => w.box >= 3).length;
     const pct = Math.round(mastered / state.words.length * 100);
     return { mood: (state.todayCount || 0) > 0 ? "happy" : "normal", html: nt(
-      "今日は <b>" + (state.todayCount || 0) + "問</b>（目標 " + (state.dailyGoal || 20) + "問）。<br>連続 <b>" + (state.streak || 0) + "日</b>、自己ベストは " + (state.bestStreak || 0) + "日。<br>習得済みは <b>" + mastered + "語</b>、全体の " + pct + "% だよ。",
-      "Today: <b>" + (state.todayCount || 0) + "</b> of " + (state.dailyGoal || 20) + ".<br>Streak <b>" + (state.streak || 0) + " days</b>, best " + (state.bestStreak || 0) + ".<br>You have mastered <b>" + mastered + " words</b> — " + pct + "% of the lot.") };
+      "今日は <b>" + (state.todayCount || 0) + "問</b>（目標 " + todayGoal() + "問）。<br>連続 <b>" + (state.streak || 0) + "日</b>、自己ベストは " + (state.bestStreak || 0) + "日。<br>習得済みは <b>" + mastered + "語</b>、全体の " + pct + "% だよ。",
+      "Today: <b>" + (state.todayCount || 0) + "</b> of " + todayGoal() + ".<br>Streak <b>" + (state.streak || 0) + " days</b>, best " + (state.bestStreak || 0) + ".<br>You have mastered <b>" + mastered + " words</b> — " + pct + "% of the lot.") };
   }
 
   // 5) 困りごと・よくある質問
@@ -4555,7 +4587,7 @@ function renderHome() {
   // 連続学習・今日の目標
   document.getElementById("st-streak").textContent = state.streak || 0;
   document.getElementById("st-beststreak").textContent = state.bestStreak || 0;
-  const goal = state.dailyGoal || 20;
+  const goal = todayGoal();
   const gp = Math.min(100, Math.round(state.todayCount / goal * 100));
   document.getElementById("goal-bar").style.width = gp + "%";
   document.getElementById("goal-text").textContent =
@@ -4594,7 +4626,7 @@ function renderHome() {
   renderWeeklyReport();
   syncReminderUI();
 
-  const due = dueWords().length;
+  const due = dueToday().length;
   const learned = state.words.filter(w => w.due).length;
   const hint = document.getElementById("due-hint");
   if (hint) hint.textContent = learned === 0
@@ -4946,14 +4978,46 @@ function renderCourseDone() {
   const st = courseState();
   if (!st) { el.innerHTML = ""; return; }
   const finished = (st.done || 0) >= st.c.days;
+  const justDone = courseLastWords.length >= 4;
+  const quizBtn = justDone
+    ? '<button class="btn" style="width:100%;max-width:300px" onclick="quizLastCourseSet()">' + escapeHtml(t("crsQuiz")) + "</button>"
+    : "";
   el.innerHTML = finished
     ? '<div style="font-size:.9rem;line-height:1.8;margin:10px 0">' + t("crsCongrats").replace("{c}", escapeHtml(courseName(st.c))) + "</div>" +
-      '<button class="btn" onclick="closeAllAndHome()">' + escapeHtml(t("crsOther")) + "</button>"
+      quizBtn +
+      '<div class="center mt"><button class="btn small outline" onclick="closeAllAndHome()">' + escapeHtml(t("crsOther")) + "</button></div>"
     : '<div style="font-size:.9rem;line-height:1.8;margin:10px 0">' +
         t("crsNext").replace("{d}", st.day).replace("{t}", st.c.days) + "</div>" +
-      '<button class="btn" onclick="startCourseDay()">' + escapeHtml(t("crsGoNext")) + "</button>";
+      quizBtn +
+      '<div class="center mt"><button class="btn small outline" onclick="startCourseDay()">' + escapeHtml(t("crsGoNext")) + "</button></div>";
 }
 function closeAllAndHome() { switchTab("home"); }
+// いま終えた15語をそのままクイズにする（覚えた直後に確かめるのが一番効く）
+let courseLastWords = [];
+function quizLastCourseSet() {
+  if (courseLastWords.length < 4) return;
+  startQuizFrom(courseLastWords, 5);
+}
+
+// 単語帳の画面でも、いまコースのどこにいるかが分かるようにする
+function renderCourseBar() {
+  const el = document.getElementById("course-bar");
+  if (!el) return;
+  const st = courseState();
+  if (!st || !courseMode || (st.done || 0) >= st.c.days) { el.classList.add("hidden"); el.innerHTML = ""; return; }
+  const total = flashQueue.length || st.c.per;
+  const now = Math.min(flashIdx + 1, total);
+  el.classList.remove("hidden");
+  el.innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;background:var(--primary-soft);border:1px solid var(--border);' +
+    'border-radius:14px;padding:10px 14px;margin-bottom:12px">' +
+      '<span style="font-size:1.1rem;flex:none">' + st.c.icon + "</span>" +
+      '<span style="flex:1;min-width:0">' +
+        '<span style="display:block;font-size:.82rem;font-weight:800;color:var(--primary-dark);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+        escapeHtml(courseName(st.c)) + "</span>" +
+        '<span style="display:block;font-size:.72rem;color:var(--muted);font-weight:600">' +
+        t("crsDay").replace("{d}", st.day).replace("{t}", st.c.days) + " ・ " + now + " / " + total + "</span></span></div>";
+}
 
 // ---------- ホームの表示 ----------
 function renderCourse() {
@@ -5083,8 +5147,8 @@ function startFlash() {
   if (weakEl && weakEl.checked) idxs = idxs.filter(i => state.words[i].box <= 1);
   const dueEl = document.getElementById("flash-due");
   if (dueEl && dueEl.checked) {
-    const today = dayKey(new Date());
-    idxs = idxs.filter(i => !state.words[i].due || state.words[i].due <= today);
+    const set = new Set(dueToday().map(w => state.words.indexOf(w)));
+    idxs = idxs.filter(i => set.has(i));
   }
   // レベルの低い単語を優先して出題
   flashQueue = shuffle(idxs).sort((a, b) => state.words[a].box - state.words[b].box).slice(0, state.batch || 15);
@@ -5096,6 +5160,7 @@ function startFlash() {
   showFlash();
 }
 function showFlash() {
+  if (typeof renderCourseBar === "function") renderCourseBar();
   if (typeof resetRecording === "function") resetRecording();
   const card = document.getElementById("flashcard");
   card.classList.remove("flipped");
@@ -5139,7 +5204,8 @@ function answerCard(known) {
   if (flashIdx >= flashQueue.length) {
     document.getElementById("flash-study").classList.add("hidden");
     document.getElementById("flash-done").classList.remove("hidden");
-    if (courseMode) completeCourseDay();
+    if (courseMode) { courseLastWords = flashQueue.map(i => state.words[i]); completeCourseDay(); }
+    else courseLastWords = [];
     renderCourseDone();
     renderWordList();
   } else {
@@ -5279,32 +5345,58 @@ function populateQuizCat() {
 }
 
 // 迷わず始められる入口。初心者には初級5問、続けている人には今の実力に合う設定で出す
+// コース中はその日の15語から、初めての人は初級の日常語から出す
+function courseTodayWords() {
+  const st = courseState();
+  if (!st || (st.done || 0) >= st.c.days) return null;
+  const idxs = courseDayWords(st.c, st.day);
+  return idxs.length ? idxs.map(i => state.words[i]) : null;
+}
 function quickQuiz() {
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = String(v); };
   const chk = (id, v) => { const el = document.getElementById(id); if (el) el.checked = !!v; };
-  const fresh = isNewLearner();
-  set("quiz-count", 5);
-  set("quiz-timer", 0);
-  set("quiz-diff", "normal");
-  set("quiz-cat", "ALL");
-  chk("quiz-weak", false);
-  chk("quiz-due", false);
-  if (fresh) { set("quiz-level", "初級"); }
-  else {
-    // 苦手が溜まっていればそこから、なければ全レベルから
-    const weak = state.words.filter(w => (w.box || 0) <= 1 && w.due).length;
-    set("quiz-level", "ALL");
-    chk("quiz-weak", weak >= 4);
+  set("quiz-count", 5); set("quiz-timer", 0); set("quiz-diff", "normal");
+  chk("quiz-weak", false); chk("quiz-due", false);
+
+  const cw = courseTodayWords();
+  if (cw) { startQuizFrom(cw, 5); return; }        // コースの今日の分から
+  if (isNewLearner()) {                             // 初めての人は初級・日常
+    set("quiz-level", "初級");
+    populateQuizCat();
+    const sel = document.getElementById("quiz-cat");
+    if (sel && [...sel.options].some(o => o.value === "日常")) sel.value = "日常";
+    startQuiz();
+    return;
   }
+  const weak = state.words.filter(w => (w.box || 0) <= 1 && w.due).length;
+  set("quiz-level", "ALL"); set("quiz-cat", "ALL");
+  chk("quiz-weak", weak >= 4);
   populateQuizCat();
   startQuiz();
+}
+// 指定した単語だけで出題する
+function startQuizFrom(words, count) {
+  const pool = words.filter(w => w && w.w && w.m);
+  if (pool.length < 4) { startQuiz(); return; }
+  quizDiff = "normal"; quizLimit = 0;
+  quizSet = shuffle(pool).slice(0, Math.min(count || 5, pool.length))
+    .map(w => ({ word: w, dir: Math.random() < 0.5 ? "e2j" : "j2e" }));
+  quizIdx = 0; quizScore = 0; quizWrong = [];
+  const warn = document.getElementById("quiz-warn"); if (warn) warn.textContent = "";
+  switchTab("quiz");
+  document.getElementById("quiz-start").classList.add("hidden");
+  document.getElementById("quiz-result").classList.add("hidden");
+  document.getElementById("quiz-play").classList.remove("hidden");
+  showQuiz();
 }
 function syncQuickQuizNote() {
   const el = document.getElementById("quick-quiz-note");
   if (!el) return;
-  const fresh = isNewLearner();
+  const cw = courseTodayWords();
+  if (cw) { el.textContent = t("qqCourse").replace("{n}", cw.length); return; }
+  if (isNewLearner()) { el.textContent = t("qqNew"); return; }
   const weak = state.words.filter(w => (w.box || 0) <= 1 && w.due).length;
-  el.textContent = fresh ? t("qqNew") : (weak >= 4 ? t("qqWeak").replace("{n}", weak) : t("qqNormal"));
+  el.textContent = weak >= 4 ? t("qqWeak").replace("{n}", weak) : t("qqNormal");
 }
 function startQuiz() {
   saveQuizOpt();
@@ -5317,7 +5409,7 @@ function startQuiz() {
   let pool = state.words.filter(w => lv === "ALL" || (w.level || "中級") === lv);
   if (cat !== "ALL") pool = pool.filter(w => (w.cat || "その他") === cat);
   if (weak) pool = pool.filter(w => (w.box || 0) <= 1);
-  if (dueOnly) pool = pool.filter(w => !w.due || w.due <= today);
+  if (dueOnly) { const set = new Set(dueToday()); pool = pool.filter(w => set.has(w)); }
   const warn = document.getElementById("quiz-warn");
   if (pool.length < 4) { if (warn) warn.textContent = t("notEnough"); return; }
   if (warn) warn.textContent = "";
@@ -5770,6 +5862,8 @@ const I18N = {
     fbTitle: "\u{1F4AC} ご意見・ご要望",
     fbDesc: "使ってみて気づいたことや「こんな機能がほしい」をぜひ教えてください。今後の改善の参考にさせていただきます。",
     fbSend: "送信する",
+    crsQuiz: "この15語で5問クイズ",
+    qqCourse: "コースの今日の{n}語から5問。",
     siteInfo: "ℹ️ サイト情報",
     siteInfoD: "運営者の情報と、データの取り扱いについてはこちらをご覧ください。",
     crsTitle: "📚 学習コース",
@@ -5794,7 +5888,7 @@ const I18N = {
     segAdd: "追加する",
     quickQuiz: "⚡ おすすめ設定で5問スタート",
     quizDetail: "⚙️ 詳細設定を開く",
-    qqNew: "初級の単語から5問。まずは軽く試してみて。",
+    qqNew: "初級の「日常」から5問。まずは軽く試してみて。",
     qqWeak: "苦手な {n}語 から5問出します。",
     qqNormal: "全レベルから5問。時間制限なし。",
     nextRead: "📖 つぎはこれを読んでみる？",
@@ -6072,6 +6166,8 @@ const I18N = {
     fbTitle: "\u{1F4AC} Feedback",
     fbDesc: "Noticed something, or want a feature added? Let us know — it helps shape what comes next.",
     fbSend: "Send",
+    crsQuiz: "Quiz these 15 words",
+    qqCourse: "5 questions from today's {n} course words.",
     siteInfo: "ℹ️ Site info",
     siteInfoD: "Who runs this site, and how your data is handled.",
     crsTitle: "📚 Courses",
@@ -6096,7 +6192,7 @@ const I18N = {
     segAdd: "Add",
     quickQuiz: "⚡ Quick start — 5 questions",
     quizDetail: "⚙️ More options",
-    qqNew: "5 beginner words. Just to get a feel for it.",
+    qqNew: "5 everyday beginner words. Just to get a feel for it.",
     qqWeak: "5 questions from the {n} words you keep missing.",
     qqNormal: "5 questions, all levels, no time limit.",
     nextRead: "📖 Read this next",
