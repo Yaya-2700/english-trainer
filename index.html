@@ -45,7 +45,8 @@
   }
   body.dark nav { background: rgba(27,33,48,.94); }
   body.dark .choice.correct { background: var(--accent-soft); }
-  body.dark .choice.wrong { background: #3a2020; }
+  body.dark .choice.wrong { background: #3a2020; color: var(--text); }
+  body.dark .choice { color: var(--text); }
   body.dark .m0 { background: #3a2020; color: #f8a5a5; }
   body.dark .m1 { background: #3a2f14; color: #f0c674; }
   body.dark .m2 { background: #1f2a4d; color: #9fb2f8; }
@@ -169,7 +170,8 @@
   /* Quiz / Listening choices */
   .choice {
     display: block; width: 100%; text-align: left; margin-bottom: 11px;
-    background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--card); color: var(--text);
+    border: 2px solid var(--border); border-radius: var(--radius-sm);
     padding: 15px 17px; font-size: .95rem; font-weight: 500; cursor: pointer; font-family: inherit;
     transition: border-color .15s, background .15s, transform .1s;
   }
@@ -270,6 +272,7 @@
   .noto-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
   .noto-chip {
     padding: 7px 12px; border-radius: 99px; font-size: .76rem; font-weight: 700; font-family: inherit;
+    color: var(--primary-dark);
     background: var(--primary-soft); color: var(--primary-dark); border: 1px solid var(--border); cursor: pointer;
   }
   .noto-chip:active { transform: scale(.96); }
@@ -277,8 +280,8 @@
   .noto-row { display: flex; gap: 8px; align-items: center; }
   .noto-row input { margin: 0; flex: 1 }
   .noto-act { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 9px; }
-  .choice.correct { border-color: var(--accent); background: var(--accent-soft); }
-  .choice.wrong { border-color: var(--danger); background: #fdecec; }
+  .choice.correct { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+  .choice.wrong { border-color: var(--danger); background: #fdecec; color: var(--text); }
   .choice:disabled { cursor: default; }
   .quiz-q { font-size: 1.55rem; font-weight: 800; text-align: center; margin: 12px 0 20px; }
   .quiz-meta { text-align: center; color: var(--muted); font-size: .8rem; margin-bottom: 8px; font-weight: 600; }
@@ -2141,7 +2144,7 @@ const DEFAULT_WORDS = [
   ["lament","嘆く","They lamented the loss.","彼らは喪失を嘆いた。","上級動詞","上級"],
   ["magnify","拡大する","Magnify the problem.","問題を大きくする。","上級動詞","上級"],
   ["nullify","無効にする","Nullify the contract.","契約を無効にする。","上級動詞","上級"],
-  ["orchestrate","巧みに organize する","Orchestrate the campaign.","キャンペーンを取りまとめる。","上級動詞","上級"],
+  ["orchestrate","巧みにまとめ上げる","Orchestrate the campaign.","キャンペーンを取りまとめる。","上級動詞","上級"],
   ["ponder","熟考する","Ponder the question.","問いをじっくり考える。","上級動詞","上級"],
   ["rectify","是正する","Rectify the error.","誤りを正す。","上級動詞","上級"],
   ["stifle","抑える","Stifle a yawn.","あくびをこらえる。","上級動詞","上級"],
@@ -2478,7 +2481,7 @@ const DEFAULT_WORDS = [
   ["correspondent","特派員","Our correspondent is in Paris.","当社の特派員はパリにいる。","メディア・報道","上級"],
   ["misinformation","誤情報","Misinformation spreads quickly.","誤情報は急速に広まる。","メディア・報道","上級"],
   ["viral","拡散した","The clip went viral.","その動画は一気に拡散した。","メディア・報道","中級"],
-  ["feed","（SNSの）表示一覧","My feed is full of ads.","表示一覧が広告だらけだ。","メディア・報道","中級"],
+  ["feed","（SNSの）投稿一覧","My feed is full of ads.","投稿一覧が広告だらけだ。","メディア・報道","中級"],
   ["streaming","配信","Streaming changed the industry.","配信が業界を変えた。","メディア・報道","中級"],
   ["documentary","記録映画","We watched a documentary.","記録映画を見た。","メディア・報道","中級"],
   ["publish","公開する、出版する","They published the results.","彼らは結果を公表した。","メディア・報道","中級"],
