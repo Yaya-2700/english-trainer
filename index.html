@@ -4147,17 +4147,42 @@ function notoNextAction() {
   return { key: "done", n: state.todayCount || 0 };
 }
 // ---------- コラムをことばで探す ----------
+const NOTO_STOP = ["英語", "学習", "勉強", "方法", "自分", "時間", "する", "こと", "とき", "ため", "できる", "教えて", "やり方"];
+function notoTokens(k) {
+  const out = [];
+  const push = w => { if (w.length >= 2 && NOTO_STOP.indexOf(w) === -1 && out.indexOf(w) === -1) out.push(w); };
+  // カタカナ・漢字・アルファベットは部分文字列まで見る
+  (k.match(/[ァ-ヶー]{2,}|[一-龥]{2,}|[a-z]{3,}/g) || []).forEach(tk => {
+    for (let n = Math.min(tk.length, 6); n >= 2; n--) {
+      for (let i = 0; i + n <= tk.length; i++) push(tk.slice(i, i + n));
+    }
+  });
+  // ひらがなは丸ごと一致だけ（「ようになりたい」など）
+  (k.match(/[ぁ-ん]{4,}/g) || []).forEach(push);
+  return out.slice(0, 60);
+}
+function notoHira(w) { return /^[ぁ-ん]+$/.test(w); }
 function notoSearchColumns(q) {
   const k = notoNorm(q).toLowerCase();
   if (k.length < 2 || !Array.isArray(COLUMNS)) return [];
-  const words = k.split(/[\s、,]+/).filter(x => x.length >= 2);
-  const scored = COLUMNS.map(c => {
-    const hay = (c.t + " " + c.d + " " + c.c).toLowerCase();
-    let sc = 0;
-    if (hay.indexOf(k) > -1) sc += 10;
-    words.forEach(w => { if (hay.indexOf(w) > -1) sc += 3; });
-    return { c, sc };
-  }).filter(x => x.sc > 0).sort((a, b) => b.sc - a.sc);
+  const toks = notoTokens(k);
+  if (!toks.length) return [];
+  const hays = COLUMNS.map(c => (c.t + " " + c.d + " " + c.c).toLowerCase());
+  const df = {};
+  toks.forEach(w => { df[w] = hays.reduce((n, h) => n + (h.indexOf(w) > -1 ? 1 : 0), 0); });
+  const scored = COLUMNS.map((c, i) => {
+    const hay = hays[i];
+    let sc = 0, ok = false;
+    if (hay.indexOf(k) > -1) sc += 12;
+    toks.forEach(w => {
+      if (hay.indexOf(w) < 0) return;
+      const rare = df[w] > 0 && df[w] <= 3;
+      if (notoHira(w) && !rare) return;
+      sc += w.length * (rare ? 2 : 1);
+      if (rare || (w.length >= 3 && !notoHira(w))) ok = true;
+    });
+    return { c, sc, ok };
+  }).filter(x => x.ok).sort((a, b) => b.sc - a.sc);
   return scored.slice(0, 3).map(x => x.c);
 }
 function notoColumnCard(c) {
@@ -4384,8 +4409,15 @@ function notoAnswer(raw) {
   // 2語を比べる
   const cmpM = q.match(/([A-Za-z][A-Za-z' -]*?)\s*(?:と|vs|と、)\s*([A-Za-z][A-Za-z' -]*?)\s*(?:の違い|の差|はどう違|difference)/i);
   if (cmpM) {
-    const r = notoCompare(cmpM[1].trim(), cmpM[2].trim());
+    const c1 = cmpM[1].trim(), c2 = cmpM[2].trim();
+    const r = notoCompare(c1, c2);
     if (r) return r;
+    const miss = [c1, c2].filter(x => !state.words.some(y => y.w.toLowerCase() === x.toLowerCase()));
+    if (miss.length && miss.length < 2) {
+      return { mood: "worry",
+        html: nt("<b>" + escapeHtml(miss[0]) + "</b> がまだ入ってないから比べられないんだ。「" + escapeHtml(miss[0]) + ", 意味 を追加して」って言ってくれれば入れるよ。",
+                 "<b>" + escapeHtml(miss[0]) + "</b> is not in your list yet, so I cannot compare. Say \"" + escapeHtml(miss[0]) + ", meaning, add it\" and I will.") };
+    }
   }
 
   // スペル
