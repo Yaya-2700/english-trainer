@@ -4239,7 +4239,7 @@ function notoAnswer(raw) {
   }
 
   // 苦手なカテゴリ
-  if (has("苦手", "弱点", "weak", "struggl")) {
+  if (has("苦手", "弱点", "weak", "struggl") && !has("クイズ", "quiz", "問", "リスニング", "listening")) {
     const map = {};
     state.words.forEach(x => {
       const c = x.cat || "その他";
@@ -4462,7 +4462,9 @@ function notoAnswer(raw) {
       actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
   }
 
-  // 3) 画面の移動
+  // 3) 画面の移動（「〜が苦手」「〜のコツ」みたいな相談は移動じゃないので外す）
+  const isTrouble = has("伸びない", "できない", "苦手", "分からない", "わからない", "聞き取れ", "覚えられない", "コツ", "どうやっ", "やり方", "上げたい", "上達", "克服", "how do i", "how to", "tips");
+  if (!isTrouble) {
   if (has("クイズ", "quiz")) return { mood: "happy", html: nt("クイズだね、いこう。","Quiz it is."), actions: notoBtn(nt("クイズへ","Go to quiz"), "closeNoto();switchTab('quiz')") };
   if (has("リスニング", "listening")) return { mood: "happy", html: nt("リスニングだね。","Listening, coming up."), actions: notoBtn(nt("リスニングへ","Go to listening"), "closeNoto();switchTab('listen')") };
   if (has("単語帳", "フラッシュ", "flashcard", "cards")) return { mood: "happy", html: nt("単語帳だね。","Flashcards, here you go."), actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
@@ -4472,6 +4474,7 @@ function notoAnswer(raw) {
     const due = dueToday().length;
     return { mood: "happy", html: nt("今日の復習は <b>" + due + "語</b>。さくっと終わらせよう。","<b>" + due + " words</b> due today. Let's knock them out."),
       actions: notoBtn(nt("復習をはじめる","Start review"), "closeNoto();startTodayReview()") };
+  }
   }
 
   // 4) 進捗
