@@ -4038,8 +4038,8 @@ function notoRenderChips() {
   const el = document.getElementById("noto-chips");
   if (!el) return;
   const chips = state.lang === "en"
-    ? ["What can you do?", "How am I doing?", "What am I weak at?", "Recommend an article", "Dark mode", "Move to a new phone"]
-    : ["何ができるの？", "今日の進捗は？", "苦手なカテゴリは？", "おすすめの記事は？", "ダークモードにして", "機種変したい"];
+    ? ["What should I do today?", "What can you do?", "What am I weak at?", "Start the travel course", "Recommend an article", "Dark mode"]
+    : ["今日は何すればいい？", "何ができるの？", "苦手なカテゴリは？", "日常コースはじめて", "おすすめの記事は？", "ダークモードにして"];
   el.innerHTML = chips.map(c => '<button class="noto-chip" onclick="notoAsk(' + JSON.stringify(c).replace(/"/g, "&quot;") + ')">' + escapeHtml(c) + "</button>").join("");
 }
 function notoAsk(text) {
@@ -4125,6 +4125,64 @@ function notoQuizLevel(lv) {
   startQuiz();
 }
 
+// ---------- コースを会話から動かす ----------
+function notoCourseByName(txt) {
+  const map = { daily: ["日常", "everyday", "daily"], travel: ["旅行", "travel", "旅"],
+                biz: ["ビジネス", "仕事", "business", "work"], toeic: ["toeic", "トーイック"] };
+  for (const id of Object.keys(map)) {
+    if (map[id].some(k => txt.indexOf(k) > -1)) return courseById(id);
+  }
+  return null;
+}
+// ---------- 今やるべきことを1つだけ返す ----------
+function notoNextAction() {
+  const st = courseState();
+  if (st && (st.done || 0) < st.c.days) {
+    return { key: "course", n: courseDayWords(st.c, st.day).length, name: courseName(st.c), day: st.day, total: st.c.days };
+  }
+  const due = dueToday().length;
+  if (due > 0) return { key: "due", n: due };
+  const left = Math.max(0, todayGoal() - (state.todayCount || 0));
+  if (left > 0) return { key: "quiz", n: left };
+  return { key: "done", n: state.todayCount || 0 };
+}
+// ---------- コラムをことばで探す ----------
+function notoSearchColumns(q) {
+  const k = notoNorm(q).toLowerCase();
+  if (k.length < 2 || !Array.isArray(COLUMNS)) return [];
+  const words = k.split(/[\s、,]+/).filter(x => x.length >= 2);
+  const scored = COLUMNS.map(c => {
+    const hay = (c.t + " " + c.d + " " + c.c).toLowerCase();
+    let sc = 0;
+    if (hay.indexOf(k) > -1) sc += 10;
+    words.forEach(w => { if (hay.indexOf(w) > -1) sc += 3; });
+    return { c, sc };
+  }).filter(x => x.sc > 0).sort((a, b) => b.sc - a.sc);
+  return scored.slice(0, 3).map(x => x.c);
+}
+function notoColumnCard(c) {
+  return "<b>" + escapeHtml(c.t) + "</b><br>" +
+    '<span style="font-size:.8rem;color:var(--muted)">' + escapeHtml(c.d) + "</span>";
+}
+// ---------- 2語を並べて見る ----------
+function notoCompare(a, b) {
+  const f = k => state.words.find(x => x.w.toLowerCase() === k);
+  const x = f(a.toLowerCase()), y = f(b.toLowerCase());
+  if (!x || !y) return null;
+  const cell = w =>
+    '<div style="flex:1;min-width:0">' +
+      '<div style="font-weight:800">' + escapeHtml(w.w) + "</div>" +
+      '<div style="font-weight:700;color:var(--primary-dark);font-size:.86rem">' + escapeHtml(w.m) + "</div>" +
+      '<div style="font-size:.7rem;color:var(--muted);margin-top:2px">' + escapeHtml(lvLabel(w.level)) + " ・ " + escapeHtml(catLabel(w.cat)) + "</div>" +
+      (w.ex ? '<div style="font-size:.78rem;color:var(--muted);margin-top:6px;line-height:1.7">' + escapeHtml(w.ex) + "</div>" : "") +
+    "</div>";
+  const s1 = escapeHtml(x.w.replace(/'/g, "\\'")), s2 = escapeHtml(y.w.replace(/'/g, "\\'"));
+  return { mood: "thinking",
+    html: nt("並べてみるね。使い分けは例文の場面で見比べるのが早いよ。", "Here they are side by side — compare the example sentences.") +
+      '<div style="display:flex;gap:12px;margin-top:10px">' + cell(x) + cell(y) + "</div>",
+    actions: notoBtn("🔊 " + x.w, "speak('" + s1 + "')") + notoBtn("🔊 " + y.w, "speak('" + s2 + "')") };
+}
+
 // ---------- 受け答えの本体 ----------
 // 具体的な指示から先に判定し、最後に単語検索へ落とす
 function notoAnswer(raw) {
@@ -4138,8 +4196,8 @@ function notoAnswer(raw) {
   }
   if (has("何ができ", "なにができ", "使い方", "ヘルプ", "what can you", "help", "how do i use")) {
     return { mood: "normal", html: nt(
-      "こんなことができるよ。<br>・<b>単語を調べる</b>「invoice ってどういう意味？」<br>・<b>苦手を教える</b>「苦手なカテゴリは？」<br>・<b>設定を変える</b>「ダークモードにして」「目標を30問に」<br>・<b>進捗を見る</b>「今日どれくらい？」<br>・<b>記事をすすめる</b>「おすすめの記事は？」<br>・<b>困ったとき</b>「録音ができない」<br>・<b>要望を届ける</b>「こんな機能がほしい」<br>単語を出したあとは「例文は？」「発音して」とだけ言えば続きが出るよ。",
-      "Here is what I can do.<br>・<b>Look up words</b> — \"what does invoice mean?\"<br>・<b>Spot your gaps</b> — \"what am I weak at?\"<br>・<b>Change settings</b> — \"dark mode\", \"make my goal 30\"<br>・<b>Check progress</b> — \"how am I doing?\"<br>・<b>Suggest reading</b> — \"recommend an article\"<br>・<b>Fix problems</b> — \"recording does not work\"<br>・<b>Pass on ideas</b> — \"I would love a feature that…\"<br>After I show a word, just say \"example\" or \"say it\" to keep going.") };
+      "こんなことができるよ。<br>・<b>次の一手を決める</b>「今日は何すればいい？」<br>・<b>学習を始める</b>「日常コースはじめて」「TOEICのクイズ10問」<br>・<b>単語を調べる</b>「invoice の意味」「give と provide の違い」<br>・<b>単語をいじる</b>「apple, りんご を追加して」「invoice を上級にして」<br>・<b>苦手を教える</b>「苦手なカテゴリは？」<br>・<b>設定を変える</b>「ダークモードにして」「目標を30問に」<br>・<b>困ったとき</b>「録音ができない」<br>分からないことはコラム45記事からも探すよ。",
+      "Here is what I can do.<br>・<b>Decide what is next</b> — \"what should I do today?\"<br>・<b>Start studying</b> — \"start the travel course\", \"TOEIC quiz, 10 questions\"<br>・<b>Look up words</b> — \"what does invoice mean?\"<br>・<b>Edit your words</b> — \"set invoice to advanced\"<br>・<b>Spot your gaps</b> — \"what am I weak at?\"<br>・<b>Change settings</b> — \"dark mode\", \"make my goal 30\"<br>・<b>Fix problems</b> — \"recording does not work\"<br>If I am stuck, I will search the 45 articles for you.") };
   }
 
   // 直前に出した単語への追加の質問
@@ -4321,11 +4379,135 @@ function notoAnswer(raw) {
       actions: notoBtn(nt("書いてみる","Write it"), "notoToFeedback()") };
   }
 
+// 今日やること
+  if (has("何すれば", "なにすれば", "何をすれば", "今日は何", "次は何", "つぎは", "what should i", "what next", "おすすめは")) {
+    const a = notoNextAction();
+    if (a.key === "course") return { mood: "happy",
+      html: nt("<b>" + escapeHtml(a.name) + "</b> の " + a.day + "日目、今日の分は <b>" + a.n + "語</b> だよ。これを終わらせよう。",
+               "<b>" + escapeHtml(a.name) + "</b>, day " + a.day + " — <b>" + a.n + " words</b> today. Let's clear it."),
+      actions: notoBtn(nt("今日の分をはじめる", "Start today's set"), "closeNoto();startCourseDay()") };
+    if (a.key === "due") return { mood: "normal",
+      html: nt("復習が <b>" + a.n + "語</b> たまってるよ。ここから片づけよう。", "<b>" + a.n + " words</b> are waiting for review. Start there."),
+      actions: notoBtn(nt("復習する", "Review"), "closeNoto();startTodayReview()") };
+    if (a.key === "quiz") return { mood: "normal",
+      html: nt("今日はあと <b>" + a.n + "問</b> で目標だよ。クイズでさくっといこう。", "<b>" + a.n + "</b> to go for today's goal. A quiz is the quickest way."),
+      actions: notoBtn(nt("おすすめで5問", "Quick 5"), "closeNoto();switchTab('quiz');quickQuiz()") +
+               notoBtn(nt("コースを選ぶ", "Pick a course"), "closeNoto();switchTab('home')") };
+    return { mood: "celebrate", html: nt("今日はもう <b>" + a.n + "問</b> やってる。目標達成だよ、おつかれさま。",
+      "You've done <b>" + a.n + "</b> today — goal reached. Nice one.") };
+  }
+
+  // コースの操作
+  if (has("コース", "course")) {
+    const st = courseState();
+    if (has("やめ", "終わり", "解除", "quit", "stop")) {
+      if (!st) return { mood: "normal", html: nt("いまコースは受けてないよ。", "You're not on a course right now.") };
+      quitCourse();
+      return { mood: "normal", html: nt("コースをやめたよ。またいつでも選べる。", "Left the course. You can pick another any time.") };
+    }
+    const target = notoCourseByName(t0);
+    if (target && has("はじめ", "始め", "やりたい", "start", "やる")) {
+      closeNoto(); startCourse(target.id);
+      return { mood: "happy", html: nt("<b>" + escapeHtml(courseName(target)) + "</b> をはじめたよ。", "Started <b>" + escapeHtml(courseName(target)) + "</b>.") };
+    }
+    if (st) {
+      const fin = (st.done || 0) >= st.c.days;
+      return { mood: fin ? "celebrate" : "normal",
+        html: fin ? nt("<b>" + escapeHtml(courseName(st.c)) + "</b> は完走済みだよ。", "You've finished <b>" + escapeHtml(courseName(st.c)) + "</b>.")
+                  : nt("いまは <b>" + escapeHtml(courseName(st.c)) + "</b> の " + st.day + "日目（全" + st.c.days + "日）だよ。",
+                       "You're on <b>" + escapeHtml(courseName(st.c)) + "</b>, day " + st.day + " of " + st.c.days + "."),
+        actions: fin ? notoBtn(nt("別のコースへ", "Another course"), "closeNoto();quitCourse();switchTab('home')")
+                     : notoBtn(nt("今日の分をはじめる", "Start today's set"), "closeNoto();startCourseDay()") };
+    }
+    return { mood: "normal", html: nt("コースは4つあるよ。どれにする？", "There are four courses. Which one?"),
+      actions: COURSES.map(c => notoBtn(c.icon + " " + courseName(c), "notoAsk(" + JSON.stringify(courseName(c) + "をはじめて").replace(/"/g, "&quot;") + ")")).join("") };
+  }
+
+  // 条件を指定してクイズ・リスニングを始める
+  const numMatch = t0.match(/(\d+)\s*(?:問|questions?)/);
+  if (has("クイズ", "quiz") && (numMatch || has("初級", "中級", "上級", "苦手", "toeic", "ビジネス", "日常", "旅行"))) {
+    closeNoto();
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = String(v); };
+    switchTab("quiz");
+    set("quiz-count", numMatch ? Math.max(5, Math.min(30, Number(numMatch[1]))) : 10);
+    set("quiz-timer", 0); set("quiz-diff", "normal");
+    set("quiz-level", has("初級") ? "初級" : has("中級") ? "中級" : has("上級") ? "上級" : "ALL");
+    populateQuizCat();
+    const catSel = document.getElementById("quiz-cat");
+    const wantCat = [...new Set(state.words.map(x => x.cat))].find(c => c && t0.indexOf(c.toLowerCase()) > -1);
+    if (catSel) catSel.value = (wantCat && [...catSel.options].some(o => o.value === wantCat)) ? wantCat : "ALL";
+    const wk = document.getElementById("quiz-weak"); if (wk) wk.checked = has("苦手");
+    const du = document.getElementById("quiz-due"); if (du) du.checked = false;
+    startQuiz();
+    return { mood: "happy", html: nt("その条件で出すね。", "Starting with those settings.") };
+  }
+  if (has("リスニング", "listening") && has("初級", "中級", "上級")) {
+    closeNoto();
+    switchTab("listen");
+    const el = document.getElementById("listen-level");
+    if (el) el.value = has("初級") ? "初級" : has("中級") ? "中級" : "上級";
+    saveListenOpt(); startListen();
+    return { mood: "happy", html: nt("そのレベルで流すね。", "Playing at that level.") };
+  }
+
+  // 単語を追加する
+  let addM = q.match(/^(?:単語)?\s*([A-Za-z][A-Za-z' -]*?)\s*[はを=＝:：、,]\s*([^\s].*?)\s*(?:で|を)?\s*(?:追加|とうろく|登録|add)\s*(?:して|したい|する)?$/);
+  if (!addM) addM = q.match(/(?:追加|登録)\s*[:：]?\s*([A-Za-z][A-Za-z' -]*?)\s*[,、\s]\s*(.+)$/);
+  if (addM) {
+    const w = addM[1].trim(), m = addM[2].trim();
+    if (state.words.some(x => x.w.toLowerCase() === w.toLowerCase()))
+      return { mood: "normal", html: nt("「" + escapeHtml(w) + "」はもう入ってるよ。", "\"" + escapeHtml(w) + "\" is already in there.") };
+    const lv = guessLevel(w);
+    state.words.push({ w: w, m: m, ex: "", exJa: "", cat: "自分の単語", level: lv, box: 0 });
+    persist(); renderWordList(); renderHome();
+    return { mood: "happy",
+      html: nt("<b>" + escapeHtml(w) + "</b>（" + escapeHtml(m) + "）を追加したよ。レベルは <b>" + escapeHtml(lvLabel(lv)) + "</b> にしておいた。",
+               "Added <b>" + escapeHtml(w) + "</b> (" + escapeHtml(m) + ") as <b>" + escapeHtml(lvLabel(lv)) + "</b>."),
+      actions: notoBtn(nt("単語一覧で見る", "See it in the list"), "closeNoto();switchTab('flash');setFlashMode('find')") };
+  }
+
+  // レベルを変える
+  const lvM = q.match(/([A-Za-z][A-Za-z' -]*?)\s*(?:を|は)\s*(初級|中級|上級)\s*(?:に|へ)?\s*(?:して|変更|変えて)?$/);
+  if (lvM) {
+    const hit = state.words.find(x => x.w.toLowerCase() === lvM[1].trim().toLowerCase());
+    if (hit) {
+      hit.level = lvM[2]; hit.lvEdited = true; persist(); renderWordList();
+      return { mood: "happy", html: nt("<b>" + escapeHtml(hit.w) + "</b> を " + escapeHtml(lvLabel(hit.level)) + " にしたよ。",
+        "Set <b>" + escapeHtml(hit.w) + "</b> to " + escapeHtml(lvLabel(hit.level)) + ".") };
+    }
+  }
+
+  // 2語を比べる
+  const cmpM = q.match(/([A-Za-z][A-Za-z' -]*?)\s*(?:と|vs|と、)\s*([A-Za-z][A-Za-z' -]*?)\s*(?:の違い|の差|はどう違|difference)/i);
+  if (cmpM) {
+    const r = notoCompare(cmpM[1].trim(), cmpM[2].trim());
+    if (r) return r;
+  }
+
+  // スペル
+  const spM = q.match(/(.+?)\s*(?:の)?\s*(?:スペル|綴り|spelling)/);
+  if (spM) {
+    const key = spM[1].trim();
+    const hit = state.words.find(x => x.m === key) || state.words.find(x => x.m.indexOf(key) > -1) ||
+                state.words.find(x => x.w.toLowerCase() === key.toLowerCase());
+    if (hit) return { mood: "happy",
+      html: nt("「" + escapeHtml(hit.m) + "」は <b>" + escapeHtml(hit.w.split("").join(" ")) + "</b><br>つまり <b>" + escapeHtml(hit.w) + "</b> だよ。",
+               "\"" + escapeHtml(hit.m) + "\" is <b>" + escapeHtml(hit.w.split("").join(" ")) + "</b> — <b>" + escapeHtml(hit.w) + "</b>.") };
+  }
+
   // 6) 単語をしらべる
   const w = notoLookup(q);
   if (w) return w;
 
-  // 7) わからないとき
+  // 7) わからないときは、まずコラムから探してみる
+  const cols = notoSearchColumns(q);
+  if (cols.length) {
+    return { mood: "thinking",
+      html: nt("その言葉、直接は分からなかったけど、コラムに書いてあるかも。", "I don't know that one directly, but an article might cover it.") +
+        '<div style="margin-top:8px">' + notoColumnCard(cols[0]) + "</div>",
+      actions: notoBtn(nt("読む", "Read it"), "location.href='" + cols[0].s + ".html'") +
+        cols.slice(1).map(c => notoBtn(c.t.length > 14 ? c.t.slice(0, 13) + "…" : c.t, "location.href='" + c.s + ".html'")).join("") };
+  }
   return { mood: "worry", html: nt(
     "ごめん、よく分からなかった。<br>設定の変更・単語の意味・進捗・使い方なら答えられるよ。ぼくで分からないことは、要望として開発者に届けとくね。",
     "Sorry, that one went over my head.<br>I can change settings, look up words, tell you your progress and explain how things work. Anything else, I will pass it on to the developer."),
