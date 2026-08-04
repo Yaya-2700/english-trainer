@@ -4283,103 +4283,7 @@ function notoAnswer(raw) {
       actions: notoBtn(nt("ホームで見る", "See them"), "closeNoto();switchTab('home')") };
   }
 
-  // 2) 設定の変更
-  if (has("ダーク", "dark", "暗く", "黒く")) { setTheme("dark"); syncSettingsUI(); return { mood: "happy", html: nt("ダークモードにしたよ。","Dark mode, done.") }; }
-  if (has("ライト", "light mode", "明るく", "白く")) { setTheme("light"); syncSettingsUI(); return { mood: "happy", html: nt("ライトモードにしたよ。","Light mode, done.") }; }
-  if (has("端末の設定", "自動で", "auto theme", "system theme")) { setTheme("auto"); syncSettingsUI(); return { mood: "happy", html: nt("端末の設定に合わせるようにしたよ。","It follows your device now.") }; }
-  let m = t0.match(/(?:目標|goal).{0,6}?(\d+)/) || t0.match(/(\d+)\s*(?:問|questions?).{0,4}(?:目標|goal|に)/);
-  if (m) {
-    const n = Math.max(1, Math.min(200, Number(m[1])));
-    state.dailyGoal = n; persist(); syncSettingsUI(); renderHome();
-    return { mood: "happy", html: nt("1日の目標を <b>" + n + "問</b> にしたよ。いっしょにがんばろう。","Daily goal is <b>" + n + "</b> now. We can do this.") };
-  }
-  if (has("速度", "スピード", "speed", "はやく読", "ゆっくり読")) {
-    const v = has("ゆっくり", "slow") ? 0.7 : has("はやい", "早く", "速く", "fast") ? 1.1 : 0.9;
-    setRate(v); syncSettingsUI();
-    return { mood: "happy", html: nt("速度を「" + (v === 0.7 ? "ゆっくり" : v === 1.1 ? "はやい" : "ふつう") + "」にしたよ。","Speed is " + (v === 0.7 ? "slow" : v === 1.1 ? "fast" : "normal") + " now.") };
-  }
-  if (has("アクセント", "accent") ||
-      (has("発音", "pronunciation") && has("アメリカ", "イギリス", "american", "british", "米", "英国", " us", " uk"))) {
-    if (has("イギリス", "british", "uk", "英国")) { setAccent("uk"); syncSettingsUI(); return { mood: "happy", html: nt("イギリス英語にしたよ。","British English it is.") }; }
-    if (has("アメリカ", "american", "us", "米国")) { setAccent("us"); syncSettingsUI(); return { mood: "happy", html: nt("アメリカ英語にしたよ。","American English it is.") }; }
-    return { mood: "normal", html: nt("アメリカ英語とイギリス英語、どっちがいい？","American or British — which do you want?"),
-      actions: notoBtn(nt("アメリカ英語","American"), "notoAsk('アメリカ英語の発音にして')") + notoBtn(nt("イギリス英語","British"), "notoAsk('イギリス英語の発音にして')") };
-  }
-  if (!has("発音", "アクセント", "accent", "pronunciation")) {
-    if (/(表示|画面|ui|インターフェース|言語).{0,6}(英語|english)/.test(t0) || /(英語|english).{0,3}(表示|ui)/.test(t0) || /switch.*(ui|interface|display).*english/.test(t0)) { setLang("en"); return { mood: "happy", html: "Interface is in English now." }; }
-    if (/(表示|画面|ui|インターフェース|言語).{0,6}(日本語|japanese)/.test(t0) || /(日本語|japanese).{0,3}(表示|ui)/.test(t0) || /switch.*(ui|interface|display).*japanese/.test(t0)) { setLang("ja"); return { mood: "happy", html: "表示を日本語に戻したよ。" }; }
-  }
-  if (has("通知", "リマインダー", "reminder", "notification")) {
-    return { mood: "normal", html: nt("リマインダーは設定から時刻を決めてオンにできるよ。このページを開いてる間にお知らせするね。","Set a reminder time in settings and I will ping you while this page is open."),
-      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
-  }
-
-  // 3) 画面の移動
-  if (has("クイズ", "quiz")) return { mood: "happy", html: nt("クイズだね、いこう。","Quiz it is."), actions: notoBtn(nt("クイズへ","Go to quiz"), "closeNoto();switchTab('quiz')") };
-  if (has("リスニング", "listening")) return { mood: "happy", html: nt("リスニングだね。","Listening, coming up."), actions: notoBtn(nt("リスニングへ","Go to listening"), "closeNoto();switchTab('listen')") };
-  if (has("単語帳", "フラッシュ", "flashcard", "cards")) return { mood: "happy", html: nt("単語帳だね。","Flashcards, here you go."), actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
-  if (has("コラム", "記事", "article", "column")) return { mood: "happy", html: nt("コラムだね。45本あるよ。","Articles — 45 of them."), actions: notoBtn(nt("コラムへ","Go to articles"), "closeNoto();switchTab('column')") };
-  if (has("例文集", "例文一覧", "sentences")) return { mood: "happy", html: nt("例文集だね。","Sentences, coming up."), actions: notoBtn(nt("例文集へ","Go to sentences"), "closeNoto();switchTab('phrase')") };
-  if (has("復習", "今日の学習", "review", "start studying")) {
-    const due = dueToday().length;
-    return { mood: "happy", html: nt("今日の復習は <b>" + due + "語</b>。さくっと終わらせよう。","<b>" + due + " words</b> due today. Let's knock them out."),
-      actions: notoBtn(nt("復習をはじめる","Start review"), "closeNoto();startTodayReview()") };
-  }
-
-  // 4) 進捗
-  if (has("進捗", "どれくらい", "どのくらい", "状況", "今日は", "連続", "streak", "how am i", "my progress", "how many")) {
-    const mastered = state.words.filter(w => w.box >= 3).length;
-    const pct = Math.round(mastered / state.words.length * 100);
-    return { mood: (state.todayCount || 0) > 0 ? "happy" : "normal", html: nt(
-      "今日は <b>" + (state.todayCount || 0) + "問</b>（目標 " + todayGoal() + "問）。<br>連続 <b>" + (state.streak || 0) + "日</b>、自己ベストは " + (state.bestStreak || 0) + "日。<br>習得済みは <b>" + mastered + "語</b>、全体の " + pct + "% だよ。",
-      "Today: <b>" + (state.todayCount || 0) + "</b> of " + todayGoal() + ".<br>Streak <b>" + (state.streak || 0) + " days</b>, best " + (state.bestStreak || 0) + ".<br>You have mastered <b>" + mastered + " words</b> — " + pct + "% of the lot.") };
-  }
-
-  // 5) 困りごと・よくある質問
-  if (has("引き継", "機種変", "データが消", "バックアップ", "移行", "new phone", "back up", "transfer my data")) {
-    return { mood: "normal", html: nt(
-      "記録はこの端末のブラウザに入ってるよ。持っていく方法は2つ。<br>・<b>Googleでログイン</b>すれば自動でクラウドに保存されて、別の端末でも続きからいける。<br>・設定の<b>バックアップ保存</b>でファイルに書き出してもいい。<br>おすすめは前者。ラクだよ。",
-      "Your progress lives in this browser. Two ways to take it with you:<br>・<b>Sign in with Google</b> and it syncs to any device automatically.<br>・Or export a <b>backup file</b> from settings.<br>The first one is easier, honestly."),
-      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
-  }
-  if (has("録音")|| /record/.test(t0)) {
-    return { mood: "worry", html: nt(
-      "録音は単語帳の「🎤 発音を録音」からだよ。動かないときはこのへんを見てみて。<br>・マイクを<b>許可</b>してる？（アドレスバーの🔒から変えられる）<br>・他のアプリがマイクを使ってない？<br>・iPhoneならSafariは最新？<br>録れたら再生プレーヤーが出るよ。出ないときは下に理由が書いてある。",
-      "Recording is on the flashcard screen, under \"Record yourself\". If it will not play ball:<br>・Is the mic <b>allowed</b>? (the 🔒 in the address bar)<br>・Is another app hogging it?<br>・On iPhone, is Safari up to date?<br>A player shows up once it works. If not, the note underneath says why."),
-      actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
-  }
-  if (has("音が出", "聞こえ", "読み上げ", "音声", "no sound", "can't hear", "speech")) {
-    return { mood: "worry", html: nt(
-      "読み上げは端末の音声機能を借りてるんだ。音が出ないときは、まず<b>マナーモード</b>と<b>音量</b>を確認してみて。それでも駄目ならブラウザを最新にするか、Chrome か Safari で試してみて。",
-      "I borrow your device built-in voices. Check <b>silent mode</b> and <b>volume</b> first. Still nothing? Update your browser, or try Chrome or Safari.") };
-  }
-  if (has("無料", "お金", "課金", "有料", "free", "cost", "pay")) {
-    return { mood: "happy", html: nt("ぜんぶ<b>無料</b>だよ。登録もいらない。ログインは記録を引き継ぎたいときだけで、これもタダ。","It is all <b>free</b>, no sign-up needed. Logging in is optional — just for syncing your progress, and that is free too.") };
-  }
-  if (has("単語を追加", "自分の単語", "csv", "単語登録", "add words", "my own words")) {
-    return { mood: "normal", html: nt(
-      "設定の「単語の一括登録（CSV）」からいけるよ。1行に「英単語,意味,例文,例文和訳,レベル」の順で書くだけ。レベルは省いてもこっちで<b>自動判定</b>するし、あとで単語一覧のレベル表示をタップすれば直せる。",
-      "Head to \"Bulk import (CSV)\" in settings — one line per word: word, meaning, example, translation, level. Skip the level and I will <b>work it out</b>; tap the level chip later if I got it wrong."),
-      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
-  }
-  if (has("レベル", "初級", "中級", "上級", "level", "beginner", "advanced")) {
-    return { mood: "normal", html: nt(
-      "単語は<b>初級・中級・上級</b>の3段階だよ。単語帳・クイズ・リスニングのどれでも絞り込める。レベルが合ってないと思ったら、単語一覧の表示をタップすれば変えられるよ。",
-      "Words come in <b>beginner, intermediate and advanced</b>. You can filter by level in the cards, quiz and listening. Think one is graded wrong? Tap its level chip and change it.") };
-  }
-  if (has("定着", "習得", "忘却", "間隔", "srs", "spaced", "mastered")) {
-    return { mood: "normal", html: nt(
-      "正解した単語は<b>1日 → 3日 → 7日 → 21日</b>で戻ってくるよ。ちょうど忘れかけた頃をねらってる。間違えると間隔が戻って、定着3まで来たら「習得済み」。",
-      "Words you get right come back after <b>1, 3, 7 then 21 days</b> — right when you are about to forget them. Get one wrong and the gap shrinks again. Level 3 means mastered.") };
-  }
-  if (has("要望", "改善", "不具合", "バグ", "ほしい", "欲しい", "feedback", "bug", "feature", "suggest")) {
-    return { mood: "normal", html: nt(
-      "それ、ぜひ聞かせて。設定の一番下の「ご意見・ご要望」から送れるよ。ちゃんと開発者に届くから。",
-      "Yes please, tell us. The form at the bottom of settings goes straight to the developer."),
-      actions: notoBtn(nt("書いてみる","Write it"), "notoToFeedback()") };
-  }
-
-// 今日やること
+  // 今日やること
   if (has("何すれば", "なにすれば", "何をすれば", "今日は何", "次は何", "つぎは", "what should i", "what next", "おすすめは")) {
     const a = notoNextAction();
     if (a.key === "course") return { mood: "happy",
@@ -4493,6 +4397,102 @@ function notoAnswer(raw) {
     if (hit) return { mood: "happy",
       html: nt("「" + escapeHtml(hit.m) + "」は <b>" + escapeHtml(hit.w.split("").join(" ")) + "</b><br>つまり <b>" + escapeHtml(hit.w) + "</b> だよ。",
                "\"" + escapeHtml(hit.m) + "\" is <b>" + escapeHtml(hit.w.split("").join(" ")) + "</b> — <b>" + escapeHtml(hit.w) + "</b>.") };
+  }
+
+  // 2) 設定の変更
+  if (has("ダーク", "dark", "暗く", "黒く")) { setTheme("dark"); syncSettingsUI(); return { mood: "happy", html: nt("ダークモードにしたよ。","Dark mode, done.") }; }
+  if (has("ライト", "light mode", "明るく", "白く")) { setTheme("light"); syncSettingsUI(); return { mood: "happy", html: nt("ライトモードにしたよ。","Light mode, done.") }; }
+  if (has("端末の設定", "自動で", "auto theme", "system theme")) { setTheme("auto"); syncSettingsUI(); return { mood: "happy", html: nt("端末の設定に合わせるようにしたよ。","It follows your device now.") }; }
+  let m = t0.match(/(?:目標|goal).{0,6}?(\d+)/) || t0.match(/(\d+)\s*(?:問|questions?).{0,4}(?:目標|goal|に)/);
+  if (m) {
+    const n = Math.max(1, Math.min(200, Number(m[1])));
+    state.dailyGoal = n; persist(); syncSettingsUI(); renderHome();
+    return { mood: "happy", html: nt("1日の目標を <b>" + n + "問</b> にしたよ。いっしょにがんばろう。","Daily goal is <b>" + n + "</b> now. We can do this.") };
+  }
+  if (has("速度", "スピード", "speed", "はやく読", "ゆっくり読")) {
+    const v = has("ゆっくり", "slow") ? 0.7 : has("はやい", "早く", "速く", "fast") ? 1.1 : 0.9;
+    setRate(v); syncSettingsUI();
+    return { mood: "happy", html: nt("速度を「" + (v === 0.7 ? "ゆっくり" : v === 1.1 ? "はやい" : "ふつう") + "」にしたよ。","Speed is " + (v === 0.7 ? "slow" : v === 1.1 ? "fast" : "normal") + " now.") };
+  }
+  if (has("アクセント", "accent") ||
+      (has("発音", "pronunciation") && has("アメリカ", "イギリス", "american", "british", "米", "英国", " us", " uk"))) {
+    if (has("イギリス", "british", "uk", "英国")) { setAccent("uk"); syncSettingsUI(); return { mood: "happy", html: nt("イギリス英語にしたよ。","British English it is.") }; }
+    if (has("アメリカ", "american", "us", "米国")) { setAccent("us"); syncSettingsUI(); return { mood: "happy", html: nt("アメリカ英語にしたよ。","American English it is.") }; }
+    return { mood: "normal", html: nt("アメリカ英語とイギリス英語、どっちがいい？","American or British — which do you want?"),
+      actions: notoBtn(nt("アメリカ英語","American"), "notoAsk('アメリカ英語の発音にして')") + notoBtn(nt("イギリス英語","British"), "notoAsk('イギリス英語の発音にして')") };
+  }
+  if (!has("発音", "アクセント", "accent", "pronunciation")) {
+    if (/(表示|画面|ui|インターフェース|言語).{0,6}(英語|english)/.test(t0) || /(英語|english).{0,3}(表示|ui)/.test(t0) || /switch.*(ui|interface|display).*english/.test(t0)) { setLang("en"); return { mood: "happy", html: "Interface is in English now." }; }
+    if (/(表示|画面|ui|インターフェース|言語).{0,6}(日本語|japanese)/.test(t0) || /(日本語|japanese).{0,3}(表示|ui)/.test(t0) || /switch.*(ui|interface|display).*japanese/.test(t0)) { setLang("ja"); return { mood: "happy", html: "表示を日本語に戻したよ。" }; }
+  }
+  if (has("通知", "リマインダー", "reminder", "notification")) {
+    return { mood: "normal", html: nt("リマインダーは設定から時刻を決めてオンにできるよ。このページを開いてる間にお知らせするね。","Set a reminder time in settings and I will ping you while this page is open."),
+      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
+  }
+
+  // 3) 画面の移動
+  if (has("クイズ", "quiz")) return { mood: "happy", html: nt("クイズだね、いこう。","Quiz it is."), actions: notoBtn(nt("クイズへ","Go to quiz"), "closeNoto();switchTab('quiz')") };
+  if (has("リスニング", "listening")) return { mood: "happy", html: nt("リスニングだね。","Listening, coming up."), actions: notoBtn(nt("リスニングへ","Go to listening"), "closeNoto();switchTab('listen')") };
+  if (has("単語帳", "フラッシュ", "flashcard", "cards")) return { mood: "happy", html: nt("単語帳だね。","Flashcards, here you go."), actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
+  if (has("コラム", "記事", "article", "column")) return { mood: "happy", html: nt("コラムだね。45本あるよ。","Articles — 45 of them."), actions: notoBtn(nt("コラムへ","Go to articles"), "closeNoto();switchTab('column')") };
+  if (has("例文集", "例文一覧", "sentences")) return { mood: "happy", html: nt("例文集だね。","Sentences, coming up."), actions: notoBtn(nt("例文集へ","Go to sentences"), "closeNoto();switchTab('phrase')") };
+  if (has("復習", "今日の学習", "review", "start studying")) {
+    const due = dueToday().length;
+    return { mood: "happy", html: nt("今日の復習は <b>" + due + "語</b>。さくっと終わらせよう。","<b>" + due + " words</b> due today. Let's knock them out."),
+      actions: notoBtn(nt("復習をはじめる","Start review"), "closeNoto();startTodayReview()") };
+  }
+
+  // 4) 進捗
+  if (has("進捗", "どれくらい", "どのくらい", "状況", "今日は", "連続", "streak", "how am i", "my progress", "how many")) {
+    const mastered = state.words.filter(w => w.box >= 3).length;
+    const pct = Math.round(mastered / state.words.length * 100);
+    return { mood: (state.todayCount || 0) > 0 ? "happy" : "normal", html: nt(
+      "今日は <b>" + (state.todayCount || 0) + "問</b>（目標 " + todayGoal() + "問）。<br>連続 <b>" + (state.streak || 0) + "日</b>、自己ベストは " + (state.bestStreak || 0) + "日。<br>習得済みは <b>" + mastered + "語</b>、全体の " + pct + "% だよ。",
+      "Today: <b>" + (state.todayCount || 0) + "</b> of " + todayGoal() + ".<br>Streak <b>" + (state.streak || 0) + " days</b>, best " + (state.bestStreak || 0) + ".<br>You have mastered <b>" + mastered + " words</b> — " + pct + "% of the lot.") };
+  }
+
+  // 5) 困りごと・よくある質問
+  if (has("引き継", "機種変", "データが消", "バックアップ", "移行", "new phone", "back up", "transfer my data")) {
+    return { mood: "normal", html: nt(
+      "記録はこの端末のブラウザに入ってるよ。持っていく方法は2つ。<br>・<b>Googleでログイン</b>すれば自動でクラウドに保存されて、別の端末でも続きからいける。<br>・設定の<b>バックアップ保存</b>でファイルに書き出してもいい。<br>おすすめは前者。ラクだよ。",
+      "Your progress lives in this browser. Two ways to take it with you:<br>・<b>Sign in with Google</b> and it syncs to any device automatically.<br>・Or export a <b>backup file</b> from settings.<br>The first one is easier, honestly."),
+      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
+  }
+  if (has("録音")|| /record/.test(t0)) {
+    return { mood: "worry", html: nt(
+      "録音は単語帳の「🎤 発音を録音」からだよ。動かないときはこのへんを見てみて。<br>・マイクを<b>許可</b>してる？（アドレスバーの🔒から変えられる）<br>・他のアプリがマイクを使ってない？<br>・iPhoneならSafariは最新？<br>録れたら再生プレーヤーが出るよ。出ないときは下に理由が書いてある。",
+      "Recording is on the flashcard screen, under \"Record yourself\". If it will not play ball:<br>・Is the mic <b>allowed</b>? (the 🔒 in the address bar)<br>・Is another app hogging it?<br>・On iPhone, is Safari up to date?<br>A player shows up once it works. If not, the note underneath says why."),
+      actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
+  }
+  if (has("音が出", "聞こえ", "読み上げ", "音声", "no sound", "can't hear", "speech")) {
+    return { mood: "worry", html: nt(
+      "読み上げは端末の音声機能を借りてるんだ。音が出ないときは、まず<b>マナーモード</b>と<b>音量</b>を確認してみて。それでも駄目ならブラウザを最新にするか、Chrome か Safari で試してみて。",
+      "I borrow your device built-in voices. Check <b>silent mode</b> and <b>volume</b> first. Still nothing? Update your browser, or try Chrome or Safari.") };
+  }
+  if (has("無料", "お金", "課金", "有料", "free", "cost", "pay")) {
+    return { mood: "happy", html: nt("ぜんぶ<b>無料</b>だよ。登録もいらない。ログインは記録を引き継ぎたいときだけで、これもタダ。","It is all <b>free</b>, no sign-up needed. Logging in is optional — just for syncing your progress, and that is free too.") };
+  }
+  if (has("単語を追加", "自分の単語", "csv", "単語登録", "add words", "my own words")) {
+    return { mood: "normal", html: nt(
+      "設定の「単語の一括登録（CSV）」からいけるよ。1行に「英単語,意味,例文,例文和訳,レベル」の順で書くだけ。レベルは省いてもこっちで<b>自動判定</b>するし、あとで単語一覧のレベル表示をタップすれば直せる。",
+      "Head to \"Bulk import (CSV)\" in settings — one line per word: word, meaning, example, translation, level. Skip the level and I will <b>work it out</b>; tap the level chip later if I got it wrong."),
+      actions: notoBtn(nt("設定を開く","Open settings"), "closeNoto();openSettings()") };
+  }
+  if (has("レベル", "初級", "中級", "上級", "level", "beginner", "advanced")) {
+    return { mood: "normal", html: nt(
+      "単語は<b>初級・中級・上級</b>の3段階だよ。単語帳・クイズ・リスニングのどれでも絞り込める。レベルが合ってないと思ったら、単語一覧の表示をタップすれば変えられるよ。",
+      "Words come in <b>beginner, intermediate and advanced</b>. You can filter by level in the cards, quiz and listening. Think one is graded wrong? Tap its level chip and change it.") };
+  }
+  if (has("定着", "習得", "忘却", "間隔", "srs", "spaced", "mastered")) {
+    return { mood: "normal", html: nt(
+      "正解した単語は<b>1日 → 3日 → 7日 → 21日</b>で戻ってくるよ。ちょうど忘れかけた頃をねらってる。間違えると間隔が戻って、定着3まで来たら「習得済み」。",
+      "Words you get right come back after <b>1, 3, 7 then 21 days</b> — right when you are about to forget them. Get one wrong and the gap shrinks again. Level 3 means mastered.") };
+  }
+  if (has("要望", "改善", "不具合", "バグ", "ほしい", "欲しい", "feedback", "bug", "feature", "suggest")) {
+    return { mood: "normal", html: nt(
+      "それ、ぜひ聞かせて。設定の一番下の「ご意見・ご要望」から送れるよ。ちゃんと開発者に届くから。",
+      "Yes please, tell us. The form at the bottom of settings goes straight to the developer."),
+      actions: notoBtn(nt("書いてみる","Write it"), "notoToFeedback()") };
   }
 
   // 6) 単語をしらべる
