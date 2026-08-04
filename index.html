@@ -222,7 +222,7 @@
 
   /* 画面下部の控えめなお知らせ */
   .toast {
-    position: fixed; left: 12px; right: 12px; bottom: 78px; z-index: 900; max-width: 520px; margin: 0 auto;
+    position: fixed; left: 12px; right: 12px; bottom: calc(100px + env(safe-area-inset-bottom)); z-index: 900; max-width: 520px; margin: 0 auto;
     background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,.18);
     padding: 13px 14px; display: flex; gap: 10px; align-items: center; animation: toastUp .25s ease;
   }
@@ -243,7 +243,7 @@
   :root { --noto-body: #5b6ef5; --noto-ring: rgba(255,255,255,.5); --noto-face: #ffffff; --noto-pupil: #2b2f6b; --noto-card: #eef0ff; }
   body.dark { --noto-body: #7d8cf8; --noto-pupil: #1e2147; --noto-card: #23283c; }
   .noto-fab {
-    position: fixed; right: 14px; bottom: 78px; z-index: 850;
+    position: fixed; right: 14px; bottom: calc(100px + env(safe-area-inset-bottom)); z-index: 850;
     width: 58px; height: 58px; border-radius: 50%; border: none; padding: 0;
     background: var(--card); box-shadow: 0 6px 20px rgba(30,41,59,.22);
     display: flex; align-items: center; justify-content: center; cursor: pointer;
@@ -253,7 +253,7 @@
     background: var(--danger); border: 2px solid var(--card); display: none; }
   .noto-fab.alert .nb { display: none; }
   .noto-tip {
-    position: fixed; right: 78px; bottom: 92px; z-index: 849; max-width: 190px;
+    position: fixed; right: 78px; bottom: calc(116px + env(safe-area-inset-bottom)); z-index: 849; max-width: 190px;
     background: var(--card); border: 1px solid var(--border); border-radius: 14px;
     box-shadow: 0 6px 18px rgba(30,41,59,.16); padding: 9px 12px;
     font-size: .74rem; line-height: 1.6; color: var(--text);
