@@ -3,8 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>英単語が覚えられない人へ。記憶に残る「間隔反復」学習法 | EigoNote（エイゴノート）</title>
-<meta name="description" content="英単語を効率よく覚えるための間隔反復（スペースドリピティション）の仕組みと実践方法を初心者向けに解説します。">
+<title>英単語の覚え方と復習設計：忘れる前提で組み立てる間隔反復 | EigoNote（エイゴノート）</title>
+<meta name="description" content="覚えたはずの英単語をすぐ忘れてしまう人へ。忘却を前提にした間隔反復の設計、思い出す練習が効く理由、コロケーションと短い例文で覚える方法、1日の適正量までまとめました。">
+<link rel="canonical" href="https://eigonote.jp/column-tango-kioku.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="EigoNote（エイゴノート）">
+<meta property="og:title" content="英単語の覚え方と復習設計：忘れる前提で組み立てる間隔反復">
+<meta property="og:description" content="覚えたはずの英単語をすぐ忘れてしまう人へ。忘却を前提にした間隔反復の設計、思い出す練習が効く理由、コロケーションと短い例文で覚える方法、1日の適正量までまとめました。">
+<meta property="og:url" content="https://eigonote.jp/column-tango-kioku.html">
+<meta property="og:image" content="https://eigonote.jp/ogp.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="英単語の覚え方と復習設計：忘れる前提で組み立てる間隔反復">
+<meta name="twitter:description" content="覚えたはずの英単語をすぐ忘れてしまう人へ。忘却を前提にした間隔反復の設計、思い出す練習が効く理由、コロケーションと短い例文で覚える方法、1日の適正量までまとめました。">
+<meta name="twitter:image" content="https://eigonote.jp/ogp.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5b6ef5">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BlogPosting",
+ "headline": "英単語の覚え方と復習設計：忘れる前提で組み立てる間隔反復",
+ "description": "覚えたはずの英単語をすぐ忘れてしまう人へ。忘却を前提にした間隔反復の設計、思い出す練習が効く理由、コロケーションと短い例文で覚える方法、1日の適正量までまとめました。",
+ "url": "https://eigonote.jp/column-tango-kioku.html",
+ "datePublished": "2026-08-07",
+ "dateModified": "2026-08-07",
+ "inLanguage": "ja",
+ "articleSection": "学習法",
+ "author": {
+  "@type": "Person",
+  "name": "Yaya",
+  "description": "国際学部の大学生。TOEIC 450点から795点まで伸ばし、900点を目指して学習中。",
+  "url": "https://eigonote.jp/about.html"
+ },
+ "publisher": {
+  "@type": "Organization",
+  "name": "EigoNote",
+  "logo": {
+   "@type": "ImageObject",
+   "url": "https://eigonote.jp/icon-512.png"
+  }
+ },
+ "mainEntityOfPage": {
+  "@type": "WebPage",
+  "@id": "https://eigonote.jp/column-tango-kioku.html"
+ },
+ "image": "https://eigonote.jp/ogp.png"
+}
+</script>
 <style>
 :root{--bg:#f0f4f8;--card:#fff;--primary:#4f6df5;--text:#1e293b;--muted:#64748b;--border:#e2e8f0}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -19,19 +65,37 @@ main{max-width:760px;margin:0 auto;padding:28px 16px 48px}
 h1{font-size:1.5rem;margin-bottom:6px;line-height:1.5}
 .meta{color:var(--muted);font-size:.8rem;margin-bottom:20px}
 article h2{font-size:1.15rem;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--primary)}
+article h3{font-size:1rem;margin:18px 0 8px}
+article h4{font-size:.95rem;margin:14px 0 6px}
 article p{margin-bottom:14px;font-size:.95rem}
 article ul,article ol{margin:0 0 14px 24px;font-size:.95rem}
 article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:.9rem}
+article th,article td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+article th{background:#eef2ff}
 a{color:var(--primary)}
-.list-item{display:block;background:var(--card);border-radius:14px;box-shadow:0 2px 10px rgba(30,41,59,.07);padding:20px 24px;margin-bottom:14px;text-decoration:none;color:var(--text)}
-.list-item:hover{box-shadow:0 4px 16px rgba(79,109,245,.18)}
-.list-item .t{font-weight:700;margin-bottom:4px}
-.list-item .d{font-size:.85rem;color:var(--muted)}
+.cat{font-size:.7rem;color:var(--primary);font-weight:700;margin-bottom:12px}
 .cta{display:inline-block;background:var(--primary);color:#fff;text-decoration:none;font-weight:700;padding:12px 24px;border-radius:12px;margin-top:8px}
 footer{border-top:1px solid var(--border);background:#fff;padding:26px 16px;text-align:center;font-size:.8rem;color:var(--muted)}
 footer a{color:var(--muted);margin:0 10px}
-.related h2{font-size:1.05rem;margin:0 0 14px}.rlist{list-style:none;padding:0;margin:0}.rlist li{border-bottom:1px solid var(--border)}.rlist li:last-child{border-bottom:none}.rlist a{display:block;padding:12px 2px;text-decoration:none;color:inherit;font-weight:700;font-size:.94rem;line-height:1.6}.rlist a:hover{color:var(--primary)}.rc{display:block;font-size:.68rem;color:var(--primary);font-weight:700;margin-bottom:2px}.rmore{margin:14px 0 0;font-size:.85rem}.rmore a{color:var(--primary);font-weight:700;text-decoration:none}</style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7228040067218129" crossorigin="anonymous"></script>
+h1{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;line-height:1.45}
+.hl{position:relative;display:inline-block;white-space:nowrap}
+.hl::after{content:"";position:absolute;left:-2px;right:-2px;bottom:2px;height:38%;background:linear-gradient(90deg,rgba(79,109,245,.22),rgba(124,92,240,.22));border-radius:4px;z-index:-1}
+.lead{font-size:1rem;color:var(--muted);line-height:1.9;margin-bottom:22px}
+.proof{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 4px}
+.proof>div{text-align:center;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 8px}
+.proof .pv{font-size:1.3rem;font-weight:800;color:var(--primary);line-height:1.2}
+.proof .pl{font-size:.68rem;color:var(--muted);font-weight:600;margin-top:2px}
+article h2{font-weight:800;letter-spacing:-.01em}
+.related h2{font-size:1.05rem;margin:0 0 14px}.rlist{list-style:none;padding:0;margin:0}.rlist li{border-bottom:1px solid var(--border)}.rlist li:last-child{border-bottom:none}.rlist a{display:block;padding:12px 2px;text-decoration:none;color:inherit;font-weight:700;font-size:.94rem;line-height:1.6}.rlist a:hover{color:var(--primary)}.rc{display:block;font-size:.68rem;color:var(--primary);font-weight:700;margin-bottom:2px}.rmore{margin:14px 0 0;font-size:.85rem}.rmore a{color:var(--primary);font-weight:700;text-decoration:none}
+.author{padding:22px 24px}
+.ab{display:flex;gap:14px;align-items:flex-start}
+.ai{flex:none;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#7c5cf0);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.an{font-weight:800;margin-bottom:4px}
+.ad{font-size:.85rem;color:var(--muted);line-height:1.85;margin:0 0 6px}
+.note{background:#eef2ff;border-radius:12px;padding:14px 16px;font-size:.9rem;margin:0 0 16px;line-height:1.85}
+article blockquote{border-left:4px solid var(--border);padding:2px 0 2px 14px;margin:0 0 16px;color:var(--muted);font-size:.92rem}
+</style>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -39,35 +103,210 @@ footer a{color:var(--muted);margin:0 10px}
 <body>
 <header><div class="hin">
 <a class="logo" href="index.html"><svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true" style="display:block;flex:none"><rect x="0" y="0" width="100" height="100" rx="23" fill="rgba(255,255,255,.95)"/><rect x="14" y="9" width="72" height="82" rx="13" fill="#5b6ef5"/><circle cx="25" cy="28" r="4" fill="rgba(255,255,255,.5)"/><circle cx="25" cy="50" r="4" fill="rgba(255,255,255,.5)"/><circle cx="25" cy="72" r="4" fill="rgba(255,255,255,.5)"/><circle cx="45" cy="46" r="9" fill="#fff"/><circle cx="69" cy="46" r="9" fill="#fff"/><circle cx="46.5" cy="48" r="4" fill="#2b2f6b"/><circle cx="70.5" cy="48" r="4" fill="#2b2f6b"/><path d="M46 65 Q57 76 68 65" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg><span>EigoNote</span></a>
-<nav class="g"><a href="index.html">アプリ</a><a href="columns.html">学習コラム</a><a href="about.html">このサイトについて</a></nav>
+<nav class="g"><a href="index.html">アプリ</a><a href="columns.html">学習コラム</a><a href="about.html">運営者情報</a></nav>
 </div></header>
 <main>
 <div class="card"><article>
-<h1>英単語が覚えられない人へ。記憶に残る「間隔反復」学習法</h1>
-<p class="meta">公開日: 2026-07-01｜EigoNote 編集部</p>
+<div class="cat">学習法</div>
+<h1>英単語の覚え方と復習設計：忘れる前提で組み立てる間隔反復</h1>
+<p class="meta">公開日: 2026-08-07｜文: Yaya</p>
+<p class="lead">単語帳を1周した。覚えた気がした。1週間後、ほとんど残っていない。<span class="hl">「覚える」より「忘れない」ほうがずっと難しい</span>——EigoNote を作ったのは、この壁にぶつかったからです。この記事では、忘却を前提にした復習の設計と、単語を「思い出せる形」で覚えるための具体的な方法をまとめます。</p>
 
-<p>「昨日覚えたはずの単語が今日はもう思い出せない」。英語学習者なら誰もが経験する悩みです。実はこれは記憶力の問題ではなく、復習のタイミングの問題であることがほとんどです。</p>
-<h2>忘却曲線と戦わない</h2>
-<p>心理学者エビングハウスの研究によると、人は学習した内容を1時間後には約半分、1日後には約7割忘れると言われています。つまり「忘れること」は脳の正常な働きであり、避けられません。大切なのは忘れることを前提に学習を設計することです。</p>
-<h2>間隔反復（スペースドリピティション）とは</h2>
-<p>間隔反復とは、復習の間隔を少しずつ広げながら繰り返す学習法です。例えば新しい単語を覚えたら、1日後、3日後、1週間後、2週間後、1か月後というように、思い出せるギリギリのタイミングで復習します。「思い出そうと努力する」瞬間に記憶は強化されるため、忘れかけた頃の復習が最も効率的なのです。</p>
-<h2>実践のコツ</h2>
+<h2>人は覚えた直後から忘れていく</h2>
+
+<p>記憶の研究でよく引かれるのが、19世紀の心理学者エビングハウスの実験です。意味のない音節を覚えたあと、時間とともにどれだけ再学習に時間がかかるかを測ったもので、<b>覚えた直後から急激に忘れ、その後ゆるやかになる</b>という曲線が知られています。</p>
+
+<p>ここで大事なのは「人間はダメだ」という話ではなく、<b>忘れるのは正常</b>だということです。1回で覚えられないのは、やり方が悪いのでも、頭が悪いのでもありません。</p>
+
+<p>そして、もうひとつ重要な事実があります。<b>忘れかけたタイミングで思い出すと、記憶は長持ちする</b>。これが間隔反復（spaced repetition）の考え方です。</p>
+
+<h2>間隔反復：復習する日をずらしていく</h2>
+
+<p>やることは単純です。覚えた単語を、<b>だんだん間隔を広げながら</b>復習します。</p>
+
+<table>
+<tr><th>回数</th><th>タイミング</th><th>状態</th></tr>
+<tr><td>1回目</td><td>覚えた翌日</td><td>まだ半分くらい残っている</td></tr>
+<tr><td>2回目</td><td>その3日後</td><td>あやふやになっている</td></tr>
+<tr><td>3回目</td><td>その1週間後</td><td>思い出せれば定着し始めている</td></tr>
+<tr><td>4回目</td><td>その3週間後</td><td>ここまで残れば長期記憶に入りやすい</td></tr>
+</table>
+
+<p>ポイントは<b>間隔を空けること</b>です。今日20回書いて覚えるより、4日に分けて5回ずつ思い出すほうが残ります。同じ努力量でも、配置を変えるだけで結果が変わる。ここが間隔反復のいちばんおいしいところです。</p>
+
+<p>そして<b>間違えた単語は間隔をリセット</b>します。忘れていたということは、まだその単語は「覚えた」段階にないからです。</p>
+
+<div class="note">EigoNote はこの考え方をそのまま実装しています。単語ごとに定着レベルを持っていて、正解すると次の出題が <b>1日後 → 3日後 → 7日後 → 21日後</b> と伸び、間違えると最初に戻ります。「今日どれを復習すべきか」を自分で管理しなくて済むようにしたのが、作った理由でした。</div>
+
+<h2>「見て思い出す」と「思い出そうとする」は別物</h2>
+
+<p>単語帳を眺めるのと、隠して思い出そうとするのとでは、記憶への残り方がまったく違います。</p>
+
+<p>心理学では<b>テスト効果（retrieval practice）</b>と呼ばれる現象で、単に読み返すより、思い出そうと努力するほうが記憶が強くなることが繰り返し確認されています。</p>
+
+<p>つまり、単語学習でやるべきなのは<b>インプットではなくアウトプット</b>です。</p>
+
+<table>
+<tr><th>やり方</th><th>効果</th><th>理由</th></tr>
+<tr><td>単語帳を眺める</td><td>低い</td><td>「知っている感じ」がするだけで、思い出す訓練になっていない</td></tr>
+<tr><td>赤シートで隠して答える</td><td>高い</td><td>思い出す負荷がかかる</td></tr>
+<tr><td>4択クイズ</td><td>中〜高</td><td>選択肢がヒントになるが、判断の訓練になる</td></tr>
+<tr><td>日本語→英語で言う</td><td>最も高い</td><td>ゼロから引き出す必要がある。使える語彙になりやすい</td></tr>
+</table>
+
+<p>「思い出せなくて悔しい」という感覚は、<b>記憶が強くなっているサイン</b>です。すぐに答えを見ないで、5秒でいいので粘ってから確認してください。</p>
+
+<h2>英単語は「単体」で覚えると使えない</h2>
+
+<p>ここからは、覚え方の中身の話です。</p>
+
+<p>単語と訳を1対1で覚えると、テストでは答えられても、読むときと話すときに使えません。理由は単純で、<b>実際の英語では単語は必ず組み合わせで出てくる</b>からです。</p>
+
+<h3>コロケーション（自然な組み合わせ）で覚える</h3>
+
+<p>英語には「よく一緒に使われる組み合わせ」があります。これをコロケーションと呼びます。</p>
+
+<table>
+<tr><th>日本語</th><th>自然な英語</th><th>不自然な英語</th></tr>
+<tr><td>決定を下す</td><td>make a decision</td><td>do a decision</td></tr>
+<tr><td>宿題をする</td><td>do one's homework</td><td>make one's homework</td></tr>
+<tr><td>強い雨</td><td>heavy rain</td><td>strong rain</td></tr>
+<tr><td>会議に出席する</td><td>attend a meeting</td><td>join a meeting（口語では可だが硬い場面では attend）</td></tr>
+<tr><td>締め切りを守る</td><td>meet a deadline</td><td>keep a deadline</td></tr>
+</table>
+
+<p>decision を「決定」とだけ覚えていると、動詞を選ぶ段階でつまずきます。<b>make a decision で1つの単語だと思って覚える</b>ほうが、結果的に速い。</p>
+
+<h3>例文ごと覚える</h3>
+
+<p>コロケーションをさらに一歩進めたのが、例文ごと覚える方法です。</p>
+
+<p>例文で覚えると、次の3つが同時に手に入ります。</p>
+
 <ul>
-<li><strong>1回の量を欲張らない</strong>：1日に100語詰め込むより、20語を5日間かけて回すほうが定着します。</li>
-<li><strong>「覚えた／まだ」を仕分ける</strong>：自信のない単語だけを高頻度で復習し、覚えた単語は間隔を広げます。</li>
-<li><strong>例文とセットで覚える</strong>：単語単体より、文脈の中で覚えたほうが思い出すきっかけが増えます。</li>
-<li><strong>声に出す</strong>：目・耳・口を同時に使うと記憶のフックが増えます。</li>
+<li><b>使い方</b>：他動詞か自動詞か、うしろに何が続くか</li>
+<li><b>場面</b>：ビジネスの文脈か、日常会話か</li>
+<li><b>記憶のフック</b>：単体より、文脈がある情報のほうが思い出しやすい</li>
 </ul>
-<h2>アプリを活用しよう</h2>
-<p>間隔反復を紙のノートで管理するのは大変ですが、アプリなら自動化できます。当サイトの無料アプリ「EigoNote」の単語帳機能は、「覚えた／まだ」の仕分けでレベル管理ができ、覚えていない単語を優先的に出題します。まずは1日10分から始めてみてください。</p>
-<p><a class="cta" href="index.html">無料アプリで単語学習を始める →</a></p>
 
+<p>ただし、例文暗記には注意点があります。<b>長い例文を丸暗記しようとすると挫折します。</b>目安は10語以内。「この単語を使うならこの形」という<b>型</b>が分かればいいので、短いほうが機能します。</p>
+
+<table>
+<tr><th>単語</th><th>覚える例文</th><th>そこから分かること</th></tr>
+<tr><td>submit</td><td>Please submit the report by Friday.</td><td>submit + 目的語。締め切りは by</td></tr>
+<tr><td>be responsible for</td><td>She is responsible for the project.</td><td>前置詞は for。to ではない</td></tr>
+<tr><td>look forward to</td><td>I look forward to hearing from you.</td><td>to のあとは動名詞（-ing）</td></tr>
+</table>
+
+<h2>TOEIC の語彙は範囲が偏っている</h2>
+
+<p>TOEIC を目標にするなら、汎用の単語帳から始めるのは遠回りです。TOEIC に出るのはビジネス寄りの語彙に偏っていて、<b>同じ単語が何度も出ます</b>。</p>
+
+<p>たとえばこのあたりは、TOEIC を受けるなら必ず出会います。</p>
+
+<table>
+<tr><th>単語</th><th>意味</th><th>よく出る文脈</th></tr>
+<tr><td>invoice</td><td>請求書</td><td>支払い・経理のやりとり</td></tr>
+<tr><td>agenda</td><td>議題</td><td>会議の案内</td></tr>
+<tr><td>reimburse</td><td>払い戻す</td><td>経費精算</td></tr>
+<tr><td>itinerary</td><td>旅程表</td><td>出張の連絡</td></tr>
+<tr><td>renovation</td><td>改装</td><td>店舗・オフィスの工事のお知らせ</td></tr>
+</table>
+
+<p>逆に言えば、<b>この範囲を先に潰せばリスニングとリーディングが同時に楽になる</b>ということです。僕が金のフレーズのような TOEIC 特化の単語帳を最初に回したのも、この理由でした。</p>
+
+<h2>覚えられない単語をどうするか</h2>
+
+<p>何度やっても定着しない単語は必ず出てきます。そういう単語には、次のどれかを足します。</p>
+
+<ul>
+<li><b>語源で分解する</b>：re-（再び）＋ imburse（財布に入れる）→ reimburse（払い戻す）のように分解できると、意味が理屈で残る</li>
+<li><b>音で覚える</b>：発音して覚える。目で見るだけの記憶より、音のフックがあるほうが強い</li>
+<li><b>自分の生活に結びつける</b>：itinerary なら「自分が旅行に行くときの旅程表」と具体的な場面で想像する</li>
+<li><b>いったん諦めて、明日また会う</b>：粘るより、間隔をあけて再会するほうが効率がいい</li>
+</ul>
+
+<p>最後のものが実はいちばん重要です。<b>1日で覚えようとしない。</b>覚えられない単語は、明日また出会えばいい。間隔反復の仕組みがあるなら、そこは仕組みに任せられます。</p>
+
+<h2>1日にどれくらいやるか</h2>
+
+<p>新しい単語を1日に大量に入れても、翌日の復習が破綻します。目安として、</p>
+
+<ul>
+<li><b>新規は1日10〜20語</b>まで。それ以上入れると復習が積み上がって続かない</li>
+<li><b>復習は新規より優先</b>。今日の復習を終えてから新規に進む</li>
+<li><b>毎日ゼロにしない</b>。3語でもいいので、間隔をリセットさせない</li>
+</ul>
+
+<p>単語学習が破綻する典型は、最初の1週間で200語入れて、2週目に復習が150語たまって嫌になるパターンです。<b>復習の量は、新規の量が決める</b>ということを最初に理解しておくと、無理のないペースを設計できます。</p>
+
+<h2>「書いて覚える」は必要か</h2>
+
+<p>結論から言うと、<b>書くこと自体に魔法はありません。</b>大事なのは「思い出そうとしたかどうか」なので、書いても答えを見ながら写しているだけなら効果は薄い。</p>
+
+<p>そのうえで、書くのが有効な場面はあります。</p>
+
+<ul>
+<li><b>綴りを問われる試験を受ける</b>（英検のライティングなど）。TOEIC は選択式なので、綴りを書けなくても解けます</li>
+<li><b>手が止まる＝思い出せていない、が可視化できる</b></li>
+<li><b>集中が切れているとき</b>に、手を動かすと戻ってくる</li>
+</ul>
+
+<p>逆に、時間あたりの効率で言えば書く方法は遅いです。TOEIC のスコアを上げたいだけなら、<b>書く時間を「日本語を見て英語を言う」練習に回したほうが伸びます</b>。</p>
+
+<h2>紙の単語帳とアプリ、どう使い分けるか</h2>
+
+<table>
+<tr><th></th><th>得意なこと</th><th>苦手なこと</th></tr>
+<tr><td>紙の単語帳</td><td>全体像が見える。どこまで進んだかが物理的に分かる。試験に出る範囲が整理されている</td><td>復習日の管理が自分任せ。苦手な単語だけ抜き出しにくい</td></tr>
+<tr><td>アプリ</td><td>復習日を自動で管理できる。間違えた単語だけ出し直せる。音声が聞ける</td><td>収録範囲が中途半端なことがある。全体像がつかみにくい</td></tr>
+</table>
+
+<p>おすすめは<b>併用</b>です。範囲と全体像は紙の単語帳で決めて、<b>覚えきれない単語の管理はアプリに任せる</b>。この分担がいちばん無理がありません。</p>
+
+<h2>多義語は「コア」で押さえる</h2>
+
+<p>覚えにくい単語の代表が、意味がたくさんある基本語です。run を「走る」とだけ覚えていると、run a business（会社を経営する）で止まります。</p>
+
+<p>こういう語は、訳語を丸暗記するのではなく<b>共通イメージ（コア）</b>で押さえます。</p>
+
+<table>
+<tr><th>単語</th><th>コアイメージ</th><th>そこから広がる意味</th></tr>
+<tr><td>run</td><td>止まらずに動き続ける</td><td>走る／経営する（会社を動かし続ける）／（機械が）作動する</td></tr>
+<tr><td>address</td><td>正面から向かう</td><td>住所／演説する／（問題に）取り組む</td></tr>
+<tr><td>cover</td><td>上からかぶせる</td><td>覆う／（費用を）まかなう／（範囲を）扱う</td></tr>
+<tr><td>hold</td><td>手に持って離さない</td><td>持つ／開催する／（電話を）保留にする</td></tr>
+</table>
+
+<p>TOEIC の語彙問題では、この「基本語の意外な意味」が狙われます。<b>知らない単語より、知っているつもりの単語のほうが危ない</b>ということです。</p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>忘れるのは正常。<b>忘れかけたときに思い出す</b>と記憶は長持ちする</li>
+<li>復習は <b>1日後 → 3日後 → 1週間後 → 3週間後</b> と間隔を広げる。間違えたらリセット</li>
+<li>眺めるのではなく<b>思い出そうとする</b>。テスト形式のほうが圧倒的に残る</li>
+<li>単体ではなく<b>コロケーションと短い例文</b>で覚える</li>
+<li>TOEIC 対策なら<b>出る範囲が偏っている</b>ので、特化した単語帳から入る</li>
+<li>新規は1日10〜20語。<b>復習を新規より優先</b>する</li>
+</ul>
+
+<p><a class="cta" href="index.html">EigoNoteで間隔反復を自動化する（無料）</a></p>
 </article></div>
-<!-- related -->
+<div class="card author">
+<div class="ab">
+<div class="ai">Y</div>
+<div>
+<div class="an">Yaya</div>
+<p class="ad">国際学部の大学生。TOEIC は大学1年のIPテストで450点、会場受験で540点。大学2年でオーストラリアに4か月留学し、現地で英語を話しながら空き時間にTOEIC対策を続けて、帰国後に795点。いま900点を目指して勉強中です。そのときに「先に知っておきたかったこと」を EigoNote にまとめています。</p>
+<p class="ad"><a href="about.html">運営者情報をくわしく見る →</a></p>
+</div>
+</div>
+</div>
 <div class="card related">
 <h2>あわせて読みたい</h2>
-<ul class="rlist"><li><a href="column-eigo-kodomo.html"><span class="rc">学習法</span>子どもと一緒に楽しむおうち英語のはじめ方</a></li><li><a href="column-collocation.html"><span class="rc">学習法</span>コロケーションで覚える「自然な英語」の作り方</a></li><li><a href="column-reibun-gakushu.html"><span class="rc">学習法</span>例文ごと覚える学習法：単語帳の次のステップ</a></li><li><a href="column-eigo-input-output.html"><span class="rc">学習法</span>インプットとアウトプットの黄金比を知る</a></li></ul>
-<p class="rmore"><a href="columns.html">コラム一覧をすべて見る（45記事）→</a>　<a href="index.html">単語アプリで学習する →</a></p>
+<ul class="rlist"><li><a href="column-toeic-450-795.html"><span class="rc">TOEIC</span>TOEIC 450点から795点まで。留学と独学で実際にやったこと全部</a></li><li><a href="column-eigo-input-output.html"><span class="rc">学習法</span>インプットとアウトプットの回し方</a></li><li><a href="column-eigo-shukanka.html"><span class="rc">学習習慣</span>英語学習を続ける仕組み</a></li><li><a href="column-toeic-part5.html"><span class="rc">TOEIC</span>TOEIC Part5 完全攻略</a></li></ul>
+<p class="rmore"><a href="columns.html">コラム一覧を見る →</a>　<a href="index.html">単語アプリで学習する →</a></p>
 </div>
 <p><a href="columns.html">← コラム一覧へ戻る</a></p>
 </main>
