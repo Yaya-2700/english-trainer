@@ -778,7 +778,7 @@
       <div id="today-column" style="margin-top:16px"></div>
     </div>
     <div class="card">
-      <h2 data-i18n="colAllT">📚 すべてのコラム（45記事）</h2>
+      <h2 data-i18n="colAllT">📚 すべてのコラム（10記事）</h2>
       <input type="search" id="col-search" placeholder="キーワードで探す（例：TOEIC、シャドーイング、習慣）" oninput="renderColumnList()" style="margin-bottom:10px" data-i18n-ph="phColSearch" aria-label="コラムを検索">
       <div id="col-chips"></div>
       <div id="col-count" style="font-size:.74rem;color:var(--muted);margin:2px 0 4px;font-weight:600"></div>
@@ -919,6 +919,24 @@
       </div>
       <input type="file" id="import-file" accept="application/json,.json" onchange="importData(this)" style="display:none">
       <div id="backup-msg" style="font-size:.8rem;margin-top:10px"></div>
+    </div>
+    <div class="card plain">
+      <h2 data-i18n="resetT">🧹 記録のリセット</h2>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px" data-i18n="resetD">
+        学習の記録を消して、まっさらな状態から始め直せます。消す直前にバックアップを自動で保存するので、間違えても復元できます。設定（テーマ・目標・読み上げなど）は消えません。
+      </div>
+      <div class="btn-row">
+        <button class="btn small outline" onclick="askReset('progress')" data-i18n="resetProg">学習の記録だけ消す</button>
+        <button class="btn small outline" onclick="askReset('all')" data-i18n="resetAll">追加した単語ごと全部消す</button>
+      </div>
+      <div id="reset-panel" class="hidden" style="margin-top:14px;padding:14px;border:2px solid var(--danger);border-radius:14px">
+        <div id="reset-what" style="font-size:.85rem;line-height:1.8;color:var(--text)"></div>
+        <div class="btn-row mt">
+          <button class="btn small" id="reset-go" onclick="doReset()" style="background:var(--danger)" data-i18n="resetGo">バックアップを保存して消す</button>
+          <button class="btn small outline" onclick="cancelReset()" data-i18n="resetCancel">やめる</button>
+        </div>
+      </div>
+      <div id="reset-msg" style="font-size:.8rem;margin-top:10px"></div>
     </div>
     <div class="card plain">
       <h2 data-i18n="fbTitle">💬 ご意見・ご要望</h2>
@@ -4221,8 +4239,8 @@ function notoAnswer(raw) {
   }
   if (has("何ができ", "なにができ", "使い方", "ヘルプ", "what can you", "help", "how do i use")) {
     return { mood: "normal", html: nt(
-      "こんなことができるよ。<br>・<b>次の一手を決める</b>「今日は何すればいい？」<br>・<b>学習を始める</b>「日常コースはじめて」「TOEICのクイズ10問」<br>・<b>単語を調べる</b>「invoice の意味」「give と provide の違い」<br>・<b>単語をいじる</b>「apple, りんご を追加して」「invoice を上級にして」<br>・<b>苦手を教える</b>「苦手なカテゴリは？」<br>・<b>設定を変える</b>「ダークモードにして」「目標を30問に」<br>・<b>困ったとき</b>「録音ができない」<br>分からないことはコラム45記事からも探すよ。",
-      "Here is what I can do.<br>・<b>Decide what is next</b> — \"what should I do today?\"<br>・<b>Start studying</b> — \"start the travel course\", \"TOEIC quiz, 10 questions\"<br>・<b>Look up words</b> — \"what does invoice mean?\"<br>・<b>Edit your words</b> — \"set invoice to advanced\"<br>・<b>Spot your gaps</b> — \"what am I weak at?\"<br>・<b>Change settings</b> — \"dark mode\", \"make my goal 30\"<br>・<b>Fix problems</b> — \"recording does not work\"<br>If I am stuck, I will search the 45 articles for you.") };
+      "こんなことができるよ。<br>・<b>次の一手を決める</b>「今日は何すればいい？」<br>・<b>学習を始める</b>「日常コースはじめて」「TOEICのクイズ10問」<br>・<b>単語を調べる</b>「invoice の意味」「give と provide の違い」<br>・<b>単語をいじる</b>「apple, りんご を追加して」「invoice を上級にして」<br>・<b>苦手を教える</b>「苦手なカテゴリは？」<br>・<b>設定を変える</b>「ダークモードにして」「目標を30問に」<br>・<b>困ったとき</b>「録音ができない」<br>分からないことはコラム10記事からも探すよ。",
+      "Here is what I can do.<br>・<b>Decide what is next</b> — \"what should I do today?\"<br>・<b>Start studying</b> — \"start the travel course\", \"TOEIC quiz, 10 questions\"<br>・<b>Look up words</b> — \"what does invoice mean?\"<br>・<b>Edit your words</b> — \"set invoice to advanced\"<br>・<b>Spot your gaps</b> — \"what am I weak at?\"<br>・<b>Change settings</b> — \"dark mode\", \"make my goal 30\"<br>・<b>Fix problems</b> — \"recording does not work\"<br>If I am stuck, I will search the articles for you.") };
   }
 
   // 直前に出した単語への追加の質問
@@ -4468,7 +4486,7 @@ function notoAnswer(raw) {
   if (has("クイズ", "quiz")) return { mood: "happy", html: nt("クイズだね、いこう。","Quiz it is."), actions: notoBtn(nt("クイズへ","Go to quiz"), "closeNoto();switchTab('quiz')") };
   if (has("リスニング", "listening")) return { mood: "happy", html: nt("リスニングだね。","Listening, coming up."), actions: notoBtn(nt("リスニングへ","Go to listening"), "closeNoto();switchTab('listen')") };
   if (has("単語帳", "フラッシュ", "flashcard", "cards")) return { mood: "happy", html: nt("単語帳だね。","Flashcards, here you go."), actions: notoBtn(nt("単語帳へ","Go to cards"), "closeNoto();switchTab('flash')") };
-  if (has("コラム", "記事", "article", "column")) return { mood: "happy", html: nt("コラムだね。45本あるよ。","Articles — 45 of them."), actions: notoBtn(nt("コラムへ","Go to articles"), "closeNoto();switchTab('column')") };
+  if (has("コラム", "記事", "article", "column")) return { mood: "happy", html: nt("コラムだね。10本あるよ。","Articles — 10 of them."), actions: notoBtn(nt("コラムへ","Go to articles"), "closeNoto();switchTab('column')") };
   if (has("例文集", "例文一覧", "sentences")) return { mood: "happy", html: nt("例文集だね。","Sentences, coming up."), actions: notoBtn(nt("例文集へ","Go to sentences"), "closeNoto();switchTab('phrase')") };
   if (has("復習", "今日の学習", "review", "start studying")) {
     const due = dueToday().length;
@@ -4487,6 +4505,12 @@ function notoAnswer(raw) {
   }
 
   // 5) 困りごと・よくある質問
+  if (has("リセット", "初期化", "全部消", "消したい", "やり直したい", "まっさら", "reset", "start over", "wipe")) {
+    return { mood: "thinking", html: nt(
+      "記録は設定の<b>「🧹 記録のリセット」</b>から消せるよ。<br>・<b>学習の記録だけ</b>：定着度・連続日数・バッジ・コースが消える。単語はそのまま。<br>・<b>全部</b>：自分で追加した単語も消える。<br>どっちも消す直前にバックアップを自動で保存するから、やっぱり戻したいときは復元できるよ。",
+      "You can wipe your data from <b>\"🧹 Reset your data\"</b> in settings.<br>・<b>Study record only</b> — mastery, streak, badges and courses go; your words stay.<br>・<b>Everything</b> — the words you added go too.<br>Either way a backup is saved first, so you can restore if you change your mind."),
+      actions: notoBtn(nt("設定を開く", "Open settings"), "closeNoto();openSettings()") };
+  }
   if (has("引き継", "機種変", "データが消", "バックアップ", "移行", "new phone", "back up", "transfer my data")) {
     return { mood: "normal", html: nt(
       "記録はこの端末のブラウザに入ってるよ。持っていく方法は2つ。<br>・<b>Googleでログイン</b>すれば自動でクラウドに保存されて、別の端末でも続きからいける。<br>・設定の<b>バックアップ保存</b>でファイルに書き出してもいい。<br>おすすめは前者。ラクだよ。",
@@ -6293,7 +6317,7 @@ const I18N = {
     listenQ: "この英文の意味は？",
     colTodayT: "📖 今日のコラム",
     colTodayD: "毎日1本、おすすめの記事をお届けします",
-    colAllT: "📚 すべてのコラム（45記事）",
+    colAllT: "📚 すべてのコラム（10記事）",
     themeT: "テーマ",
     thLight: "☀️ ライト",
     thDark: "🌙 ダーク",
@@ -6324,6 +6348,23 @@ const I18N = {
     backupD: "学習の進捗はこの端末のブラウザに保存されています。機種変更や別のブラウザへ引き継ぐには、バックアップを保存してください。",
     backupSave: "⬇️ バックアップを保存",
     backupLoad: "⬆️ 復元する",
+    resetT: "🧹 記録のリセット",
+    resetD: "学習の記録を消して、まっさらな状態から始め直せます。消す直前にバックアップを自動で保存するので、間違えても復元できます。設定（テーマ・目標・読み上げなど）は消えません。",
+    resetProg: "学習の記録だけ消す",
+    resetAll: "追加した単語ごと全部消す",
+    resetGo: "バックアップを保存して消す",
+    resetCancel: "やめる",
+    rsHeadProg: "つぎのものが消えます。",
+    rsHeadAll: "つぎのものが消えます。取り消せません。",
+    rsW1: "学習した {n}語 の定着度と復習日",
+    rsW2: "バッジ {n}個、連続 {s}日 の記録、学習履歴のグラフ、コースの進み具合",
+    rsW3: "自分で追加した {n}語（意味や例文ごと消えます）",
+    rsW4: "ログイン中なら、クラウド側の記録も同時に消えます",
+    rsW5: "収録語と、自分で追加した単語はそのまま残ります",
+    rsConfirmProg: "学習の記録を消します。よろしいですか？（バックアップは自動で保存されます）",
+    rsConfirmAll: "追加した単語もふくめて、すべての記録を消します。本当によろしいですか？（バックアップは自動で保存されます）",
+    rsDoneProg: "学習の記録を消しました。まっさらな状態です。",
+    rsDoneAll: "すべての記録を消しました。まっさらな状態です。",
     accentSet: "🗣️ 発音（アクセント）",
     accentUS: "🇺🇸 アメリカ英語",
     accentUK: "🇬🇧 イギリス英語",
@@ -6597,7 +6638,7 @@ const I18N = {
     listenQ: "What does this sentence mean?",
     colTodayT: "📖 Today's article",
     colTodayD: "One recommended article every day",
-    colAllT: "📚 All articles (45)",
+    colAllT: "📚 All articles (10)",
     themeT: "Theme",
     thLight: "☀️ Light",
     thDark: "🌙 Dark",
@@ -6628,6 +6669,23 @@ const I18N = {
     backupD: "Your progress is stored in this browser. Save a backup to move it to another device or browser.",
     backupSave: "⬇️ Save backup",
     backupLoad: "⬆️ Restore",
+    resetT: "🧹 Reset your data",
+    resetD: "Wipe your study record and start over. A backup is saved automatically just before anything is deleted, so a mistake is recoverable. Your settings (theme, goal, speech, and so on) are kept.",
+    resetProg: "Clear study record only",
+    resetAll: "Clear everything, including my words",
+    resetGo: "Save a backup and clear",
+    resetCancel: "Cancel",
+    rsHeadProg: "This will be cleared:",
+    rsHeadAll: "This will be cleared, and it cannot be undone:",
+    rsW1: "Mastery and review dates for {n} words you have studied",
+    rsW2: "{n} badges, your {s}-day streak, the history chart, and course progress",
+    rsW3: "The {n} words you added yourself, with their meanings and examples",
+    rsW4: "If you are signed in, your cloud copy is cleared at the same time",
+    rsW5: "The word list itself, including words you added, is kept",
+    rsConfirmProg: "Clear your study record? A backup will be saved automatically.",
+    rsConfirmAll: "Clear everything, including the words you added? A backup will be saved automatically.",
+    rsDoneProg: "Study record cleared. You are back to a clean slate.",
+    rsDoneAll: "Everything cleared. You are back to a clean slate.",
     accentSet: "🗣️ Accent",
     accentUS: "🇺🇸 American English",
     accentUK: "🇬🇧 British English",
@@ -6758,6 +6816,64 @@ if (window.matchMedia) {
   } catch (e) {}
 }
 
+// ==================== 記録のリセット ====================
+let resetScope = null;
+function askReset(scope) {
+  resetScope = scope;
+  const panel = document.getElementById("reset-panel");
+  const what = document.getElementById("reset-what");
+  const msg = document.getElementById("reset-msg");
+  if (msg) msg.textContent = "";
+  if (!panel || !what) return;
+  const studied = state.words.filter(w => (w.box || 0) > 0 || w.due).length;
+  const mine = state.words.length - DEFAULT_WORDS.length;
+  const lines = [];
+  lines.push(t("rsW1").replace("{n}", studied));
+  lines.push(t("rsW2").replace("{n}", (state.badges || []).length).replace("{s}", state.streak || 0));
+  if (scope === "all" && mine > 0) lines.push(t("rsW3").replace("{n}", mine));
+  if (scope !== "all") lines.push(t("rsW5"));
+  lines.push(t("rsW4"));
+  what.innerHTML = "<b>" + escapeHtml(t(scope === "all" ? "rsHeadAll" : "rsHeadProg")) + "</b><br>" +
+    lines.map(x => "・" + escapeHtml(x)).join("<br>");
+  panel.classList.remove("hidden");
+  try { panel.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+}
+function cancelReset() {
+  resetScope = null;
+  const panel = document.getElementById("reset-panel");
+  if (panel) panel.classList.add("hidden");
+}
+function doReset() {
+  if (!resetScope) return;
+  if (!window.confirm(t(resetScope === "all" ? "rsConfirmAll" : "rsConfirmProg"))) return;
+  const scope = resetScope;
+  try { exportData(); } catch (e) {}
+  if (scope === "all") { state.words = defaultWordObjs(); }
+  else { state.words.forEach(w => { w.box = 0; delete w.due; }); }
+  state.badges = [];
+  state.history = {};
+  state.streak = 0;
+  state.bestStreak = 0;
+  state.lastStudyDate = null;
+  state.todayCount = 0;
+  state.todayDate = new Date().toDateString();
+  state.quizBest = null;
+  state.quizBestPct = null;
+  state.quizDone = 0;
+  state.quizPerfect = false;
+  state.course = null;
+  courseMode = false;
+  persist();
+  try { if (window.eigoPushNow) window.eigoPushNow(); } catch (e) {}
+  try {
+    renderHome(); renderWordList(); renderBadges(); renderCourse();
+    renderCatStats(); renderHistoryChart(); renderWeeklyReport(); renderCatShortcuts();
+  } catch (e) {}
+  cancelReset();
+  const msg = document.getElementById("reset-msg");
+  if (msg) { msg.style.color = "var(--accent)"; msg.textContent = t(scope === "all" ? "rsDoneAll" : "rsDoneProg"); }
+}
+
 // ==================== データのバックアップ / 復元 ====================
 function exportData() {
   const data = JSON.stringify(state);
@@ -6769,7 +6885,7 @@ function exportData() {
   a.click();
   URL.revokeObjectURL(url);
   const msg = document.getElementById("backup-msg");
-  if (msg) { msg.style.color = "var(--accent)"; msg.textContent = "バックアップを保存しました。"; }
+  if (msg) { msg.style.color = "var(--accent)"; msg.textContent = (state.lang === "en") ? "Backup saved." : "バックアップを保存しました。"; }
 }
 function importData(input) {
   const file = input.files && input.files[0];
@@ -6795,7 +6911,7 @@ if (!state.batch) state.batch = 15;
       renderHome(); renderWordList();
       if (msg) { msg.style.color = "var(--accent)"; msg.textContent = `復元しました（${state.words.length}語・連続${state.streak || 0}日）`; }
     } catch (err) {
-      if (msg) { msg.style.color = "var(--danger)"; msg.textContent = "ファイルを読み込めませんでした。"; }
+      if (msg) { msg.style.color = "var(--danger)"; msg.textContent = (state.lang === "en") ? "Could not read that file." : "ファイルを読み込めませんでした。"; }
     }
     input.value = "";
   };
@@ -6900,7 +7016,7 @@ function resetRecording() {
   recMsg("");
 }
 
-const COLUMNS = [{"s": "column-katakoto-datsu", "t": "「単語の羅列」を卒業して文で話すための3ステップ", "d": "英語が単語の羅列になってしまう人へ。主語・動詞を意識して短い文で話すトレーニング法を解説します。", "c": "英会話"}, {"s": "column-wasei-eigo", "t": "通じない和製英語とその正しい英語表現40", "d": "英語だと思って使うと通じない和製英語を、正しい英語表現とセットで紹介します。カタカナ語の落とし穴に注意。", "c": "英会話"}, {"s": "column-jisho-hikikata", "t": "英英辞典デビュー：辞書を使いこなす学習法", "d": "英和辞典から一歩進んだ英英辞典の使い方と、辞書を英語学習に活かすコツを初心者向けに解説します。", "c": "学習法"}, {"s": "column-time-management", "t": "1日15分でも伸びる英語学習の時間割の作り方", "d": "限られた時間で英語力を伸ばすための、スキマ時間を組み合わせた現実的な学習スケジュールの立て方を紹介します。", "c": "学習習慣"}, {"s": "column-eigo-nikki", "t": "英語日記で「使える英語」に変える書き方ガイド", "d": "英語日記が英語力アップに効く理由と、三日坊主にならずに続けるための簡単な書き方のコツを紹介します。", "c": "学習法"}, {"s": "column-kigou-hatsuon", "t": "発音記号の読み方入門：辞書の音を自分のものにする", "d": "発音記号の基本的な読み方を初心者向けに解説。辞書の発音表記を理解して正しい発音を身につける方法を紹介します。", "c": "発音"}, {"s": "column-quiz-bunpo", "t": "間違えやすい英文法クイズ10問【解説つき】", "d": "日本人が間違えやすい英文法のポイントをクイズ形式で確認。各問に詳しい解説をつけて弱点を克服します。", "c": "文法"}, {"s": "column-eigo-kodomo", "t": "子どもと一緒に楽しむおうち英語のはじめ方", "d": "家庭で子どもと英語に親しむための、歌・絵本・かけ流しなど無理なく始められる方法を保護者向けに紹介します。", "c": "学習法"}, {"s": "column-eikaiwa-kinchou", "t": "英会話の「緊張して話せない」を克服する心の準備", "d": "英会話で頭が真っ白になる原因と、緊張せずに話すための考え方・準備・練習法を具体的に解説します。", "c": "英会話"}, {"s": "column-eigo-shukanka", "t": "英語学習を「歯磨きレベル」の習慣にする科学的方法", "d": "意志力に頼らず英語学習を習慣化するための、行動科学にもとづくトリガー設定と小さな習慣の作り方を解説します。", "c": "学習習慣"}, {"s": "column-eiken-guide", "t": "英検の級別レベルと合格に必要な学習量の目安", "d": "英検の各級のレベル感、必要な語彙数、合格に向けた学習の進め方を級別に整理して解説します。", "c": "資格試験"}, {"s": "column-speaking-test", "t": "スピーキングテスト（面接）で緊張せず話すための準備", "d": "英検やTOEIC S&Wなどのスピーキングテストに向けた、定型表現の準備と本番での立ち回りを解説します。", "c": "資格試験"}, {"s": "column-collocation", "t": "コロケーションで覚える「自然な英語」の作り方", "d": "英単語を単体でなく組み合わせ（コロケーション）で覚えることで、自然で通じやすい英語が身につく理由と方法を解説します。", "c": "学習法"}, {"s": "column-eigo-mokuhyou", "t": "「英語を話せるようになりたい」を具体的な目標に変える方法", "d": "漠然とした英語学習の目標を、達成可能で測定できる形に落とし込むための考え方と具体例を紹介します。", "c": "学習習慣"}, {"s": "column-mistake-ok", "t": "英語は間違えていい。ミスを恐れないマインドセット", "d": "英語学習でミスを恐れる心理の正体と、間違いを成長に変えるための考え方・実践法を解説します。", "c": "学習習慣"}, {"s": "column-reibun-gakushu", "t": "例文ごと覚える学習法：単語帳の次のステップ", "d": "単語を単体で覚えるより例文ごと記憶するほうが定着し使える理由と、例文学習の具体的な進め方を解説します。", "c": "学習法"}, {"s": "column-rokuon-hatsuon", "t": "自分の発音を録音して直す：客観視トレーニング", "d": "自分の英語を録音して聞き返す発音改善法の効果と、具体的な手順・チェックポイントを解説します。", "c": "発音"}, {"s": "column-shukan-report", "t": "学習を数値で振り返る：週次レビューのすすめ", "d": "英語学習を週単位で振り返る習慣の効果と、記録すべき指標・改善サイクルの回し方を解説します。", "c": "学習習慣"}, {"s": "column-eigo-input-output", "t": "インプットとアウトプットの黄金比を知る", "d": "英語学習における読む・聞く（インプット）と話す・書く（アウトプット）の理想的なバランスと切り替え方を解説します。", "c": "学習法"}, {"s": "column-eigo-plateau2", "t": "覚えた単語をすぐ忘れる人のための復習設計", "d": "せっかく覚えた英単語を忘れないための復習タイミングと、忘却を前提にした学習設計の作り方を解説します。", "c": "学習法"}, {"s": "column-genzai-kanryo", "t": "現在完了形が「わかったつもり」で終わる人への完全ガイド", "d": "現在完了形を経験・完了・継続で整理し過去形との違いを解説。", "c": "文法"}, {"s": "column-kanshi", "t": "a/an/theの使い分けを日本人向けに整理する冠詞入門", "d": "冠詞a/an/theの使い分けと無冠詞のケースを解説。", "c": "文法"}, {"s": "column-zenchishi", "t": "前置詞 in / on / at のイメージで攻略する時間と場所の表現", "d": "前置詞in/on/atをコアイメージで整理。", "c": "文法"}, {"s": "column-jodoushi", "t": "can / may / must / should の違いを話し手の気持ちで理解する助動詞", "d": "助動詞を義務・推量・許可の観点で解説。", "c": "文法"}, {"s": "column-kankeidaimeishi", "t": "関係代名詞 who / which / that を2文合体で理解する", "d": "関係代名詞を2文をつなぐ仕組みから解説。", "c": "文法"}, {"s": "column-hatsuon-boin", "t": "カタカナ英語を卒業する母音の発音入門", "d": "英語の母音の区別と通じる発音のコツ。", "c": "発音"}, {"s": "column-hatsuon-lr", "t": "日本人の永遠の課題 L と R の発音を克服する", "d": "LとRの発音の違いと練習法を解説。", "c": "発音"}, {"s": "column-toeic-part5", "t": "TOEIC Part5を時間内に解く文法・語彙問題の攻略法", "d": "Part5を速く解く選択肢の見方と解法。", "c": "TOEIC"}, {"s": "column-toeic-listening", "t": "TOEICリスニングでスコアを伸ばす先読みテクニック", "d": "Part3・4の先読みと各パート戦略。", "c": "TOEIC"}, {"s": "column-business-mail", "t": "そのまま使える英語ビジネスメールの型とフレーズ", "d": "英語ビジネスメールの構成と定番フレーズ。", "c": "英会話"}, {"s": "column-eiga-gakushu", "t": "洋画・海外ドラマで英語を学ぶ効果的な方法", "d": "映画・ドラマ学習の作品選びと字幕活用法。", "c": "学習法"}, {"s": "column-eijakubun", "t": "英作文が書けるようになる「日本語を崩す」思考法", "d": "難しい日本語を崩して英訳する手順。", "c": "学習法"}, {"s": "column-slump", "t": "英語学習の伸び悩み（プラトー）を抜け出す方法", "d": "停滞期の正体と突破する学習の見直し方。", "c": "学習習慣"}, {"s": "column-kihon-doushi", "t": "get / take / make など基本動詞を使いこなす英会話術", "d": "基本動詞のコアイメージで表現の幅を広げる。", "c": "英会話"}, {"s": "column-online-eikaiwa", "t": "オンライン英会話を最大限に活用する受講前後のコツ", "d": "オンライン英会話の予習・受講・復習のコツ。", "c": "学習法"}, {"s": "column-tango-kioku", "t": "英単語が覚えられない人へ。記憶に残る「間隔反復」学習法", "d": "間隔反復で英単語を効率よく覚える方法。", "c": "学習法"}, {"s": "column-shakaijin-jikan", "t": "忙しい社会人のための英語学習時間の作り方", "d": "スキマ時間の活用と習慣化のコツ。", "c": "学習習慣"}, {"s": "column-listening", "t": "リスニングが聞き取れない3つの原因と対策", "d": "音・速度・語彙からリスニング上達法を解説。", "c": "リスニング"}, {"s": "column-shadowing", "t": "シャドーイングの正しいやり方を5ステップで解説", "d": "発音とリスニングを鍛えるシャドーイング。", "c": "リスニング"}, {"s": "column-toeic-hajimete", "t": "TOEIC初受験ガイド：スコアの仕組みと直前1か月の対策", "d": "TOEICの形式・スコア目安・直前対策。", "c": "TOEIC"}, {"s": "column-bunpo-yarinaoshi", "t": "英文法やり直しは「中学英語」からで大丈夫な理由", "d": "やり直しは中学英文法から始めるのが近道。", "c": "文法"}, {"s": "column-kaiwa-phrase", "t": "そのまま使える日常英会話フレーズ30選【場面別】", "d": "場面別の定番英会話フレーズ集。", "c": "英会話"}, {"s": "column-app-katsuyo", "t": "英語学習アプリを三日坊主にしない使い方", "d": "アプリを継続の武器に変える使い分け術。", "c": "学習習慣"}, {"s": "column-tadoku", "t": "多読のすすめ：辞書を引かずに英語を読む勉強法", "d": "多読の3原則とレベル別の始め方。", "c": "学習法"}, {"s": "column-motivation", "t": "英語学習のモチベーションが続かないときの7つの処方箋", "d": "やる気に頼らず続ける具体策を7つ紹介。", "c": "学習習慣"}];
+const COLUMNS = [{"s":"column-toeic-450-795","t":"TOEIC 450点から795点まで。留学と独学で実際にやったこと全部","d":"大学1年のIPテスト450点から、4か月の留学と独学を経て795点を取るまでの記録。使った教材4冊、Part5を1問20秒で解く練習、ディクテーションから始めたリスニングまで、実際にやったことだけを書きました。","c":"TOEIC"},{"s":"column-toeic-part5","t":"TOEIC Part5 完全攻略：1問20秒で捌くための4タイプ判定と練習問題10問","d":"TOEIC Part5を10分で終わらせるための具体的な手順。問題を4タイプに分類して選択肢を見た瞬間に判定する方法、1問20秒のタイマー練習、解説つき練習問題10問、間違えた問題の潰し方まで。","c":"TOEIC"},{"s":"column-toeic-listening","t":"TOEICリスニング Part1〜4 攻略：先読み・ディクテーション・公式問題集の使い倒し方","d":"TOEICリスニングの各パートの攻め方と、実際に効いた練習法。Part2で疑問詞を聞き逃さない技術、Part3・4の先読みの手順、聞き取れない原因である連結・脱落・弱形をディクテーションで潰す方法までまとめました。","c":"TOEIC"},{"s":"column-tango-kioku","t":"英単語の覚え方と復習設計：忘れる前提で組み立てる間隔反復","d":"覚えたはずの英単語をすぐ忘れてしまう人へ。忘却を前提にした間隔反復の設計、思い出す練習が効く理由、コロケーションと短い例文で覚える方法、1日の適正量までまとめました。","c":"学習法"},{"s":"column-bunpo-yarinaoshi","t":"英文法やり直しガイド：中学英語の骨組みと、日本人がつまずく5項目","d":"英文法のやり直しに必要な範囲を、中学英語の骨組みと、現在完了・冠詞・前置詞・助動詞・関係代名詞の5項目に絞って整理しました。文法書を通読せずに穴だけ埋める進め方も解説します。","c":"文法"},{"s":"column-hatsuon-guide","t":"発音の教科書：発音記号・母音・L/R・録音セルフチェック","d":"英語の発音をひととおり整理しました。発音記号の必要最小限の読み方、カタカナ発音から抜けるための母音の意識、LとRを舌の位置で覚える練習の順番、自分の声を録音して直す手順まで。","c":"発音"},{"s":"column-eikaiwa-guide","t":"英会話で話せるようになるまで：単語の羅列から抜けて、止まらずに話す","d":"読めるのに話せない状態から抜けるための道筋。主語と動詞をセットにする、短い文を並べる、知っている言葉で言い換える、基本動詞を使い回す、聞き返す表現を持つ。場面別フレーズと緊張対策まで。","c":"英会話"},{"s":"column-eigo-input-output","t":"インプットとアウトプットの回し方：多読・洋画・英語日記・英作文・オンライン英会話","d":"読む・聞くと、話す・書くの役割の違いと、段階ごとの比率。多読の3原則、洋画を3回見る手順、英語日記の続け方、日本語を崩してから訳す英作文、オンライン英会話の使い方までまとめました。","c":"学習法"},{"s":"column-eigo-shukanka","t":"英語学習を続ける仕組み：習慣化・時間の作り方・記録・スランプ対策","d":"意志力に頼らずに英語学習を続けるための仕組みをまとめました。既存の習慣にくっつけるトリガー設定、5分×3回の時間設計、週1回の振り返り、伸び悩み（プラトー）から抜け出す方法まで。","c":"学習習慣"},{"s":"column-eiken-guide","t":"英検ガイド：級別のレベル感・必要な学習量・二次試験（面接）の準備","d":"英検とTOEICの違い、5級から1級までのレベル感と語彙数の目安、一次試験でライティングから対策すべき理由、二次試験の面接で沈黙しないための準備までまとめました。","c":"資格試験"}];
 // ==================== 今日のコラム ====================
 function renderColumnTab() {
   // 日替わりピックアップ
@@ -7244,6 +7360,8 @@ function queuePush() {
   clearTimeout(pushTimer);
   pushTimer = setTimeout(doPush, 2500);
 }
+// リセット直後など、待たずに上書きしたいとき
+window.eigoPushNow = function () { clearTimeout(pushTimer); doPush(); };
 // persist() に同期をぶら下げる
 const _persist = window.persist;
 window.persist = function () { _persist(); queuePush(); };
