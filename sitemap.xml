@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://eigonote.jp/</loc><lastmod>2026-08-07</lastmod><priority>1.0</priority></url>
+  <url><loc>https://eigonote.jp/</loc><lastmod>2026-09-23</lastmod><priority>1.0</priority></url>
   <url><loc>https://eigonote.jp/columns.html</loc><lastmod>2026-08-07</lastmod><priority>0.9</priority></url>
   <url><loc>https://eigonote.jp/about.html</loc><lastmod>2026-08-07</lastmod><priority>0.6</priority></url>
   <url><loc>https://eigonote.jp/privacy.html</loc><lastmod>2026-08-07</lastmod><priority>0.5</priority></url>
@@ -14,4 +14,61 @@
   <url><loc>https://eigonote.jp/column-eigo-input-output.html</loc><lastmod>2026-07-24</lastmod><priority>0.8</priority></url>
   <url><loc>https://eigonote.jp/column-eigo-shukanka.html</loc><lastmod>2026-07-27</lastmod><priority>0.8</priority></url>
   <url><loc>https://eigonote.jp/column-eiken-guide.html</loc><lastmod>2026-07-30</lastmod><priority>0.8</priority></url>
+  <url><loc>https://eigonote.jp/words-toeic.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-business.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-business-advanced.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-workplace.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-contracts.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-jobs.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-finance.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-numbers.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-formal.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-daily.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-home.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-time.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-food.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-restaurant.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-shopping.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-health.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-weather.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-actions.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-hobbies.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-fitness.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-school.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-phone.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-travel.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-geography.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-transport.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-emotions.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-reactions.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-feeling-adjectives.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-personality.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-qualities.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-senses.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-mind.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-basic-verbs.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-phrasal-verbs.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-idioms.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-connectors.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-opposites.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-communication.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-society.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-politics.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-media.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-environment.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-technology.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-science.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-culture.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-literary.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-advanced-verbs.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-advanced-adjectives.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-advanced-nouns.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-advanced-vocabulary.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-advanced-phrasal-verbs.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-advanced-idioms.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-academic.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-fields.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-abstract.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words-medical.html</loc><lastmod>2026-09-23</lastmod><priority>0.7</priority></url>
+  <url><loc>https://eigonote.jp/words.html</loc><lastmod>2026-09-23</lastmod><priority>0.9</priority></url>
 </urlset>

@@ -373,6 +373,12 @@
     font-weight: 600; padding: 0 6px; margin-bottom: 6px }
   .flashcard.swiping .flashcard-inner { transition: none }
   .hidden { display: none !important; }
+.sitetext{font-size:.9rem;line-height:1.95;color:var(--text)}
+.sitetext p{margin:0 0 14px}
+.sitetext h3{font-size:1rem;margin:20px 0 8px;font-weight:800}
+.sitetext a{color:var(--primary)}
+#about-site h2{font-size:1.1rem;margin-bottom:14px}
+
   .center { text-align: center; }
   .mt { margin-top: 14px; }
 </style>
@@ -527,12 +533,34 @@
       </div>
     </div>
     <div style="text-align:center;font-size:.75rem;color:var(--muted);padding:8px 0 4px">
-      <a href="columns.html" style="color:var(--muted)" data-i18n="navCol2">学習コラム</a> ｜
+      <a href="words.html" style="color:var(--muted)" >英単語一覧</a> ｜ <a href="columns.html" style="color:var(--muted)" data-i18n="navCol2">学習コラム</a> ｜
       <a href="about.html" style="color:var(--muted)" data-i18n="aboutLink">運営者情報</a> ｜
       <a href="privacy.html" style="color:var(--muted)" data-i18n="privacyLink">プライバシーポリシー</a>
       <div style="margin-top:6px">&copy; 2026 EigoNote</div>
     </div>
-  </section>
+  
+<div class="card plain" id="about-site">
+  <h2 data-i18n="sA1">EigoNote（エイゴノート）について</h2>
+  <div class="sitetext">
+    <p data-i18n="sA2" data-i18n-html>EigoNoteは、英語の単語を「覚える」ためではなく「忘れない」ために作った、無料の学習サイトです。登録もインストールも必要ありません。ブラウザで開けば、その場で学習を始められます。</p>
+    <h3 data-i18n="sB1">忘れるタイミングで、もう一度出す</h3>
+    <p data-i18n="sB2" data-i18n-html>単語帳を1周しても、1週間後にはほとんど残っていない。この問題を解くために、EigoNoteは間隔反復（spaced repetition）という仕組みを使っています。正解した単語は<b>1日後 → 3日後 → 7日後 → 21日後</b>と間隔を広げながら出題され、間違えた単語は最初の間隔に戻ります。「今日どれを復習すべきか」を自分で管理しなくて済むのが、紙の単語帳との一番の違いです。</p>
+    <h3 data-i18n="sC1">5つの学習モード</h3>
+    <p data-i18n="sC2" data-i18n-html><b>単語帳</b>はカードをめくって意味を確認するモードです。発音の読み上げ（アメリカ英語・イギリス英語を切り替え可能）と、自分の声を録音して聞き比べる機能があります。<b>4択クイズ</b>は英語→日本語と日本語→英語が混ざって出題され、難易度・問題数・制限時間・カテゴリを選べます。<b>リスニング</b>は例文が読み上げられ、意味として正しいものを選びます。<b>例文集</b>は収録している例文を通しで読めます。<b>学習コラム</b>では、TOEIC対策や単語の覚え方を記事にまとめています。</p>
+    <h3 data-i18n="sD1">収録している内容</h3>
+    <p data-i18n="sD2" data-i18n-html>単語は<b>2,710語</b>。56のカテゴリに分かれていて、初級・中級・上級の3段階のレベルが付いています。すべての単語に例文と日本語訳が付いていて、これらは市販教材からの転載ではなく、運営者が書き起こしたものです。TOEIC頻出語、ビジネス英語、日常会話、旅行、句動詞など、目的に合わせてカテゴリを絞って学習できます。全単語は<a href="words.html">英単語一覧</a>でも読めます。</p>
+    <h3 data-i18n="sE1">学習コースで、順番に迷わない</h3>
+    <p data-i18n="sE2" data-i18n-html>何から手をつければいいか分からないときのために、日常英語・旅行英語・仕事/ビジネス英語・TOEIC頻出語の4つのコースを用意しています。1日15語ずつ、やさしい順に進みます。今日の分が終われば、その日はそれで完了です。</p>
+    <h3 data-i18n="sF1">記録は端末に保存、引き継ぎも可能</h3>
+    <p data-i18n="sF2" data-i18n-html>学習の進捗はブラウザの中に自動で保存されるので、次に開いたときは続きから再開できます。Googleアカウントでログインすれば、スマホとパソコンの間でデータを引き継げます。ログインは任意で、こちらも無料です。記録を消してやり直したいときは、設定から「記録のリセット」ができます。</p>
+    <h3 data-i18n="sG1">誰が作っているか</h3>
+    <p data-i18n="sG2" data-i18n-html>運営しているのは、国際学部の大学生の <b>Yaya</b> です。TOEICは大学1年のIPテストで450点、会場受験で540点からのスタートでした。大学2年でオーストラリアに4か月留学し、現地で英語を話しながら空き時間にTOEIC対策を続けて、帰国後の受験で795点。いまは900点を目指して勉強中です。</p>
+    <p data-i18n="sG3" data-i18n-html>このサイトを作ったきっかけは、覚えたはずの単語が1週間後にはきれいに消えていたことでした。「覚える」より「忘れない」ほうがずっと難しいと気づいて、忘れかけたタイミングで自動的にもう一度出してくれる仕組みが欲しくなった。それがこのサイトの中心にある機能です。<a href="about.html">運営者情報</a>にもう少し詳しく書いています。</p>
+    <h3 data-i18n="sH1">よくある質問</h3>
+    <p data-i18n="sH2" data-i18n-html><b>お金はかかりますか。</b>かかりません。すべての機能を無料で使えます。<br><b>登録は必要ですか。</b>必要ありません。ログインは、複数の端末でデータを引き継ぎたい場合の任意機能です。<br><b>スマホでも使えますか。</b>使えます。ホーム画面に追加すればアプリのように起動できます。<br><b>自分の単語を追加できますか。</b>できます。1語ずつの追加と、CSV形式での一括登録に対応しています。</p>
+  </div>
+</div>
+</section>
 
   <!-- ============ FLASHCARDS ============ -->
   <section id="tab-flash" class="hidden">
@@ -952,7 +980,7 @@
         <div style="display:grid;gap:8px">
           <a class="btn small outline" style="width:100%;text-decoration:none" href="about.html" data-i18n="aboutLink">運営者情報</a>
           <a class="btn small outline" style="width:100%;text-decoration:none" href="privacy.html" data-i18n="privacyLink">プライバシーポリシー</a>
-          <a class="btn small outline" style="width:100%;text-decoration:none" href="columns.html" data-i18n="navCol2">学習コラム</a>
+          <a class="btn small outline" style="width:100%;text-decoration:none" href="words.html" >英単語一覧</a> <a class="btn small outline" style="width:100%;text-decoration:none" href="columns.html" data-i18n="navCol2">学習コラム</a>
         </div>
       </div>
       <div class="center" style="padding:6px 4px 4px">
@@ -6349,6 +6377,23 @@ const I18N = {
     backupSave: "⬇️ バックアップを保存",
     backupLoad: "⬆️ 復元する",
     resetT: "🧹 記録のリセット",
+    sA1: "EigoNote（エイゴノート）について",
+    sA2: "EigoNoteは、英語の単語を「覚える」ためではなく「忘れない」ために作った、無料の学習サイトです。登録もインストールも必要ありません。ブラウザで開けば、その場で学習を始められます。",
+    sB1: "忘れるタイミングで、もう一度出す",
+    sB2: "単語帳を1周しても、1週間後にはほとんど残っていない。この問題を解くために、EigoNoteは間隔反復（spaced repetition）という仕組みを使っています。正解した単語は<b>1日後 → 3日後 → 7日後 → 21日後</b>と間隔を広げながら出題され、間違えた単語は最初の間隔に戻ります。「今日どれを復習すべきか」を自分で管理しなくて済むのが、紙の単語帳との一番の違いです。",
+    sC1: "5つの学習モード",
+    sC2: "<b>単語帳</b>はカードをめくって意味を確認するモードです。発音の読み上げ（アメリカ英語・イギリス英語を切り替え可能）と、自分の声を録音して聞き比べる機能があります。<b>4択クイズ</b>は英語→日本語と日本語→英語が混ざって出題され、難易度・問題数・制限時間・カテゴリを選べます。<b>リスニング</b>は例文が読み上げられ、意味として正しいものを選びます。<b>例文集</b>は収録している例文を通しで読めます。<b>学習コラム</b>では、TOEIC対策や単語の覚え方を記事にまとめています。",
+    sD1: "収録している内容",
+    sD2: "単語は<b>2,710語</b>。56のカテゴリに分かれていて、初級・中級・上級の3段階のレベルが付いています。すべての単語に例文と日本語訳が付いていて、これらは市販教材からの転載ではなく、運営者が書き起こしたものです。TOEIC頻出語、ビジネス英語、日常会話、旅行、句動詞など、目的に合わせてカテゴリを絞って学習できます。",
+    sE1: "学習コースで、順番に迷わない",
+    sE2: "何から手をつければいいか分からないときのために、日常英語・旅行英語・仕事/ビジネス英語・TOEIC頻出語の4つのコースを用意しています。1日15語ずつ、やさしい順に進みます。今日の分が終われば、その日はそれで完了です。",
+    sF1: "記録は端末に保存、引き継ぎも可能",
+    sF2: "学習の進捗はブラウザの中に自動で保存されるので、次に開いたときは続きから再開できます。Googleアカウントでログインすれば、スマホとパソコンの間でデータを引き継げます。ログインは任意で、こちらも無料です。記録を消してやり直したいときは、設定から「記録のリセット」ができます。",
+    sG1: "誰が作っているか",
+    sG2: "運営しているのは、国際学部の大学生の <b>Yaya</b> です。TOEICは大学1年のIPテストで450点、会場受験で540点からのスタートでした。大学2年でオーストラリアに4か月留学し、現地で英語を話しながら空き時間にTOEIC対策を続けて、帰国後の受験で795点。いまは900点を目指して勉強中です。",
+    sG3: "このサイトを作ったきっかけは、覚えたはずの単語が1週間後にはきれいに消えていたことでした。「覚える」より「忘れない」ほうがずっと難しいと気づいて、忘れかけたタイミングで自動的にもう一度出してくれる仕組みが欲しくなった。それがこのサイトの中心にある機能です。<a href=\"about.html\">運営者情報</a>にもう少し詳しく書いています。",
+    sH1: "よくある質問",
+    sH2: "<b>お金はかかりますか。</b>かかりません。すべての機能を無料で使えます。<br><b>登録は必要ですか。</b>必要ありません。ログインは、複数の端末でデータを引き継ぎたい場合の任意機能です。<br><b>スマホでも使えますか。</b>使えます。ホーム画面に追加すればアプリのように起動できます。<br><b>自分の単語を追加できますか。</b>できます。1語ずつの追加と、CSV形式での一括登録に対応しています。",
     resetD: "学習の記録を消して、まっさらな状態から始め直せます。消す直前にバックアップを自動で保存するので、間違えても復元できます。設定（テーマ・目標・読み上げなど）は消えません。",
     resetProg: "学習の記録だけ消す",
     resetAll: "追加した単語ごと全部消す",
@@ -6670,6 +6715,23 @@ const I18N = {
     backupSave: "⬇️ Save backup",
     backupLoad: "⬆️ Restore",
     resetT: "🧹 Reset your data",
+    sA1: "About EigoNote",
+    sA2: "EigoNote is a free study site built not so much to help you learn words as to stop you forgetting them. No sign-up, no install. Open it in a browser and you can start straight away.",
+    sB1: "Bringing words back just as you forget them",
+    sB2: "You finish a wordbook, and a week later almost none of it is left. EigoNote uses spaced repetition to deal with that. A word you get right comes back after <b>1 day → 3 days → 7 days → 21 days</b>, and a word you miss goes back to the start. Not having to work out what to review today is the biggest difference from a paper wordbook.",
+    sC1: "Five ways to study",
+    sC2: "<b>Cards</b> let you flip through words, with speech (switchable between American and British English) and a recorder so you can compare your own voice. <b>Quiz</b> mixes English-to-Japanese and Japanese-to-English, with difficulty, question count, time limit and category all adjustable. <b>Listening</b> plays an example sentence and asks you to pick the right meaning. <b>Sentences</b> lets you read through the examples. <b>Articles</b> covers TOEIC strategy and how to memorise vocabulary.",
+    sD1: "What is included",
+    sD2: "<b>2,710 words</b>, split into 56 categories and graded beginner, intermediate and advanced. Every word has an example sentence and a Japanese translation, written from scratch rather than copied from published material. You can narrow things down by purpose — TOEIC vocabulary, business English, everyday conversation, travel, phrasal verbs and more.",
+    sE1: "Courses, so you never wonder what is next",
+    sE2: "If you are not sure where to start, there are four courses: everyday English, travel English, work and business English, and TOEIC vocabulary. Fifteen words a day, easiest first. Once the day's set is done, you are finished for the day.",
+    sF1: "Your record stays on your device, and can move with you",
+    sF2: "Progress is saved automatically in your browser, so you pick up where you left off. Sign in with Google and your data follows you between phone and computer. Signing in is optional and also free. If you want to wipe everything and start over, there is a reset in the settings.",
+    sG1: "Who makes this",
+    sG2: "EigoNote is run by <b>Yaya</b>, a university student studying international studies. My TOEIC started at 450 on the in-house test in my first year, then 540 at a public sitting. In my second year I spent four months studying in Australia, speaking English there while working through TOEIC material in the gaps, and scored 795 after coming home. I am working towards 900 now.",
+    sG3: "The reason this site exists is that words I was sure I had learned had vanished a week later. Realising that not forgetting is far harder than learning, I wanted something that would put a word back in front of me right as it started to fade. That is the feature at the centre of this site. There is a little more on the <a href=\"about.html\">about page</a>.",
+    sH1: "Common questions",
+    sH2: "<b>Does it cost anything?</b> No. Every feature is free.<br><b>Do I need an account?</b> No. Signing in is optional, for carrying data between devices.<br><b>Does it work on a phone?</b> Yes. Add it to your home screen and it opens like an app.<br><b>Can I add my own words?</b> Yes — one at a time, or in bulk with CSV.",
     resetD: "Wipe your study record and start over. A backup is saved automatically just before anything is deleted, so a mistake is recoverable. Your settings (theme, goal, speech, and so on) are kept.",
     resetProg: "Clear study record only",
     resetAll: "Clear everything, including my words",
