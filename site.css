@@ -51,3 +51,21 @@ a{color:var(--primary)}
 footer{background:var(--bg);border-top:1px solid var(--border);color:var(--muted)}
 footer a{color:var(--sub)}
 @media (max-width:600px){h1{font-size:1.45rem}nav.g a{margin-left:12px;font-size:.8rem}}
+
+/* 単語ページの解説ブロック（使い分け・組み合わせ・確認クイズ） */
+.xp{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:6px}
+@media(min-width:720px){.xp{grid-template-columns:1fr 1fr}}
+.xpi{border:1px solid var(--border);border-radius:12px;padding:14px 16px;background:var(--card)}
+.xpi h3{font-size:.98rem;font-weight:700;letter-spacing:-.01em;margin:0 0 6px}
+.xpi p{font-size:.88rem;line-height:1.85;color:#26272b;margin:0}
+.xc{width:100%;border-collapse:collapse;font-size:.9rem;margin:4px 0 8px}
+.xc td{padding:9px 6px;border-bottom:1px solid var(--border);vertical-align:top}
+.xc td:first-child{font-weight:600;width:55%}
+.xqn{font-size:.82rem;color:var(--muted);margin:-4px 0 12px}
+.xq{border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;background:var(--card)}
+.xq .q{margin:0 0 8px;font-size:.93rem}
+.xo{list-style:none;padding:0;margin:0 0 8px;display:grid;gap:6px}
+.xo li{display:flex;gap:8px;align-items:baseline;font-size:.9rem}
+.xo li span{display:inline-flex;width:22px;height:22px;border:1px solid var(--border);border-radius:6px;font-size:.72rem;align-items:center;justify-content:center;color:var(--muted);flex:none}
+.xq details summary{cursor:pointer;color:var(--primary);font-size:.85rem;font-weight:600}
+.xq details p{font-size:.88rem;margin:8px 0 0;line-height:1.8}
