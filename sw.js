@@ -1,5 +1,5 @@
 // EigoNote Service Worker
-const CACHE = "eigonote-v2";
+const CACHE = "eigonote-v3";
 const ASSETS = ["./", "./index.html", "./columns.html", "./manifest.json"];
 
 self.addEventListener("install", e => {
@@ -14,7 +14,7 @@ self.addEventListener("activate", e => {
 });
 
 // HTMLはネットワーク優先（更新を取り込む）、失敗時はキャッシュ
-// その他はキャッシュ優先
+// CSS・JS・画像はキャッシュを先に返しつつ、裏で最新を取りに行く（次回から新しい版になる）
 self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
@@ -22,16 +22,20 @@ self.addEventListener("fetch", e => {
   if (isHTML) {
     e.respondWith(
       fetch(req).then(res => {
-        caches.open(CACHE).then(c => c.put(req, res.clone()));
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(req, copy));
         return res;
       }).catch(() => caches.match(req).then(r => r || caches.match("./index.html")))
     );
-  } else {
-    e.respondWith(
-      caches.match(req).then(r => r || fetch(req).then(res => {
-        caches.open(CACHE).then(c => c.put(req, res.clone()));
-        return res;
-      }).catch(() => undefined))
-    );
+    return;
   }
+  e.respondWith(
+    caches.open(CACHE).then(c => c.match(req).then(hit => {
+      const net = fetch(req).then(res => {
+        if (res && res.ok) c.put(req, res.clone());
+        return res;
+      }).catch(() => hit);
+      return hit || net;
+    }))
+  );
 });
