@@ -384,7 +384,7 @@
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7228040067218129" crossorigin="anonymous"></script>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#5b6ef5">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -433,11 +433,68 @@
   ]
 }
 </script>
+<style id="eigo-v2">
+/* EigoNote 新デザイン（すっきり・ミニマル）— アプリ画面の上書き */
+:root{--bg:#ffffff;--bg2:#f7f7f8;--card:#ffffff;--primary:#2448d6;--primary-dark:#1b37a8;--primary-soft:#eef1fd;--accent:#1f9d55;--accent-soft:#effaf3;--danger:#d14343;--warn:#c77d12;--text:#111113;--muted:#6b6c72;--border:#e7e7ea;--radius:14px;--radius-sm:10px;--shadow:none;--shadow-sm:none;--shadow-lg:0 8px 30px rgba(0,0,0,.08);--noto-line:#111113;--noto-accent:#2448d6;--noto-fill:#ffffff;--noto-card:#f2f3f5}
+body.dark{--bg:#0f0f11;--bg2:#18181b;--card:#141417;--primary:#7f98ff;--primary-dark:#a8b8ff;--primary-soft:#1a2040;--accent:#3ccf7e;--accent-soft:#12291c;--danger:#ef6b6b;--text:#ededef;--muted:#8b8b92;--border:#26262a;--noto-line:#ededef;--noto-accent:#7f98ff;--noto-fill:#141417;--noto-card:#1d1d21}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif!important;background:var(--bg)!important;color:var(--text);-webkit-font-smoothing:antialiased}
+header{background:var(--bg)!important;color:var(--text)!important;box-shadow:none!important;border-bottom:1px solid var(--border)}
+header h1{color:var(--text)!important;font-weight:700!important;letter-spacing:-.01em!important}
+header p{color:var(--muted)!important}
+.theme-toggle{background:transparent!important;border:1px solid var(--border)!important;color:var(--text)!important;box-shadow:none!important;display:inline-flex;align-items:center;justify-content:center}
+.card{background:var(--card)!important;box-shadow:none!important;border:1px solid var(--border)!important;border-radius:14px!important}
+.card.hero{background:var(--card)!important;color:var(--text)!important}
+.card[style*="gradient"],a[style*="gradient"]{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--border)!important}
+h2{font-weight:700!important;letter-spacing:-.01em}
+.hl,.hl-g{background:none!important}.hl{color:var(--primary)!important}.hl-g{color:var(--accent)!important}
+.hl::after,.hl-g::after{display:none!important}
+.stat{background:var(--card)!important;box-shadow:none!important;border:1px solid var(--border)!important;border-radius:12px!important}
+.stat::before{display:none!important}
+.stat .num{color:var(--text)!important;font-weight:700!important;letter-spacing:-.02em}
+.stat .label{color:var(--muted)!important}
+.progress-bar{background:var(--bg2)!important;box-shadow:none!important}
+.progress-bar>div{background:var(--primary)!important}
+.btn{background:var(--text)!important;color:var(--bg)!important;box-shadow:none!important;border-radius:10px!important;font-weight:600!important;transform:none!important}
+.btn:hover{opacity:.85}
+.btn.green{background:var(--accent)!important;color:#fff!important}
+.btn.red{background:var(--danger)!important;color:#fff!important}
+.btn.gray{background:var(--bg2)!important;color:var(--text)!important;border:1px solid var(--border)!important}
+.btn.outline{background:transparent!important;color:var(--text)!important;border:1px solid var(--border)!important}
+#tab-flash .btn.red{background:transparent!important;color:var(--text)!important;border:1px solid var(--border)!important}
+#tab-flash .btn.green{background:var(--text)!important;color:var(--bg)!important}
+nav{background:var(--bg)!important;border-top:1px solid var(--border)!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+nav button{border-radius:10px!important;color:var(--muted)!important}
+nav button.active{background:transparent!important;color:var(--text)!important}
+nav button .icon{display:flex;align-items:center;justify-content:center;height:24px}
+nav button .icon svg{width:22px;height:22px}
+.mode-chip{background:var(--card)!important;border:1px solid var(--border)!important;box-shadow:none!important;border-radius:12px!important;color:var(--text)!important}
+.mode-chip:hover{border-color:var(--text)!important}
+.mode-chip .mi{width:32px;height:32px;border-radius:9px;background:var(--bg2);display:inline-flex;align-items:center;justify-content:center;color:var(--text);flex:none}
+.mode-chip .mi svg{width:18px;height:18px}
+.choice{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--border)!important;box-shadow:none!important;border-radius:10px!important}
+.choice.correct{background:var(--accent-soft)!important;border-color:var(--accent)!important}
+.choice.wrong{background:#fdeeee!important;border-color:var(--danger)!important}
+body.dark .choice.wrong{background:#2a1515!important}
+.face{box-shadow:none!important;border:1px solid var(--border)!important;background:var(--card)!important;color:var(--text)!important}
+.face.back{background:var(--bg2)!important}
+.box-badge{background:var(--bg2)!important;color:var(--muted)!important;box-shadow:none!important}
+input,select,textarea{border:1px solid var(--border)!important;border-radius:10px!important;background:var(--card)!important;color:var(--text)!important;box-shadow:none!important}
+.catshort button{background:transparent!important;color:var(--text)!important;border:1px solid var(--border)!important;box-shadow:none!important}
+.catshort button:hover{border-color:var(--text)!important}
+.cchip,.chip{box-shadow:none!important}
+.cchip.on,.chip.active{background:var(--text)!important;color:var(--bg)!important;border-color:var(--text)!important}
+.noto-fab{background:var(--card)!important;border:1px solid var(--border)!important;box-shadow:0 4px 18px rgba(0,0,0,.08)!important}
+.noto-bubble{background:var(--bg2)!important;color:var(--text)!important;box-shadow:none!important;border:1px solid var(--border)}
+.noto-msg.me .noto-bubble{background:var(--text)!important;color:var(--bg)!important;border-color:var(--text)}
+.noto-chip{background:transparent!important;border:1px solid var(--border)!important;color:var(--text)!important;box-shadow:none!important}
+.toast{box-shadow:0 8px 30px rgba(0,0,0,.12)!important;border:1px solid var(--border)}
+.badge-item,.badge{box-shadow:none!important}
+</style>
 </head>
 <body>
 
 <header>
-  <button class="theme-toggle" onclick="openSettings()" title="設定" aria-label="設定を開く">⚙️</button>
+  <button class="theme-toggle" onclick="openSettings()" title="設定" aria-label="設定を開く"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></button>
   <h1 onclick="switchTab('home')" style="cursor:pointer" title="ホームに戻る"><span id="noto-header"></span>EigoNote</h1>
   <p data-i18n="tagline">毎日コツコツ、英語力アップ</p>
 </header>
@@ -463,11 +520,11 @@
     <div class="card">
       <h2 data-i18n="modesTitle">🎯 学習モードを選ぶ</h2>
       <div class="modes">
-        <button class="mode-chip" onclick="switchTab('flash')"><span class="mi">🗂️</span><span><span class="mt" data-i18n="mFlash">単語帳</span><span class="md" data-i18n="mFlashD">めくって覚える</span></span></button>
-        <button class="mode-chip" onclick="switchTab('quiz')"><span class="mi">📝</span><span><span class="mt" data-i18n="mQuiz">4択クイズ</span><span class="md" data-i18n="mQuizD">意味を確認</span></span></button>
-        <button class="mode-chip" onclick="switchTab('listen')"><span class="mi">🎧</span><span><span class="mt" data-i18n="mListen">リスニング</span><span class="md" data-i18n="mListenD">耳で鍛える</span></span></button>
-        <button class="mode-chip" onclick="switchTab('column')"><span class="mi">📖</span><span><span class="mt" data-i18n="mColumn">今日のコラム</span><span class="md" data-i18n="mColumnD">読んで学ぶ</span></span></button>
-        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi">💬</span><span><span class="mt" data-i18n="mPhrase">例文集</span><span class="md" data-i18n="mPhraseD">2,710の例文</span></span></button>
+        <button class="mode-chip" onclick="switchTab('flash')"><span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="6" width="14" height="13" rx="2"/><path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3H19a1.5 1.5 0 0 1 1.5 1.5V15A1.5 1.5 0 0 1 19 16.5h-1.5"/></svg></span><span><span class="mt" data-i18n="mFlash">単語帳</span><span class="md" data-i18n="mFlashD">めくって覚える</span></span></button>
+        <button class="mode-chip" onclick="switchTab('quiz')"><span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4M12 16.8v.1"/></svg></span><span><span class="mt" data-i18n="mQuiz">4択クイズ</span><span class="md" data-i18n="mQuizD">意味を確認</span></span></button>
+        <button class="mode-chip" onclick="switchTab('listen')"><span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.5"/></svg></span><span><span class="mt" data-i18n="mListen">リスニング</span><span class="md" data-i18n="mListenD">耳で鍛える</span></span></button>
+        <button class="mode-chip" onclick="switchTab('column')"><span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5zM12 6.5v13"/></svg></span><span><span class="mt" data-i18n="mColumn">今日のコラム</span><span class="md" data-i18n="mColumnD">読んで学ぶ</span></span></button>
+        <button class="mode-chip" onclick="switchTab('phrase')"><span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.5h5" stroke-linecap="round"/></svg></span><span><span class="mt" data-i18n="mPhrase">例文集</span><span class="md" data-i18n="mPhraseD">2,710の例文</span></span></button>
       </div>
     </div>
     <div class="card after-start" style="background:linear-gradient(135deg,#5b6ef5,#8a63f0);color:#fff;border:none;text-align:center;padding:20px">
@@ -1017,12 +1074,12 @@
 </div>
 
 <nav>
-  <button id="nav-home" class="active" onclick="switchTab('home')"><span class="icon">🏠</span><span data-i18n="navHome">ホーム</span></button>
-  <button id="nav-flash" onclick="switchTab('flash')"><span class="icon">🗂️</span><span data-i18n="navFlash">単語帳</span></button>
-  <button id="nav-quiz" onclick="switchTab('quiz')"><span class="icon">📝</span><span data-i18n="navQuiz">クイズ</span></button>
-  <button id="nav-listen" onclick="switchTab('listen')"><span class="icon">🎧</span><span data-i18n="navListen">リスニング</span></button>
-  <button id="nav-column" onclick="switchTab('column')"><span class="icon">📖</span><span data-i18n="navColumn">コラム</span></button>
-  <button id="nav-phrase" onclick="switchTab('phrase')"><span class="icon">💬</span><span data-i18n="navPhrase">例文集</span></button>
+  <button id="nav-home" class="active" onclick="switchTab('home')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6h-6v6H4z"/></svg></span><span data-i18n="navHome">ホーム</span></button>
+  <button id="nav-flash" onclick="switchTab('flash')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="6" width="14" height="13" rx="2"/><path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3H19a1.5 1.5 0 0 1 1.5 1.5V15A1.5 1.5 0 0 1 19 16.5h-1.5"/></svg></span><span data-i18n="navFlash">単語帳</span></button>
+  <button id="nav-quiz" onclick="switchTab('quiz')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4M12 16.8v.1"/></svg></span><span data-i18n="navQuiz">クイズ</span></button>
+  <button id="nav-listen" onclick="switchTab('listen')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.5"/></svg></span><span data-i18n="navListen">リスニング</span></button>
+  <button id="nav-column" onclick="switchTab('column')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5zM12 6.5v13"/></svg></span><span data-i18n="navColumn">コラム</span></button>
+  <button id="nav-phrase" onclick="switchTab('phrase')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.5h5" stroke-linecap="round"/></svg></span><span data-i18n="navPhrase">例文集</span></button>
 </nav>
 
 <script>
@@ -3941,33 +3998,34 @@ function checkBadges() {
 // ==================== ノトくん（キャラクター） ====================
 // 表情つきのSVG。サイズを変えても崩れないよう 100x100 の座標系で描いている。
 function notoSvg(mood, size, opt) {
+  // 新デザイン：線で描いたノートのキャラクター（左がとじ線、目と口だけ）
   const S = size || 40;
   opt = opt || {};
-  let eyes, mouth;
+  const L = "var(--noto-line)", A = "var(--noto-accent)";
+  let face;
   if (mood === "happy" || mood === "celebrate") {
-    eyes = '<path d="M38 47 Q45 38 52 47" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>' +
-           '<path d="M62 47 Q69 38 76 47" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>';
-    mouth = mood === "celebrate"
-      ? '<ellipse cx="57" cy="68" rx="12" ry="9" fill="var(--noto-face)"/>'
-      : '<path d="M44 64 Q57 79 70 64" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>';
+    face = '<path d="M27 29q4-5 8 0M39 29q4-5 8 0" fill="none" stroke="' + L + '" stroke-width="3" stroke-linecap="round"/>' +
+      (mood === "celebrate"
+        ? '<path d="M29 36q8 11 16 0z" fill="' + A + '" stroke="' + A + '" stroke-width="3" stroke-linejoin="round"/>' +
+          '<path d="M48 12l2-4M52 16l4-1M44 10l-1-4" stroke="' + A + '" stroke-width="2.5" stroke-linecap="round"/>'
+        : '<path d="M29 37q8 9 16 0" fill="none" stroke="' + A + '" stroke-width="3" stroke-linecap="round"/>');
+  } else if (mood === "thinking") {
+    face = '<circle cx="31" cy="27" r="3" fill="' + L + '"/><circle cx="43" cy="27" r="3" fill="' + L + '"/>' +
+      '<path d="M32 40h10" stroke="' + A + '" stroke-width="3" stroke-linecap="round"/>' +
+      '<path d="M47 13l3-3M50 18l4-1" stroke="' + A + '" stroke-width="2.5" stroke-linecap="round"/>';
+  } else if (mood === "worry") {
+    face = '<circle cx="31" cy="29" r="3" fill="' + L + '"/><circle cx="43" cy="29" r="3" fill="' + L + '"/>' +
+      '<path d="M26 23l6-3M48 23l-6-3" stroke="' + L + '" stroke-width="2.5" stroke-linecap="round"/>' +
+      '<path d="M31 42q6-5 12 0" fill="none" stroke="' + A + '" stroke-width="3" stroke-linecap="round"/>';
   } else {
-    const dy = mood === "thinking" ? -4 : 2;
-    eyes = '<circle cx="45" cy="46" r="9" fill="var(--noto-face)"/><circle cx="69" cy="46" r="9" fill="var(--noto-face)"/>' +
-           '<circle cx="' + (mood === "thinking" ? 45 : 46.5) + '" cy="' + (46 + dy) + '" r="4" fill="var(--noto-pupil)"/>' +
-           '<circle cx="' + (mood === "thinking" ? 69 : 70.5) + '" cy="' + (46 + dy) + '" r="4" fill="var(--noto-pupil)"/>';
-    mouth = mood === "worry"
-      ? '<path d="M46 70 Q57 61 68 70" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>'
-      : mood === "thinking"
-        ? '<path d="M47 67 L67 67" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>'
-        : '<path d="M46 65 Q57 76 68 65" fill="none" stroke="var(--noto-face)" stroke-width="5" stroke-linecap="round"/>';
+    face = '<circle cx="31" cy="28" r="3" fill="' + L + '"/><circle cx="43" cy="28" r="3" fill="' + L + '"/>' +
+      '<path d="M30 38q7 6 14 0" fill="none" stroke="' + A + '" stroke-width="3" stroke-linecap="round"/>';
   }
-  const card = opt.card ? '<rect x="0" y="0" width="100" height="100" rx="23" fill="' + (opt.card === true ? "var(--noto-card)" : opt.card) + '"/>' : "";
-  return '<svg viewBox="0 0 100 100" width="' + S + '" height="' + S + '" aria-hidden="true" style="display:block">' + card +
-    '<rect x="14" y="9" width="72" height="82" rx="13" fill="var(--noto-body)"/>' +
-    '<circle cx="25" cy="28" r="4" fill="var(--noto-ring)"/>' +
-    '<circle cx="25" cy="50" r="4" fill="var(--noto-ring)"/>' +
-    '<circle cx="25" cy="72" r="4" fill="var(--noto-ring)"/>' +
-    eyes + mouth + '</svg>';
+  const card = opt.card ? '<rect x="0" y="0" width="64" height="64" rx="16" fill="' + (opt.card === true ? "var(--noto-card)" : opt.card) + '"/>' : "";
+  const sc = opt.card ? ' transform="translate(6.4 6.4) scale(.8)"' : "";
+  return '<svg viewBox="0 0 64 64" width="' + S + '" height="' + S + '" aria-hidden="true" style="display:block" fill="none">' + card +
+    '<g' + sc + '><rect x="10" y="6" width="44" height="52" rx="8" fill="var(--noto-fill)" stroke="' + L + '" stroke-width="3"/>' +
+    '<line x1="18" y1="6" x2="18" y2="58" stroke="' + L + '" stroke-width="3"/>' + face + '</g></svg>';
 }
 
 let notoMood = "normal", notoMoodTimer = null;
@@ -3992,7 +4050,7 @@ function notoPaintFaces() {
   if (a) a.innerHTML = notoSvg(notoMood, 40);
   // ヘッダーは紫地なので、アプリアイコンと同じ白いカードごと置く
   const h = document.getElementById("noto-header");
-  if (h) h.innerHTML = notoSvg(notoMood, 30, { card: "rgba(255,255,255,.95)" });
+  if (h) h.innerHTML = notoSvg(notoMood, 28);
   const hero = document.getElementById("noto-hero");
   if (hero) hero.innerHTML = notoSvg(notoMood, 74, { card: true });
   const fd = document.getElementById("noto-flashdone");
@@ -7538,6 +7596,31 @@ if (auth) {
     }
   });
 }
+</script>
+<script>
+(function(){
+  // 新デザイン：見出しやボタンの先頭の絵文字を外して、文字だけにする
+  var RE = /^[\s\u200d\ufe0f]*(?:[\u2600-\u27bf\u2b00-\u2bff\u2190-\u21ff\u2300-\u23ff]|\ud83c[\udc00-\udfff]|\ud83d[\udc00-\udfff]|\ud83e[\udc00-\udfff])(?:[\u200d\ufe0f]|\ud83c[\udffb-\udfff])*\s*/;
+  var SEL = "h2, h3, .btn, .catshort button, summary, .stat .label, label";
+  function clean(root) {
+    var els = (root || document).querySelectorAll(SEL);
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.closest && el.closest("[data-keep-emoji]")) continue;
+      var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var n = w.nextNode();
+      while (n && !n.nodeValue.trim()) n = w.nextNode();
+      if (!n) continue;
+      var v = n.nodeValue, nv = v.replace(RE, "");
+      if (nv !== v && nv.trim()) n.nodeValue = nv;
+    }
+  }
+  var pending = false;
+  function schedule() { if (pending) return; pending = true; requestAnimationFrame(function(){ pending = false; clean(); }); }
+  window.v2Clean = clean;
+  function start() { clean(); new MutationObserver(schedule).observe(document.body, {childList:true, subtree:true, characterData:true}); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();
 </script>
 </body>
 </html>

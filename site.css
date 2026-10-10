@@ -1,0 +1,53 @@
+/* EigoNote 新デザイン（すっきり・ミニマル）読み物ページ共通 */
+:root{--bg:#fff;--card:#fff;--surface:#f7f7f8;--primary:#2448d6;--text:#111113;--sub:#55565c;--muted:#8a8b91;--border:#e7e7ea}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.9;-webkit-font-smoothing:antialiased}
+header{background:var(--bg);color:var(--text);border-bottom:1px solid var(--border);padding:14px 16px}
+.logo{color:var(--text);font-weight:700;letter-spacing:-.01em;font-size:1.05rem}
+nav.g a{color:var(--sub);opacity:1;font-weight:500}
+nav.g a:hover{color:var(--text);text-decoration:none}
+main{padding-top:32px}
+.card{background:var(--card);box-shadow:none;border:1px solid var(--border);border-radius:14px}
+h1{font-size:1.75rem;font-weight:700;letter-spacing:-.025em;line-height:1.45;color:var(--text)}
+.meta{color:var(--muted)}
+.lead{color:var(--sub)}
+.cat{color:var(--primary);font-weight:600;letter-spacing:.02em}
+article h2,main h2{font-size:1.3rem;font-weight:700;letter-spacing:-.015em;padding-left:0;border-left:none;color:var(--text)}
+article h2{margin:36px 0 12px}
+article h3{font-size:1.06rem;font-weight:700;letter-spacing:-.01em}
+article p,article li{color:#26272b}
+article table{font-size:.88rem}
+article th,article td{border:none;border-bottom:1px solid var(--border);padding:10px 8px}
+article th{background:none;color:var(--sub);font-weight:600;font-size:.8rem}
+article blockquote{border-left:2px solid var(--text);color:var(--sub)}
+a{color:var(--primary)}
+.hl{background:none;color:var(--primary)}.hl::after{display:none}
+.note{background:var(--surface);border:1px solid var(--border)}
+.cta{background:var(--text);color:#fff;border-radius:10px;font-weight:600}
+.cta:hover{opacity:.88}
+.proof>div{background:var(--card);border:1px solid var(--border);border-radius:12px}
+.proof .pv{color:var(--text)}
+.proof .pl{color:var(--muted)}
+.fig{border:1px solid var(--border);border-radius:12px;background:var(--card)}
+.list-item,.ci{box-shadow:none;border:1px solid var(--border);border-radius:12px}
+.list-item:hover,.ci:hover{box-shadow:none;border-color:var(--text)}
+.list-item .d,.ci .s{color:var(--muted)}
+.ci .n{color:var(--muted);font-weight:600}
+.chip{background:transparent;border:1px solid var(--border);color:var(--text);box-shadow:none}
+.chip.active{background:var(--text);color:#fff;border-color:var(--text)}
+.related h2{font-size:1rem;margin:0 0 12px}
+.rc{color:var(--muted);font-weight:600}
+.author{border:1px solid var(--border)}
+.ai{background:var(--text);color:#fff}
+.ad{color:var(--sub)}
+.bc,.bc a{color:var(--muted)}
+.toc a{border:1px solid var(--border);border-radius:999px;color:var(--text);background:transparent}
+.toc a:hover{border-color:var(--text)}
+.wi{border:1px solid var(--border);border-radius:12px}
+.en{color:var(--text)}
+.ja{color:var(--primary);font-weight:600}
+.exja{color:var(--muted)}
+.say{background:transparent;border:1px solid var(--border);color:var(--sub)}
+.say:hover{border-color:var(--text)}
+footer{background:var(--bg);border-top:1px solid var(--border);color:var(--muted)}
+footer a{color:var(--sub)}
+@media (max-width:600px){h1{font-size:1.45rem}nav.g a{margin-left:12px;font-size:.8rem}}

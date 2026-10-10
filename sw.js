@@ -1,5 +1,5 @@
 // EigoNote Service Worker
-const CACHE = "eigonote-v1";
+const CACHE = "eigonote-v2";
 const ASSETS = ["./", "./index.html", "./columns.html", "./manifest.json"];
 
 self.addEventListener("install", e => {
